@@ -1,7 +1,9 @@
+import 'package:cryptarch/services/markets.service.dart';
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
 import "package:cryptarch/pages/pages.dart";
+import "package:cryptarch/services/services.dart" show MarketsService;
 import "package:cryptarch/ui/widgets.dart";
 
 class PortfolioItem {
@@ -43,14 +45,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   @override
   void initState() {
     super.initState();
-    this._getItems().then((items) {
-      setState(() {
-        this.items = items;
-        this.totalValue = items.fold(0, (value, item) {
-          return value + item.value;
-        });
-      });
-    });
+    this._refreshItems();
   }
 
   @override
@@ -61,14 +56,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
       appBar: AppBar(
         title: Text(this.totalValue != null
             ? "\$${this.totalValue.toStringAsFixed(2)}"
-            : "\..."),
+            : ""),
         actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () async {
-              // TODO
-            },
-          ),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
@@ -78,64 +67,65 @@ class _PortfolioPageState extends State<PortfolioPage> {
                   builder: (context) => AddHoldingPage(),
                 ),
               );
-              final items = await this._getItems();
-              setState(() {
-                this.items = items;
-              });
+              await this._refreshItems();
             },
           ),
         ],
       ),
       body: SafeArea(
         child: this.items != null
-            ? ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = items[index];
-                  final amount = item.amount.toStringAsFixed(6);
-                  final value = item.value.toStringAsFixed(2);
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-                    child: Card(
-                      elevation: 1.0,
-                      child: ListTile(
-                          title: Text(item.asset.name),
-                          leading: Icon(Icons.circle),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("\$$value"),
-                              Text(
-                                "$amount ${item.asset.currency}",
-                                style: theme.textTheme.subtitle2,
-                              ),
-                            ],
-                          ),
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AssetPage(
-                                  asset: item.asset,
+            ? this.items.length > 0
+                ? RefreshIndicator(
+                    color: theme.colorScheme.onSecondary,
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final item = items[index];
+                        final amount = item.amount.toStringAsFixed(6);
+                        final value = item.value.toStringAsFixed(2);
+                        return Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                          child: Card(
+                            elevation: 1.0,
+                            child: ListTile(
+                                title: Text(item.asset.name),
+                                leading: Icon(Icons.circle),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text("\$$value"),
+                                    Text(
+                                      "$amount ${item.asset.currency}",
+                                      style: theme.textTheme.subtitle2,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            );
-                            final items = await this._getItems();
-                            setState(() {
-                              this.items = items;
-                            });
-                          }),
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AssetPage(
+                                        asset: item.asset,
+                                      ),
+                                    ),
+                                  );
+                                  await this._refreshItems();
+                                }),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              )
+                    onRefresh: this._refresh,
+                  )
+                : Center(child: const Text("Empty"))
             : LoadingIndicator(),
       ),
     );
   }
 
-  Future<List<PortfolioItem>> _getItems() async {
+  Future<void> _refreshItems() async {
     final List<PortfolioItem> items = [];
     final assets = await Asset.find();
     for (Asset asset in assets) {
@@ -150,6 +140,41 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     items.sort((a, b) => b.value.compareTo(a.value));
 
-    return items;
+    setState(() {
+      this.items = items;
+      this.totalValue = items.fold(0, (value, item) {
+        return value + item.value;
+      });
+    });
+  }
+
+  Future<void> _refreshPrices() async {
+    final markets = MarketsService();
+    final assets = await Asset.find();
+    for (Asset asset in assets) {
+      if (asset.tokenPlatform != null) {
+        final price = await markets.getTokenPrice(
+          asset.tokenPlatform,
+          asset.contractAddress,
+          "USD",
+        );
+        if (price != null) {
+          asset.value = price;
+          await asset.save();
+        }
+      } else {
+        final ticker = "${asset.currency}/USD";
+        final price = await markets.getPrice(ticker, asset.exchange);
+        if (price != null) {
+          asset.value = price;
+          await asset.save();
+        }
+      }
+    }
+  }
+
+  Future<void> _refresh() async {
+    await this._refreshPrices();
+    await this._refreshItems();
   }
 }
