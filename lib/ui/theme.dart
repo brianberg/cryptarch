@@ -13,10 +13,12 @@ class AppTheme {
     backgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Colors.white,
+      secondary: Colors.black87,
+      surface: Colors.white,
       onPrimary: Colors.black87,
       onSecondary: Colors.white,
+      onSurface: Colors.black87,
       primaryVariant: Colors.white38,
-      secondary: Colors.black87,
     ),
     appBarTheme: AppBarTheme(
       color: Colors.white,
@@ -98,13 +100,15 @@ class AppTheme {
     dividerColor: Colors.grey[700],
     colorScheme: ColorScheme.light(
       primary: Colors.black,
+      secondary: Colors.white,
+      surface: Colors.grey[900],
       onPrimary: Colors.white,
       onSecondary: Colors.grey[900],
+      onSurface: Colors.white,
       primaryVariant: Colors.black,
-      secondary: Colors.white,
     ),
     appBarTheme: AppBarTheme(
-      color: Colors.grey[900],
+      color: Colors.black,
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
