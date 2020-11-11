@@ -8,8 +8,10 @@ class Asset {
   final String id;
   final String name;
   final String currency;
-  final double value;
-  final String exchange;
+  double value;
+  String exchange;
+  String tokenPlatform;
+  String contractAddress;
 
   static final String tableName = "assets";
 
@@ -19,6 +21,8 @@ class Asset {
     "currency": "TEXT",
     "value": "REAL",
     "exchange": "TEXT",
+    "tokenPlatform": "TEXT",
+    "contractAddress": "TEXT",
   };
 
   Asset({
@@ -26,12 +30,13 @@ class Asset {
     @required this.name,
     @required this.currency,
     @required this.value,
-    @required this.exchange,
+    this.exchange,
+    this.tokenPlatform,
+    this.contractAddress,
   })  : assert(id != null),
         assert(name != null),
         assert(currency != null),
-        assert(value != null),
-        assert(exchange != null);
+        assert(value != null);
 
   static Future<Asset> deserialize(Map<String, dynamic> rawAsset) async {
     final value = rawAsset["value"];
@@ -39,8 +44,10 @@ class Asset {
       id: rawAsset["id"],
       name: rawAsset["name"],
       currency: rawAsset["currency"],
-      value: value != null ? value.toDouble() : null,
+      value: value != null ? value.toDouble() : 0.0,
       exchange: rawAsset["exchange"],
+      tokenPlatform: rawAsset["tokenPlatform"],
+      contractAddress: rawAsset["contractAddress"],
     );
   }
 
@@ -100,6 +107,8 @@ class Asset {
     map["currency"] = this.currency;
     map["value"] = this.value;
     map["exchange"] = this.exchange;
+    map["tokenPlatform"] = this.tokenPlatform;
+    map["contractAddress"] = this.contractAddress;
 
     return map;
   }
