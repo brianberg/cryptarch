@@ -53,7 +53,7 @@ class AssetListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                this.asset.value.toStringAsFixed(2),
+                "\$${this.asset.value.toStringAsFixed(2)}",
                 style: theme.textTheme.bodyText1,
               ),
               Text(
