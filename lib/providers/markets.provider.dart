@@ -15,7 +15,14 @@ class MarketsProvider {
   ) {
     platform = platform.toLowerCase();
     String url =
-        "https://api.coingecko.com/api/v3/simple/token_price/$platform?contract_addresses=$contractAddress&vs_currencies=$currency";
+        "https://api.coingecko.com/api/v3/simple/token_price/$platform?contract_addresses=$contractAddress&vs_currencies=$currency&include_24hr_change=true";
+    return http.get(url);
+  }
+
+  Future<http.Response> getPriceSummary(String ticker, String exchange) {
+    ticker = ticker.replaceAll("/", "").toLowerCase();
+    exchange = exchange.replaceAll(" ", "-").toLowerCase();
+    String url = "https://api.cryptowat.ch/markets/$exchange/$ticker/summary";
     return http.get(url);
   }
 }

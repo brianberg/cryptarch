@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
-import "package:cryptarch/ui/widgets.dart";
+
+import "asset_picker.widget.dart";
 
 class AssetField extends StatelessWidget {
   final String label;

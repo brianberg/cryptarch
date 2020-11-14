@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/ui/widgets.dart";
+
+import "asset_picker_list.widget.dart";
 
 class AssetPicker extends StatefulWidget {
   final String title;
@@ -61,7 +62,7 @@ class _AssetPickerState extends State<AssetPicker> {
         ],
       ),
       body: SafeArea(
-        child: AssetList(
+        child: AssetPickerList(
           items: widget.assets,
           selectedItem: this.asset,
           onTap: (Asset selected) {

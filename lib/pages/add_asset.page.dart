@@ -174,7 +174,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: RaisedButton(
-                          child: Text("Add"),
+                          child: Text("Add", style: theme.textTheme.button),
                           color: theme.buttonColor,
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {

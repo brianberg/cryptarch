@@ -36,7 +36,10 @@ class DatabaseService {
       version: 1,
       onCreate: (Database db, int version) async {
         // When creating the db, create the table
-        await _initializeTables(db);
+        await this._initializeTables(db);
+      },
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        // Migrations
       },
     );
     return this._db;
@@ -44,24 +47,6 @@ class DatabaseService {
 
   Database get db {
     return _db;
-  }
-
-  Future<void> _initializeTables(db) async {
-    String assetTable = Asset.tableName;
-    String assetColumns = _mapToSqlTableString(Asset.tableColumns);
-    await db.execute("CREATE TABLE $assetTable ($assetColumns)");
-    String holdingTable = Holding.tableName;
-    String holdingColumns = _mapToSqlTableString(Holding.tableColumns);
-    await db.execute("CREATE TABLE $holdingTable ($holdingColumns)");
-  }
-
-  String _mapToSqlTableString(Map<String, String> map) {
-    String table = "";
-    map.forEach((key, value) {
-      table += "$key $value, ";
-    });
-    table = table.substring(0, table.length - 2);
-    return table;
   }
 
   Query getQuery(Map<String, dynamic> filters) {
@@ -136,5 +121,23 @@ class DatabaseService {
     }
 
     return numDeleted;
+  }
+
+  String _mapToSqlTableString(Map<String, String> map) {
+    String table = "";
+    map.forEach((key, value) {
+      table += "$key $value, ";
+    });
+    table = table.substring(0, table.length - 2);
+    return table;
+  }
+
+  Future<void> _initializeTables(db) async {
+    String assetTable = Asset.tableName;
+    String assetColumns = _mapToSqlTableString(Asset.tableColumns);
+    await db.execute("CREATE TABLE $assetTable ($assetColumns)");
+    String holdingTable = Holding.tableName;
+    String holdingColumns = _mapToSqlTableString(Holding.tableColumns);
+    await db.execute("CREATE TABLE $holdingTable ($holdingColumns)");
   }
 }

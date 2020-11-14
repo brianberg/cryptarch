@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "package:cryptarch/models/models.dart" show Asset, Holding;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/ui/widgets.dart";
-import 'package:flutter/rendering.dart';
 
 class AssetPage extends StatefulWidget {
   final Asset asset;

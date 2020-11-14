@@ -19,31 +19,48 @@ class AssetListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final percentChange = this.asset.percentChange;
+
     return Padding(
       key: ValueKey(this.asset.id),
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          border: Border.all(
-            color: this.selected
-                ? Theme.of(context).accentColor
-                : Theme.of(context).dividerColor,
-          ),
-          borderRadius: BorderRadius.circular(4.0),
-        ),
+      child: Card(
+        elevation: 1.0,
         child: ListTile(
+          leading: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.circle,
+                color: theme.colorScheme.onSurface,
+              ),
+            ],
+          ),
           title: Text(
             this.asset.name,
             style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color,
+              color: theme.textTheme.bodyText1.color,
             ),
           ),
-          trailing: Text(
+          subtitle: Text(
             this.asset.currency,
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color,
-            ),
+            style: theme.textTheme.subtitle1,
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                this.asset.value.toStringAsFixed(2),
+                style: theme.textTheme.bodyText1,
+              ),
+              Text(
+                "${percentChange > 0 ? '+' : ''}${percentChange.toStringAsFixed(2)}%",
+                style: theme.textTheme.subtitle1,
+              ),
+            ],
           ),
           onTap: this.onTap != null
               ? () {

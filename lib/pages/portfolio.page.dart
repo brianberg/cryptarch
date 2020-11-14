@@ -1,44 +1,21 @@
-import 'package:cryptarch/services/markets.service.dart';
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart";
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/services/services.dart" show MarketsService;
+import "package:cryptarch/services/services.dart"
+    show AssetService, PortfolioItem, PortfolioService;
 import "package:cryptarch/ui/widgets.dart";
 
-class PortfolioItem {
-  final Asset asset;
-  final List<Holding> holdings;
-
-  PortfolioItem({
-    @required this.asset,
-    @required this.holdings,
-  })  : assert(asset != null),
-        assert(holdings != null);
-
-  double get amount {
-    if (this.holdings.isEmpty) {
-      return 0;
-    }
-    final amounts = this.holdings.map((h) => h.amount);
-    return amounts.reduce((value, amount) {
-      return value + amount;
-    });
-  }
-
-  double get value {
-    return this.amount * this.asset.value;
-  }
-}
-
 class PortfolioPage extends StatefulWidget {
-  static const routeName = "/";
+  static const routeName = "/portfolio";
 
   @override
   _PortfolioPageState createState() => _PortfolioPageState();
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
+  final assetService = AssetService();
+  final portfolio = PortfolioService();
+
   List<PortfolioItem> items;
   double totalValue;
 
@@ -54,9 +31,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.totalValue != null
-            ? "\$${this.totalValue.toStringAsFixed(2)}"
-            : ""),
+        title: Text(
+          this.totalValue != null
+              ? "\$${this.totalValue.toStringAsFixed(2)}"
+              : "",
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -76,7 +55,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
         child: this.items != null
             ? this.items.length > 0
                 ? RefreshIndicator(
-                    color: theme.colorScheme.onSecondary,
+                    color: theme.colorScheme.onSurface,
+                    backgroundColor: theme.colorScheme.surface,
                     child: ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -126,55 +106,16 @@ class _PortfolioPageState extends State<PortfolioPage> {
   }
 
   Future<void> _refreshItems() async {
-    final List<PortfolioItem> items = [];
-    final assets = await Asset.find();
-    for (Asset asset in assets) {
-      Map<String, dynamic> holdingFilters = {};
-      holdingFilters["currency"] = asset.currency;
-      final item = PortfolioItem(
-        asset: asset,
-        holdings: await Holding.find(filters: holdingFilters),
-      );
-      items.add(item);
-    }
-
-    items.sort((a, b) => b.value.compareTo(a.value));
+    final items = await this.portfolio.getItems();
 
     setState(() {
       this.items = items;
-      this.totalValue = items.fold(0, (value, item) {
-        return value + item.value;
-      });
+      this.totalValue = this.portfolio.calculateValue(items);
     });
   }
 
-  Future<void> _refreshPrices() async {
-    final markets = MarketsService();
-    final assets = await Asset.find();
-    for (Asset asset in assets) {
-      if (asset.tokenPlatform != null) {
-        final price = await markets.getTokenPrice(
-          asset.tokenPlatform,
-          asset.contractAddress,
-          "USD",
-        );
-        if (price != null) {
-          asset.value = price;
-          await asset.save();
-        }
-      } else {
-        final ticker = "${asset.currency}/USD";
-        final price = await markets.getPrice(ticker, asset.exchange);
-        if (price != null) {
-          asset.value = price;
-          await asset.save();
-        }
-      }
-    }
-  }
-
   Future<void> _refresh() async {
-    await this._refreshPrices();
+    await this.assetService.refreshPrices();
     await this._refreshItems();
   }
 }

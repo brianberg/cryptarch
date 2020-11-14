@@ -96,9 +96,10 @@ class AppTheme {
     accentColor: Colors.white,
     scaffoldBackgroundColor: Colors.black,
     backgroundColor: Colors.black,
+    buttonColor: Colors.white,
     cursorColor: Colors.white,
     dividerColor: Colors.grey[700],
-    colorScheme: ColorScheme.light(
+    colorScheme: ColorScheme.dark(
       primary: Colors.black,
       secondary: Colors.white,
       surface: Colors.grey[900],
@@ -117,7 +118,7 @@ class AppTheme {
       color: Colors.black,
     ),
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.grey[900],
+      buttonColor: Colors.white,
     ),
     cardTheme: CardTheme(
       color: Colors.grey[900],
@@ -147,7 +148,7 @@ class AppTheme {
         color: Colors.white,
       ),
       button: TextStyle(
-        color: Colors.white,
+        color: Colors.black,
       ),
       caption: TextStyle(
         color: Colors.white,

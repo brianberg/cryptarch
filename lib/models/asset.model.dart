@@ -12,6 +12,10 @@ class Asset {
   String exchange;
   String tokenPlatform;
   String contractAddress;
+  double lastPrice;
+  double highPrice;
+  double lowPrice;
+  double percentChange;
 
   static final String tableName = "assets";
 
@@ -23,6 +27,10 @@ class Asset {
     "exchange": "TEXT",
     "tokenPlatform": "TEXT",
     "contractAddress": "TEXT",
+    "lastPrice": "REAL",
+    "highPrice": "REAL",
+    "lowPrice": "REAL",
+    "percentChange": "REAL",
   };
 
   Asset({
@@ -33,6 +41,10 @@ class Asset {
     this.exchange,
     this.tokenPlatform,
     this.contractAddress,
+    this.lastPrice,
+    this.highPrice,
+    this.lowPrice,
+    this.percentChange,
   })  : assert(id != null),
         assert(name != null),
         assert(currency != null),
@@ -40,6 +52,11 @@ class Asset {
 
   static Future<Asset> deserialize(Map<String, dynamic> rawAsset) async {
     final value = rawAsset["value"];
+    final lastPrice = rawAsset["lastPrice"];
+    final highPrice = rawAsset["highPrice"];
+    final lowPrice = rawAsset["lowPrice"];
+    final percentChange = rawAsset["percentChange"];
+
     return Asset(
       id: rawAsset["id"],
       name: rawAsset["name"],
@@ -48,6 +65,10 @@ class Asset {
       exchange: rawAsset["exchange"],
       tokenPlatform: rawAsset["tokenPlatform"],
       contractAddress: rawAsset["contractAddress"],
+      lastPrice: lastPrice != null ? lastPrice.toDouble() : 0.0,
+      highPrice: highPrice != null ? highPrice.toDouble() : 0.0,
+      lowPrice: lowPrice != null ? lowPrice.toDouble() : 0.0,
+      percentChange: percentChange != null ? percentChange.toDouble() : 0.0,
     );
   }
 
@@ -109,6 +130,10 @@ class Asset {
     map["exchange"] = this.exchange;
     map["tokenPlatform"] = this.tokenPlatform;
     map["contractAddress"] = this.contractAddress;
+    map["lastPrice"] = this.lastPrice;
+    map["highPrice"] = this.highPrice;
+    map["lowPrice"] = this.lowPrice;
+    map["percentChange"] = this.percentChange;
 
     return map;
   }
