@@ -213,10 +213,10 @@ class _AddAssetPageState extends State<AddAssetPage> {
     } else if (this.tab == 0) {
       final exchange = this._formData["exchange"];
       final ticker = "$currency/USD";
-      final value = await MarketsService().getPrice(ticker, exchange);
-      if (value != null) {
+      final price = await MarketsService().getPrice(ticker, exchange);
+      if (price != null) {
         this._formData["id"] = Uuid().v1();
-        this._formData["value"] = value;
+        this._formData["value"] = price.current;
         this._formData["tokenPlatform"] = null;
         this._formData["contractAddress"] = null;
         final asset = await Asset.deserialize(this._formData);
@@ -228,14 +228,14 @@ class _AddAssetPageState extends State<AddAssetPage> {
     } else {
       final platform = this._formData["tokenPlatform"];
       final contractAddress = this._formData["contractAddress"];
-      final value = await MarketsService().getTokenPrice(
+      final price = await MarketsService().getTokenPrice(
         platform,
         contractAddress,
         "USD",
       );
-      if (value != null) {
+      if (price != null) {
         this._formData["id"] = Uuid().v1();
-        this._formData["value"] = value;
+        this._formData["value"] = price.current;
         this._formData["exchange"] = null;
         final asset = await Asset.deserialize(this._formData);
         await asset.save();
