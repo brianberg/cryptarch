@@ -23,11 +23,7 @@ class _AssetPageState extends State<AssetPage> {
   @override
   void initState() {
     super.initState();
-    this._getHoldings().then((holdings) {
-      setState(() {
-        this.holdings = holdings;
-      });
-    });
+    this._refreshHoldings();
   }
 
   @override
@@ -43,13 +39,14 @@ class _AssetPageState extends State<AssetPage> {
         child: this.holdings != null
             ? HoldingList(
                 items: this.holdings,
-                onTap: (holding) {
-                  Navigator.push(
+                onTap: (holding) async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditHoldingPage(holding: holding),
                     ),
                   );
+                  await this._refreshHoldings();
                 },
               )
             : LoadingIndicator(),
@@ -57,9 +54,12 @@ class _AssetPageState extends State<AssetPage> {
     );
   }
 
-  Future<List<Holding>> _getHoldings() {
+  Future<void> _refreshHoldings() async {
     Map<String, dynamic> holdingFilters = {};
     holdingFilters["currency"] = this.widget.asset.currency;
-    return Holding.find(filters: holdingFilters);
+    final holdings = await Holding.find(filters: holdingFilters);
+    setState(() {
+      this.holdings = holdings;
+    });
   }
 }

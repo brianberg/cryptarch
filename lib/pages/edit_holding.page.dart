@@ -88,7 +88,7 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
-                        child: Text("Update"),
+                        child: Text("Update", style: theme.textTheme.button),
                         color: theme.buttonColor,
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {

@@ -1,9 +1,9 @@
-import 'package:cryptarch/services/markets.service.dart';
 import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset;
+import "package:cryptarch/services/services.dart" show MarketsService;
 
 class AddAssetPage extends StatefulWidget {
   @override
