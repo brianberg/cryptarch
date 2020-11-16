@@ -53,6 +53,10 @@ class _AppContainerState extends State<AppContainer> {
             label: "Prices",
             icon: Icon(Icons.bar_chart),
           ),
+          BottomNavigationBarItem(
+            label: "Mining",
+            icon: Icon(Icons.engineering),
+          ),
         ],
         onTap: (index) {
           setState(() {
@@ -69,6 +73,8 @@ class _AppContainerState extends State<AppContainer> {
         return PortfolioPage();
       case 2:
         return PricesPage();
+      case 3:
+        return MiningPage();
       default:
         return HomePage();
     }

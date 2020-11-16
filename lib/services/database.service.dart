@@ -33,13 +33,16 @@ class DatabaseService {
     final String dbPath = path.join(dir, "cryptarch.db");
     this._db = await openDatabase(
       dbPath,
-      version: 1,
+      version: 2,
       onCreate: (Database db, int version) async {
         // When creating the db, create the table
         await this._initializeTables(db);
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Migrations
+        if (oldVersion == 1) {
+          await this._migrateV1(db);
+        }
       },
     );
     return this._db;
@@ -139,5 +142,11 @@ class DatabaseService {
     String holdingTable = Holding.tableName;
     String holdingColumns = _mapToSqlTableString(Holding.tableColumns);
     await db.execute("CREATE TABLE $holdingTable ($holdingColumns)");
+  }
+
+  Future<void> _migrateV1(db) async {
+    String minerTable = Miner.tableName;
+    String minerColumns = _mapToSqlTableString(Miner.tableColumns);
+    await db.execute("CREATE TABLE $minerTable ($minerColumns)");
   }
 }
