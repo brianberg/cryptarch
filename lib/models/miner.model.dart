@@ -2,15 +2,19 @@ import "package:meta/meta.dart";
 
 import "package:sqflite/sqflite.dart";
 
-import "package:cryptarch/models/models.dart" show Holding;
+import "package:cryptarch/models/models.dart" show Asset, Holding;
 import "package:cryptarch/services/services.dart" show DatabaseService;
+
+const ENERGY_COST = 0.00774; // TODO: set via settings
 
 class Miner {
   final String id;
-  final String name;
+  String name;
   final String platform;
+  final Asset asset;
   final Holding holding;
   double profitability;
+  double energy;
 
   static final String tableName = "miners";
 
@@ -18,32 +22,41 @@ class Miner {
     "id": "TEXT PRIMARY KEY",
     "name": "TEXT",
     "platform": "TEXT",
+    "assetId": "TEXT",
     "holdingId": "TEXT",
     "profitability": "REAL",
+    "energy": "REAL",
   };
 
   Miner({
     @required this.id,
     @required this.name,
     @required this.platform,
+    @required this.asset,
     @required this.holding,
     @required this.profitability,
+    @required this.energy,
   })  : assert(id != null),
         assert(name != null),
         assert(platform != null),
         assert(holding != null),
-        assert(profitability != null);
+        assert(profitability != null),
+        assert(energy != null);
 
   static Future<Miner> deserialize(Map<String, dynamic> rawMiner) async {
+    final assetId = rawMiner["assetId"];
     final holdingId = rawMiner["holdingId"];
     final profitability = rawMiner["profitability"];
+    final energy = rawMiner["energy"];
 
     return Miner(
       id: rawMiner["id"],
       name: rawMiner["name"],
       platform: rawMiner["platform"],
+      asset: assetId != null ? await Asset.findOneById(assetId) : null,
       holding: holdingId != null ? await Holding.findOneById(holdingId) : null,
       profitability: profitability != null ? profitability.toDouble() : 0.0,
+      energy: energy != null ? energy.toDouble() : 0.0,
     );
   }
 
@@ -85,8 +98,10 @@ class Miner {
     map["id"] = this.id;
     map["name"] = this.name;
     map["platform"] = this.platform;
+    map["assetId"] = this.asset.id;
     map["holdingId"] = this.holding.id;
     map["profitability"] = this.profitability;
+    map["energy"] = this.energy;
 
     return map;
   }
@@ -108,4 +123,9 @@ class Miner {
 
   @override
   String toString() => "$name";
+
+  double calculateFiatProfitability() {
+    final cost = this.energy * ENERGY_COST;
+    return this.profitability * this.asset.value - cost;
+  }
 }

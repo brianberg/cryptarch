@@ -71,7 +71,7 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Balance",
+                        labelText: "Wallet Balance",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
@@ -98,10 +98,38 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
                         labelText: "Profitability",
                         filled: true,
                         fillColor: theme.cardTheme.color,
+                        suffix: const Text("/ day"),
                       ),
+                      initialValue: "0",
                       onSaved: (String value) {
                         setState(() {
                           this._formData["profitability"] = double.parse(value);
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
+                        labelText: "Energy Consumption",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                        suffix: const Text("kWh"),
+                      ),
+                      initialValue: "0",
+                      onSaved: (String value) {
+                        setState(() {
+                          this._formData["energy"] = double.parse(value);
                         });
                       },
                       validator: (value) {
@@ -168,8 +196,10 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
       id: uuid.v1(),
       name: name,
       platform: "Custom",
+      asset: this.asset,
       holding: holding,
       profitability: this._formData["profitability"],
+      energy: this._formData["energy"],
     );
     await miner.save();
 
