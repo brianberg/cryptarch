@@ -84,7 +84,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
                         ),
                         onSaved: (String value) {
                           setState(() {
-                            this._formData["currency"] = value;
+                            this._formData["currency"] = value.toUpperCase();
                           });
                         },
                         validator: (value) {
