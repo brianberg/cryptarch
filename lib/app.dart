@@ -12,6 +12,11 @@ class App extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       home: AppContainer(),
+      routes: <String, WidgetBuilder>{
+        PortfolioPage.routeName: (context) => PortfolioPage(),
+        PricesPage.routeName: (context) => PricesPage(),
+        MiningPage.routeName: (context) => MiningPage(),
+      },
     );
   }
 }
