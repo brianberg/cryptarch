@@ -135,7 +135,7 @@ class DatabaseService {
     return table;
   }
 
-  Future<void> _initializeTables(db) async {
+  Future<void> _initializeTables(Database db) async {
     String assetTable = Asset.tableName;
     String assetColumns = _mapToSqlTableString(Asset.tableColumns);
     await db.execute("CREATE TABLE $assetTable ($assetColumns)");
@@ -144,7 +144,7 @@ class DatabaseService {
     await db.execute("CREATE TABLE $holdingTable ($holdingColumns)");
   }
 
-  Future<void> _migrateV1(db) async {
+  Future<void> _migrateV1(Database db) async {
     String minerTable = Miner.tableName;
     String minerColumns = _mapToSqlTableString(Miner.tableColumns);
     await db.execute("CREATE TABLE $minerTable ($minerColumns)");

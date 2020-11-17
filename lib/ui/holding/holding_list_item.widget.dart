@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart";
+import "package:cryptarch/models/models.dart" show Asset, Holding;
 import "package:cryptarch/ui/widgets.dart";
 
 class HoldingListItem extends StatelessWidget {

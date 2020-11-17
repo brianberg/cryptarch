@@ -44,7 +44,7 @@ class _PricesPageState extends State<PricesPage> {
                     backgroundColor: theme.colorScheme.surface,
                     child: AssetList(
                       items: this.assets,
-                      onTap: (asset) async {
+                      onTap: (Asset asset) async {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(

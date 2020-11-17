@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart";
+import "package:cryptarch/models/models.dart" show Asset;
 
 class AssetPickerListItem extends StatelessWidget {
   final Asset asset;

@@ -119,19 +119,15 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                         color: theme.colorScheme.onPrimary,
                       ),
                       onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          // Process data.
-                          _formKey.currentState.save();
-                          try {
-                            await this.widget.holding.delete();
-                            Navigator.pop(context);
-                          } catch (err) {
-                            // final snackBar = SnackBar(
-                            //   content: Text(err.message),
-                            // );
-                            // Scaffold.of(context).showSnackBar(snackBar);
-                            print(err);
-                          }
+                        try {
+                          await this.widget.holding.delete();
+                          Navigator.pop(context);
+                        } catch (err) {
+                          // final snackBar = SnackBar(
+                          //   content: Text(err.message),
+                          // );
+                          // Scaffold.of(context).showSnackBar(snackBar);
+                          print(err);
                         }
                       },
                     ),
