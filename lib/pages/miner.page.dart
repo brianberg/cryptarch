@@ -58,12 +58,20 @@ class _MinerPageState extends State<MinerPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
               child: Text(
+                "Asset",
+                style: theme.textTheme.bodyText1,
+              ),
+            ),
+            AssetListItem(asset: this.miner.asset),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+              child: Text(
                 "Wallet",
                 style: theme.textTheme.bodyText1,
               ),
             ),
             HoldingListItem(
-              holding: this.widget.miner.holding,
+              holding: this.miner.holding,
             ),
             // Delete Button
             Padding(

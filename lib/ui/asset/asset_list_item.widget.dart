@@ -5,16 +5,13 @@ import "package:cryptarch/models/models.dart" show Asset;
 
 class AssetListItem extends StatelessWidget {
   final Asset asset;
-  final bool selected;
   final Function onTap;
 
   AssetListItem({
     Key key,
     @required this.asset,
-    @required this.selected,
     this.onTap,
   })  : assert(asset != null),
-        assert(selected != null),
         super(key: key);
 
   @override

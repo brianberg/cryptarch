@@ -53,13 +53,9 @@ class AssetList extends StatelessWidget {
       itemCount: assets.length,
       itemBuilder: (BuildContext context, int index) {
         final asset = assets[index];
-        var selected = false;
-        if (this.selectedItem != null) {
-          selected = this.selectedItem.id == asset.id;
-        }
+
         return AssetListItem(
           asset: asset,
-          selected: selected,
           onTap: this.onTap,
         );
       },

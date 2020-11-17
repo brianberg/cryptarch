@@ -16,18 +16,16 @@ class MinerListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final holding = this.miner.holding;
-    final currency = holding.currency;
-    final amount = holding.amount.toStringAsFixed(6);
+
+    final currency = this.miner.holding.currency;
     final fiatProfitability = this.miner.calculateFiatProfitability();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
       child: Card(
         elevation: 1.0,
         child: ListTile(
           title: Text(miner.name),
-          subtitle: Text("$amount $currency"),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -36,7 +34,7 @@ class MinerListItem extends StatelessWidget {
                 "${miner.profitability.toStringAsFixed(6)} $currency",
               ),
               Text(
-                "\$${fiatProfitability.toStringAsFixed(2)}",
+                "\$${fiatProfitability.toStringAsFixed(2)} / day",
                 style: theme.textTheme.subtitle2,
               ),
             ],
