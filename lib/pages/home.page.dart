@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/models/models.dart" show Asset;
+import "package:cryptarch/models/models.dart" show Asset, Miner;
 import "package:cryptarch/services/services.dart"
     show AssetService, PortfolioService;
 import "package:cryptarch/ui/widgets.dart";
@@ -18,7 +18,9 @@ class _HomePageState extends State<HomePage> {
   final portfolio = PortfolioService();
 
   List<Asset> assets;
+  List<Miner> miners;
   double portfolioValue;
+  double miningProfitability;
 
   @override
   void initState() {
@@ -32,10 +34,23 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          this.portfolioValue != null
-              ? "\$${this.portfolioValue.toStringAsFixed(2)}"
-              : "",
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              this.portfolioValue != null
+                  ? "\$${this.portfolioValue.toStringAsFixed(2)}"
+                  : "",
+            ),
+            this.miningProfitability != null
+                ? Row(
+                    children: [
+                      Text("\$${this.miningProfitability.toStringAsFixed(2)}"),
+                      Text(" / day", style: theme.textTheme.subtitle1),
+                    ],
+                  )
+                : Text(""),
+          ],
         ),
       ),
       body: SafeArea(
@@ -69,10 +84,17 @@ class _HomePageState extends State<HomePage> {
   Future<void> _initialize() async {
     final assets = await Asset.find();
     final value = await this.portfolio.getValue();
+    final miners = await Miner.find();
+
+    final miningProfitability = miners.fold(0.0, (value, miner) {
+      return value + miner.calculateFiatProfitability();
+    });
 
     setState(() {
       this.assets = assets;
+      this.miners = miners;
       this.portfolioValue = value;
+      this.miningProfitability = miningProfitability;
     });
   }
 
