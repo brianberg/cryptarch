@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Miner;
-import "package:cryptarch/pages/pages.dart";
 
 class EditMinerPage extends StatefulWidget {
   final Miner miner;
