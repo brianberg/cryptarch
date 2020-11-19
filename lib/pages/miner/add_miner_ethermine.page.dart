@@ -4,29 +4,25 @@ import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Holding, Miner;
 import "package:cryptarch/services/services.dart"
-    show NiceHashService, StorageService;
+    show EthermineService, EtherscanService;
 
-class AddNiceHashMinerPage extends StatefulWidget {
+class AddEthermineMinerPage extends StatefulWidget {
   @override
-  _AddNiceHashMinerPageState createState() => _AddNiceHashMinerPageState();
+  _AddEthermineMinerPageState createState() => _AddEthermineMinerPageState();
 }
 
-class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
+class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
   final _formKey = GlobalKey<FormState>();
 
+  String coin;
   Map<String, dynamic> _formData = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("NiceHash"),
+        title: const Text("Ethermine"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -38,23 +34,27 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
+                    child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                        labelText: "Organization ID",
+                        labelText: "Coin",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
-                      onSaved: (String value) {
+                      dropdownColor: theme.backgroundColor,
+                      value: this.coin,
+                      items: <String>[
+                        "ETH",
+                        "ETC",
+                      ].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String value) {
                         setState(() {
-                          this._formData["organization_id"] = value;
+                          this.coin = value;
                         });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        }
-                        return null;
                       },
                     ),
                   ),
@@ -63,35 +63,13 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "API Key",
+                        labelText: "Wallet Address",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["api_key"] = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
-                      decoration: InputDecoration(
-                        labelText: "API Secret",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                      ),
-                      onSaved: (String value) {
-                        setState(() {
-                          this._formData["api_secret"] = value;
+                          this._formData["address"] = value;
                         });
                       },
                       validator: (value) {
@@ -142,12 +120,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                             _formKey.currentState.save();
                             try {
                               // Create miner and holding
-                              final miner = await _saveNiceHashMiner();
-                              // Securely store NiceHash credentials
-                              await StorageService.putItem(
-                                "nicehash",
-                                this._formData,
-                              );
+                              final miner = await _saveEthermineMiner();
                               Navigator.pop(context, miner.id);
                             } catch (err) {
                               // final snackBar = SnackBar(
@@ -170,40 +143,34 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     );
   }
 
-  Future<Miner> _saveNiceHashMiner() async {
-    final organizationId = this._formData["organization_id"];
-    final apiKey = this._formData["api_key"];
-    final apiSecret = this._formData["api_secret"];
-    final energy = this._formData["energy"];
-
-    final nicehash = NiceHashService(
-      organizationId: organizationId,
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-    );
-    final balance = await nicehash.getAccountBalance();
-    final profitability = await nicehash.getProfitability();
+  Future<Miner> _saveEthermineMiner() async {
     final uuid = Uuid();
+    final address = this._formData["address"];
 
-    final asset = await Asset.findOneByCurrency("BTC");
+    final asset = await Asset.findOneByCurrency(this.coin);
+
+    final etherscan = EtherscanService();
+    final ethermine = EthermineService();
+    final balance = await etherscan.getBalance(address);
+    final profitability = await ethermine.getProfitability(address);
 
     final holding = Holding(
       id: uuid.v1(),
-      name: "Bitcoin",
-      amount: balance.available,
-      currency: "BTC",
-      location: "NiceHash",
+      name: this.coin == "ETC" ? "Ethereum Classic" : "Ethereum",
+      amount: balance,
+      currency: asset.currency,
+      location: "Ethermine",
     );
     await holding.save();
 
     final miner = Miner(
       id: uuid.v1(),
-      name: "NiceHash",
-      platform: "NiceHash",
+      name: "Ethermine",
+      platform: "Ethermine",
       asset: asset,
       holding: holding,
       profitability: profitability,
-      energy: energy,
+      energy: this._formData["energy"],
     );
     await miner.save();
 

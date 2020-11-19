@@ -46,6 +46,7 @@ class _AddMinerPageState extends State<AddMinerPage> {
                       value: this._formData["platform"].toString(),
                       items: <String>[
                         "Custom",
+                        "Ethermine",
                         "NiceHash",
                       ].map((String value) {
                         return new DropdownMenuItem<String>(
@@ -76,6 +77,14 @@ class _AddMinerPageState extends State<AddMinerPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => AddNiceHashMinerPage(),
+                                ),
+                              );
+                              break;
+                            case "Ethermine":
+                              minerId = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddEthermineMinerPage(),
                                 ),
                               );
                               break;
