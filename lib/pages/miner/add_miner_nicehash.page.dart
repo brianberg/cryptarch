@@ -14,6 +14,7 @@ class AddNiceHashMinerPage extends StatefulWidget {
 class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
   final _formKey = GlobalKey<FormState>();
 
+  Map<String, String> _credentials = {};
   Map<String, dynamic> _formData = {};
 
   @override
@@ -47,7 +48,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["organization_id"] = value;
+                          this._credentials["organization_id"] = value;
                         });
                       },
                       validator: (value) {
@@ -69,7 +70,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["api_key"] = value;
+                          this._credentials["api_key"] = value;
                         });
                       },
                       validator: (value) {
@@ -91,7 +92,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["api_secret"] = value;
+                          this._credentials["api_secret"] = value;
                         });
                       },
                       validator: (value) {
@@ -169,7 +170,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     // Securely store NiceHash credentials
     await StorageService.putItem(
       "nicehash",
-      this._formData,
+      this._credentials,
     );
 
     final nicehash = NiceHashService();

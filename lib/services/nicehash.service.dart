@@ -111,7 +111,7 @@ class NiceHashService {
 
   Future<NiceHashProvider> _createProvider() async {
     final credentials = await StorageService.getItem("nicehash");
-    if (credentials) {
+    if (credentials != null) {
       return NiceHashProvider(
         organizationId: credentials["organization_id"],
         key: credentials["api_key"],
