@@ -4,6 +4,7 @@ import "package:meta/meta.dart";
 
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/providers/providers.dart" show NiceHashProvider;
+import "package:cryptarch/services/services.dart" show StorageService;
 
 class NiceHashBalance {
   final double available;
@@ -58,45 +59,37 @@ class NiceHashRig {
 }
 
 class NiceHashService {
-  NiceHashProvider _provider;
-
-  NiceHashService({
-    @required String organizationId,
-    @required String apiKey,
-    @required String apiSecret,
-  }) {
-    this._provider = NiceHashProvider(
-      organizationId: organizationId,
-      key: apiKey,
-      secret: apiSecret,
-    );
-  }
-
   Future<NiceHashBalance> getAccountBalance() async {
-    final res = await this._provider.getAccounts();
-    final rawAccounts = Map<String, dynamic>.from(jsonDecode(res.body));
-    if (rawAccounts.keys.contains("total")) {
-      final totalAccount = rawAccounts["total"];
-      return NiceHashBalance.fromMap(totalAccount);
+    final provider = await this._createProvider();
+    if (provider != null) {
+      final res = await provider.getAccounts();
+      final rawAccounts = Map<String, dynamic>.from(jsonDecode(res.body));
+      if (rawAccounts.keys.contains("total")) {
+        final totalAccount = rawAccounts["total"];
+        return NiceHashBalance.fromMap(totalAccount);
+      }
     }
 
     return NiceHashBalance(available: 0.0, pending: 0.0, total: 0.0);
   }
 
   Future<double> getProfitability() async {
-    final res = await this._provider.getMiningRigs();
-    final rawRigsData = Map<String, dynamic>.from(jsonDecode(res.body));
-    if (rawRigsData.keys.contains("miningRigs")) {
-      final rawRigs = rawRigsData["miningRigs"] as List;
-      final rigs = List<NiceHashRig>.from(
-        rawRigs.map((rawRig) {
-          return NiceHashRig.fromMap(rawRig);
-        }),
-      );
+    final provider = await this._createProvider();
+    if (provider != null) {
+      final res = await provider.getMiningRigs();
+      final rawRigsData = Map<String, dynamic>.from(jsonDecode(res.body));
+      if (rawRigsData.keys.contains("miningRigs")) {
+        final rawRigs = rawRigsData["miningRigs"] as List;
+        final rigs = List<NiceHashRig>.from(
+          rawRigs.map((rawRig) {
+            return NiceHashRig.fromMap(rawRig);
+          }),
+        );
 
-      return rigs.fold<double>(0.0, (value, rig) {
-        return value + rig.profitability;
-      });
+        return rigs.fold<double>(0.0, (value, rig) {
+          return value + rig.profitability;
+        });
+      }
     }
 
     return 0.0;
@@ -114,5 +107,17 @@ class NiceHashService {
     await miner.save();
 
     return miner;
+  }
+
+  Future<NiceHashProvider> _createProvider() async {
+    final credentials = await StorageService.getItem("nicehash");
+    if (credentials) {
+      return NiceHashProvider(
+        organizationId: credentials["organization_id"],
+        key: credentials["api_key"],
+        secret: credentials["api_secret"],
+      );
+    }
+    return null;
   }
 }

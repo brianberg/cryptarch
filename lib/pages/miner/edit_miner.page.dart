@@ -119,6 +119,32 @@ class _EditMinerPageState extends State<EditMinerPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        labelText: "Active",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                      ),
+                      dropdownColor: theme.backgroundColor,
+                      value: this.miner.active ? "Yes" : "No",
+                      items: <String>[
+                        "Yes",
+                        "No",
+                      ].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String value) {
+                        setState(() {
+                          this.miner.active = value == "Yes";
+                        });
+                      },
+                    ),
+                  ),
                   // Submit Button
                   SizedBox(
                     width: double.infinity,

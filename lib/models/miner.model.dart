@@ -15,6 +15,7 @@ class Miner {
   final Holding holding;
   double profitability;
   double energy;
+  bool active;
 
   static final String tableName = "miners";
 
@@ -26,6 +27,7 @@ class Miner {
     "holdingId": "TEXT",
     "profitability": "REAL",
     "energy": "REAL",
+    "active": "INTEGER",
   };
 
   Miner({
@@ -36,12 +38,14 @@ class Miner {
     @required this.holding,
     @required this.profitability,
     @required this.energy,
+    @required this.active,
   })  : assert(id != null),
         assert(name != null),
         assert(platform != null),
         assert(holding != null),
         assert(profitability != null),
-        assert(energy != null);
+        assert(energy != null),
+        assert(active != null);
 
   static Future<Miner> deserialize(Map<String, dynamic> rawMiner) async {
     final assetId = rawMiner["assetId"];
@@ -57,6 +61,7 @@ class Miner {
       holding: holdingId != null ? await Holding.findOneById(holdingId) : null,
       profitability: profitability != null ? profitability.toDouble() : 0.0,
       energy: energy != null ? energy.toDouble() : 0.0,
+      active: rawMiner["active"] == 1,
     );
   }
 
@@ -102,6 +107,7 @@ class Miner {
     map["holdingId"] = this.holding.id;
     map["profitability"] = this.profitability;
     map["energy"] = this.energy;
+    map["active"] = this.active ? 1 : 0;
 
     return map;
   }

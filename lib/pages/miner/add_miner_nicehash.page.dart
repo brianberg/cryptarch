@@ -143,11 +143,6 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                             try {
                               // Create miner and holding
                               final miner = await _saveNiceHashMiner();
-                              // Securely store NiceHash credentials
-                              await StorageService.putItem(
-                                "nicehash",
-                                this._formData,
-                              );
                               Navigator.pop(context, miner.id);
                             } catch (err) {
                               // final snackBar = SnackBar(
@@ -171,16 +166,13 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
   }
 
   Future<Miner> _saveNiceHashMiner() async {
-    final organizationId = this._formData["organization_id"];
-    final apiKey = this._formData["api_key"];
-    final apiSecret = this._formData["api_secret"];
-    final energy = this._formData["energy"];
-
-    final nicehash = NiceHashService(
-      organizationId: organizationId,
-      apiKey: apiKey,
-      apiSecret: apiSecret,
+    // Securely store NiceHash credentials
+    await StorageService.putItem(
+      "nicehash",
+      this._formData,
     );
+
+    final nicehash = NiceHashService();
     final balance = await nicehash.getAccountBalance();
     final profitability = await nicehash.getProfitability();
     final uuid = Uuid();
@@ -203,7 +195,8 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
       asset: asset,
       holding: holding,
       profitability: profitability,
-      energy: energy,
+      energy: this._formData["energy"],
+      active: true,
     );
     await miner.save();
 

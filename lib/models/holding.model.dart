@@ -10,6 +10,7 @@ class Holding {
   final String currency;
   double amount;
   String location;
+  String address;
 
   static final String tableName = "holdings";
 
@@ -19,6 +20,7 @@ class Holding {
     "currency": "TEXT",
     "amount": "REAL",
     "location": "TEXT",
+    "address": "TEXT",
   };
 
   Holding({
@@ -27,6 +29,7 @@ class Holding {
     @required this.currency,
     @required this.amount,
     @required this.location,
+    this.address,
   })  : assert(id != null),
         assert(name != null),
         assert(currency != null),
@@ -41,6 +44,7 @@ class Holding {
       currency: rawHolding["currency"],
       amount: amount != null ? amount.toDouble() : null,
       location: rawHolding["location"],
+      address: rawHolding["address"],
     );
   }
 
@@ -84,6 +88,7 @@ class Holding {
     map["currency"] = this.currency;
     map["amount"] = this.amount;
     map["location"] = this.location;
+    map["address"] = this.address;
 
     return map;
   }

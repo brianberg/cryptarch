@@ -3,6 +3,8 @@ import "package:sqflite/sqflite.dart";
 
 import "package:cryptarch/models/models.dart";
 
+const DATABASE_VERSION = 2;
+
 class Query {
   final String where;
   final List<dynamic> args;
@@ -33,7 +35,7 @@ class DatabaseService {
     final String dbPath = path.join(dir, "cryptarch.db");
     this._db = await openDatabase(
       dbPath,
-      version: 2,
+      version: DATABASE_VERSION,
       onCreate: (Database db, int version) async {
         // When creating the db, create the table
         await this._initializeTables(db);
@@ -148,5 +150,7 @@ class DatabaseService {
     String minerTable = Miner.tableName;
     String minerColumns = _mapToSqlTableString(Miner.tableColumns);
     await db.execute("CREATE TABLE $minerTable ($minerColumns)");
+    String holdingTable = Holding.tableName;
+    await db.execute("ALTER TABLE $holdingTable ADD COLUMN address TEXT");
   }
 }

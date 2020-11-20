@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Miner;
+import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
-    show AssetService, NiceHashService, StorageService;
+    show AssetService, EthermineService, NiceHashService;
 import "package:cryptarch/ui/widgets.dart";
 
 class MiningPage extends StatefulWidget {
@@ -87,7 +87,10 @@ class _MiningPageState extends State<MiningPage> {
   Future<void> _getMiners() async {
     final miners = await Miner.find();
     final totalProfitability = miners.fold(0.0, (value, miner) {
-      return value + miner.calculateFiatProfitability();
+      if (miner.active) {
+        return value + miner.calculateFiatProfitability();
+      }
+      return value;
     });
 
     setState(() {
@@ -99,16 +102,13 @@ class _MiningPageState extends State<MiningPage> {
   Future<void> _refresh() async {
     await this.assetService.refreshPrices();
     for (Miner miner in this.miners) {
-      if (miner.platform == "NiceHash") {
-        final credentials = await StorageService.getItem("nicehash");
-        if (credentials != null) {
-          final nicehash = NiceHashService(
-            organizationId: credentials["organization_id"],
-            apiKey: credentials["api_key"],
-            apiSecret: credentials["api_secret"],
-          );
-          await nicehash.refreshMiner(miner);
-        }
+      if (!miner.active) continue;
+      if (miner.platform == "Ethermine") {
+        final ethermine = EthermineService();
+        await ethermine.refreshMiner(miner);
+      } else if (miner.platform == "NiceHash") {
+        final nicehash = NiceHashService();
+        await nicehash.refreshMiner(miner);
       }
     }
     await this._getMiners();

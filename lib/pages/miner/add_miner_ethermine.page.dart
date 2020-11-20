@@ -160,6 +160,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
       amount: balance,
       currency: asset.currency,
       location: "Ethermine",
+      address: address,
     );
     await holding.save();
 
@@ -171,6 +172,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
       holding: holding,
       profitability: profitability,
       energy: this._formData["energy"],
+      active: true,
     );
     await miner.save();
 

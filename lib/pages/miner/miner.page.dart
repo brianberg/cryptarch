@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Miner, Miner;
+import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/ui/widgets.dart";
 
@@ -33,6 +33,17 @@ class _MinerPageState extends State<MinerPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.miner.name),
+        bottom: this.miner.active
+            ? null
+            : AppBar(
+                toolbarHeight: 40.0,
+                title: Text(
+                  "Inactive",
+                  style: theme.textTheme.bodyText1,
+                ),
+                leading: Container(),
+                backgroundColor: theme.colorScheme.surface,
+              ),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),

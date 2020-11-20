@@ -200,6 +200,7 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
       holding: holding,
       profitability: this._formData["profitability"],
       energy: this._formData["energy"],
+      active: true,
     );
     await miner.save();
 

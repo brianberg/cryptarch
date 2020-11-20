@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Asset, Miner;
 import "package:cryptarch/services/services.dart"
-    show AssetService, PortfolioService;
+    show AssetService, EthermineService, NiceHashService, PortfolioService;
 import "package:cryptarch/ui/widgets.dart";
 
 class HomePage extends StatefulWidget {
@@ -87,7 +87,10 @@ class _HomePageState extends State<HomePage> {
     final miners = await Miner.find();
 
     final miningProfitability = miners.fold(0.0, (value, miner) {
-      return value + miner.calculateFiatProfitability();
+      if (miner.active) {
+        return value + miner.calculateFiatProfitability();
+      }
+      return value;
     });
 
     setState(() {
@@ -106,8 +109,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _refreshMiners() async {
+    for (Miner miner in this.miners) {
+      if (!miner.active) continue;
+      if (miner.platform == "Ethermine") {
+        final ethermine = EthermineService();
+        await ethermine.refreshMiner(miner);
+      } else if (miner.platform == "NiceHash") {
+        final nicehash = NiceHashService();
+        await nicehash.refreshMiner(miner);
+      }
+    }
+  }
+
   Future<void> _refresh() async {
     await this.assetService.refreshPrices();
+    await this._refreshMiners();
     await this._initialize();
   }
 }
