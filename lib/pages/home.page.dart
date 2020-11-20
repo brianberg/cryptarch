@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
             ),
             this.miningProfitability != null
                 ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text("\$${this.miningProfitability.toStringAsFixed(2)}"),
                       Text(" / day", style: theme.textTheme.subtitle1),

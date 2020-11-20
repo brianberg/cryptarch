@@ -35,6 +35,7 @@ class _PricesPageState extends State<PricesPage> {
               ? "${this.totalChange > 0 ? '+' : ''}${this.totalChange.toStringAsFixed(2)}%"
               : "",
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: this.assets != null

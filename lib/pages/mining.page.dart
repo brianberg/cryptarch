@@ -32,13 +32,17 @@ class _MiningPageState extends State<MiningPage> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               this.totalProfitability != null
                   ? "\$${this.totalProfitability.toStringAsFixed(2)}"
                   : "",
             ),
-            Text(" / day", style: theme.textTheme.subtitle1),
+            Text(
+              " / day",
+              style: theme.textTheme.subtitle1,
+            ),
           ],
         ),
         actions: [

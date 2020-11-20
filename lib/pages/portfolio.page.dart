@@ -36,6 +36,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
               ? "\$${this.totalValue.toStringAsFixed(2)}"
               : "",
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.add),

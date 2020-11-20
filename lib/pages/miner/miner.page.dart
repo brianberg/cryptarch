@@ -37,6 +37,7 @@ class _MinerPageState extends State<MinerPage> {
             ? null
             : AppBar(
                 toolbarHeight: 40.0,
+                centerTitle: true,
                 title: Text(
                   "Inactive",
                   style: theme.textTheme.bodyText1,
