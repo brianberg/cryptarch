@@ -43,8 +43,7 @@ class AssetListItem extends StatelessWidget {
           ),
           subtitle: Text(
             this.asset.symbol,
-            this.asset.currency,
-            style: theme.textTheme.subtitle1,
+            style: theme.textTheme.subtitle2,
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +55,7 @@ class AssetListItem extends StatelessWidget {
               ),
               Text(
                 "${percentChange > 0 ? '+' : ''}${percentChange.toStringAsFixed(2)}%",
-                style: theme.textTheme.subtitle1,
+                style: theme.textTheme.subtitle2,
               ),
             ],
           ),

@@ -25,13 +25,18 @@ class MinerListItem extends StatelessWidget {
       child: Card(
         elevation: 1.0,
         child: ListTile(
-          title: Text(miner.name),
+          title: Text(
+            this.miner.name,
+            style: TextStyle(
+              color: theme.textTheme.bodyText1.color,
+            ),
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${miner.profitability.toStringAsFixed(6)} $symbol",
+                "${this.miner.profitability.toStringAsFixed(6)} $symbol",
               ),
               Text(
                 "\$${fiatProfitability.toStringAsFixed(2)} / day",

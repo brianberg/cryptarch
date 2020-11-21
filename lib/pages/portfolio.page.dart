@@ -66,11 +66,16 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         final value = item.value.toStringAsFixed(2);
                         return Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                              const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
                           child: Card(
                             elevation: 1.0,
                             child: ListTile(
-                                title: Text(item.asset.name),
+                                title: Text(
+                                  item.asset.name,
+                                  style: TextStyle(
+                                    color: theme.textTheme.bodyText1.color,
+                                  ),
+                                ),
                                 leading: Icon(Icons.circle),
                                 trailing: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
