@@ -24,7 +24,7 @@ class EthermineService {
   }
 
   Future<double> getUnpaid(String address) async {
-    final res = await this._provider.getPayouts(address);
+    final res = await this._provider.getDashboard(address);
     final body = Map<String, dynamic>.from(jsonDecode(res.body));
 
     if (body != null && body.keys.contains("data")) {

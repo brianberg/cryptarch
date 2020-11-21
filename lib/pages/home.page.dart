@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
 
     final miningProfitability = miners.fold(0.0, (value, miner) {
       if (miner.active) {
-        return value + miner.calculateFiatProfitability();
+        return value + miner.fiatProfitability;
       }
       return value;
     });

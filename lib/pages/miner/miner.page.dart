@@ -30,6 +30,8 @@ class _MinerPageState extends State<MinerPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final symbol = this.miner.asset.symbol;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.miner.name),
@@ -64,8 +66,62 @@ class _MinerPageState extends State<MinerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MinerListItem(
-              miner: this.miner,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Profitability",
+                          style: theme.textTheme.bodyText1,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${this.miner.profitability.toStringAsFixed(6)} $symbol",
+                            ),
+                            Text(
+                              "\$${this.miner.fiatProfitability.toStringAsFixed(2)} / day",
+                              style: theme.textTheme.subtitle2,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Unpaid",
+                          style: theme.textTheme.bodyText1,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${this.miner.unpaidAmount.toStringAsFixed(6)} $symbol",
+                            ),
+                            Text(
+                              "\$${this.miner.fiatUnpaidAmount.toStringAsFixed(2)}",
+                              style: theme.textTheme.subtitle2,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),

@@ -51,6 +51,15 @@ class Miner {
         assert(active != null),
         assert(unpaidAmount != null);
 
+  double get fiatProfitability {
+    final cost = this.energy * ENERGY_COST;
+    return (this.profitability * this.asset.value) - cost;
+  }
+
+  double get fiatUnpaidAmount {
+    return this.unpaidAmount * this.asset.value;
+  }
+
   static Future<Miner> deserialize(Map<String, dynamic> rawMiner) async {
     final assetId = rawMiner["assetId"];
     final accountId = rawMiner["accountId"];
@@ -136,9 +145,4 @@ class Miner {
 
   @override
   String toString() => "$name";
-
-  double calculateFiatProfitability() {
-    final cost = this.energy * ENERGY_COST;
-    return (this.profitability * this.asset.value) - cost;
-  }
 }

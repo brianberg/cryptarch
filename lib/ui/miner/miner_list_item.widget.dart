@@ -18,7 +18,6 @@ class MinerListItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     final symbol = this.miner.asset.symbol;
-    final fiatProfitability = this.miner.calculateFiatProfitability();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
@@ -39,7 +38,7 @@ class MinerListItem extends StatelessWidget {
                 "${this.miner.profitability.toStringAsFixed(6)} $symbol",
               ),
               Text(
-                "\$${fiatProfitability.toStringAsFixed(2)} / day",
+                "\$${this.miner.fiatProfitability.toStringAsFixed(2)} / day",
                 style: theme.textTheme.subtitle2,
               ),
             ],

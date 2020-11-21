@@ -92,7 +92,7 @@ class _MiningPageState extends State<MiningPage> {
     final miners = await Miner.find();
     final totalProfitability = miners.fold(0.0, (value, miner) {
       if (miner.active) {
-        return value + miner.calculateFiatProfitability();
+        return value + miner.fiatProfitability;
       }
       return value;
     });
