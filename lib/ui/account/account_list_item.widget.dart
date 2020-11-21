@@ -25,7 +25,12 @@ class AccountListItem extends StatelessWidget {
       child: Card(
         elevation: 1.0,
         child: ListTile(
-          title: Text(this.account.name),
+          title: Text(
+            this.account.name,
+            style: TextStyle(
+              color: theme.textTheme.bodyText1.color,
+            ),
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
