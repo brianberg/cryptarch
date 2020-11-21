@@ -11,11 +11,11 @@ class MarketsProvider {
   Future<http.Response> getTokenPrice(
     String platform,
     String contractAddress,
-    String currency,
+    String symbol,
   ) {
     platform = platform.toLowerCase();
     String url =
-        "https://api.coingecko.com/api/v3/simple/token_price/$platform?contract_addresses=$contractAddress&vs_currencies=$currency&include_24hr_change=true";
+        "https://api.coingecko.com/api/v3/simple/token_price/$platform?contract_addresses=$contractAddress&vs_currencies=$symbol&include_24hr_change=true";
     return http.get(url);
   }
 

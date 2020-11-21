@@ -82,8 +82,8 @@ class _MinerPageState extends State<MinerPage> {
                 style: theme.textTheme.bodyText1,
               ),
             ),
-            HoldingListItem(
-              holding: this.miner.holding,
+            AccountListItem(
+              account: this.miner.account,
             ),
             // Delete Button
             Padding(
@@ -98,7 +98,7 @@ class _MinerPageState extends State<MinerPage> {
                   ),
                   onPressed: () async {
                     try {
-                      await this.miner.holding.delete();
+                      await this.miner.account.delete();
                       await this.miner.delete();
                       Navigator.pop(context);
                     } catch (err) {

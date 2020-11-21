@@ -7,7 +7,7 @@ import "package:cryptarch/services/services.dart" show DatabaseService;
 class Asset {
   final String id;
   final String name;
-  final String currency;
+  final String symbol;
   double value;
   String exchange;
   String tokenPlatform;
@@ -22,7 +22,7 @@ class Asset {
   static final Map<String, String> tableColumns = {
     "id": "TEXT PRIMARY KEY",
     "name": "TEXT",
-    "currency": "TEXT",
+    "symbol": "TEXT",
     "value": "REAL",
     "exchange": "TEXT",
     "tokenPlatform": "TEXT",
@@ -36,7 +36,7 @@ class Asset {
   Asset({
     @required this.id,
     @required this.name,
-    @required this.currency,
+    @required this.symbol,
     @required this.value,
     this.exchange,
     this.tokenPlatform,
@@ -47,7 +47,7 @@ class Asset {
     this.percentChange,
   })  : assert(id != null),
         assert(name != null),
-        assert(currency != null),
+        assert(symbol != null),
         assert(value != null);
 
   static Future<Asset> deserialize(Map<String, dynamic> rawAsset) async {
@@ -60,7 +60,7 @@ class Asset {
     return Asset(
       id: rawAsset["id"],
       name: rawAsset["name"],
-      currency: rawAsset["currency"],
+      symbol: rawAsset["symbol"],
       value: value != null ? value.toDouble() : 0.0,
       exchange: rawAsset["exchange"],
       tokenPlatform: rawAsset["tokenPlatform"],
@@ -105,13 +105,13 @@ class Asset {
     return null;
   }
 
-  static Future<Asset> findOneByCurrency(String currency) async {
+  static Future<Asset> findOneBySymbol(String symbol) async {
     final db = await DatabaseService().connect();
     final rawAssets = await db.query(
       Asset.tableName,
       columns: Asset.tableColumns.keys.toList(),
-      where: "currency = ?",
-      whereArgs: [currency],
+      where: "symbol = ?",
+      whereArgs: [symbol],
       limit: 1,
     );
     if (rawAssets.isNotEmpty) {
@@ -125,7 +125,7 @@ class Asset {
     final map = new Map<String, dynamic>();
     map["id"] = this.id;
     map["name"] = this.name;
-    map["currency"] = this.currency;
+    map["symbol"] = this.symbol;
     map["value"] = this.value;
     map["exchange"] = this.exchange;
     map["tokenPlatform"] = this.tokenPlatform;

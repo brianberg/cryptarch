@@ -44,7 +44,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddHoldingPage(),
+                  builder: (context) => AddaccountPage(),
                 ),
               );
               await this._refreshItems();
@@ -78,7 +78,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                   children: [
                                     Text("\$$value"),
                                     Text(
-                                      "$amount ${item.asset.currency}",
+                                      "$amount ${item.asset.symbol}",
                                       style: theme.textTheme.subtitle2,
                                     ),
                                   ],

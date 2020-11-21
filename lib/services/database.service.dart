@@ -3,7 +3,7 @@ import "package:sqflite/sqflite.dart";
 
 import "package:cryptarch/models/models.dart";
 
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 1;
 
 class Query {
   final String where;
@@ -42,9 +42,6 @@ class DatabaseService {
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Migrations
-        if (oldVersion == 1) {
-          await this._migrateV1(db);
-        }
       },
     );
     return this._db;
@@ -141,16 +138,11 @@ class DatabaseService {
     String assetTable = Asset.tableName;
     String assetColumns = _mapToSqlTableString(Asset.tableColumns);
     await db.execute("CREATE TABLE $assetTable ($assetColumns)");
-    String holdingTable = Holding.tableName;
-    String holdingColumns = _mapToSqlTableString(Holding.tableColumns);
-    await db.execute("CREATE TABLE $holdingTable ($holdingColumns)");
-  }
-
-  Future<void> _migrateV1(Database db) async {
+    String accountTable = Account.tableName;
+    String accountColumns = _mapToSqlTableString(Account.tableColumns);
+    await db.execute("CREATE TABLE $accountTable ($accountColumns)");
     String minerTable = Miner.tableName;
     String minerColumns = _mapToSqlTableString(Miner.tableColumns);
     await db.execute("CREATE TABLE $minerTable ($minerColumns)");
-    String holdingTable = Holding.tableName;
-    await db.execute("ALTER TABLE $holdingTable ADD COLUMN address TEXT");
   }
 }

@@ -26,6 +26,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return DefaultTabController(
       initialIndex: this.tab,
       length: 2,
@@ -78,13 +79,13 @@ class _AddAssetPageState extends State<AddAssetPage> {
                       child: TextFormField(
                         cursorColor: theme.cursorColor,
                         decoration: InputDecoration(
-                          labelText: "Currency",
+                          labelText: "Symbol",
                           filled: true,
                           fillColor: theme.cardTheme.color,
                         ),
                         onSaved: (String value) {
                           setState(() {
-                            this._formData["currency"] = value.toUpperCase();
+                            this._formData["symbol"] = value.toUpperCase();
                           });
                         },
                         validator: (value) {
@@ -182,7 +183,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
                               _formKey.currentState.save();
                               try {
                                 final asset = await _saveAsset();
-                                Navigator.pop(context, asset.currency);
+                                Navigator.pop(context, asset.symbol);
                               } catch (err) {
                                 // final snackBar = SnackBar(
                                 //   content: Text(err),
@@ -206,13 +207,13 @@ class _AddAssetPageState extends State<AddAssetPage> {
   }
 
   Future<Asset> _saveAsset() async {
-    final currency = this._formData["currency"];
-    final existingAsset = await Asset.findOneByCurrency(currency);
+    final symbol = this._formData["symbol"];
+    final existingAsset = await Asset.findOneBySymbol(symbol);
     if (existingAsset != null) {
       throw new Exception("Asset already exists");
     } else if (this.tab == 0) {
       final exchange = this._formData["exchange"];
-      final ticker = "$currency/USD";
+      final ticker = "$symbol/USD";
       final price = await MarketsService().getPrice(ticker, exchange);
       if (price != null) {
         this._formData["id"] = Uuid().v1();
@@ -221,6 +222,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
         this._formData["contractAddress"] = null;
         final asset = await Asset.deserialize(this._formData);
         await asset.save();
+
         return asset;
       } else {
         throw new Exception("Market price not found, try another exchange");
@@ -239,6 +241,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
         this._formData["exchange"] = null;
         final asset = await Asset.deserialize(this._formData);
         await asset.save();
+
         return asset;
       } else {
         throw new Exception("Market price not found");

@@ -2,7 +2,7 @@ import "package:meta/meta.dart";
 
 import "package:sqflite/sqflite.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding;
+import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/services/services.dart" show DatabaseService;
 
 const ENERGY_COST = 0.00774; // TODO: set via settings
@@ -12,10 +12,11 @@ class Miner {
   String name;
   final String platform;
   final Asset asset;
-  final Holding holding;
+  final Account account;
   double profitability;
   double energy;
   bool active;
+  double unpaidAmount;
 
   static final String tableName = "miners";
 
@@ -24,10 +25,11 @@ class Miner {
     "name": "TEXT",
     "platform": "TEXT",
     "assetId": "TEXT",
-    "holdingId": "TEXT",
+    "accountId": "TEXT",
     "profitability": "REAL",
     "energy": "REAL",
     "active": "INTEGER",
+    "unpaidAmount": "REAL",
   };
 
   Miner({
@@ -35,32 +37,36 @@ class Miner {
     @required this.name,
     @required this.platform,
     @required this.asset,
-    @required this.holding,
+    @required this.account,
     @required this.profitability,
     @required this.energy,
     @required this.active,
+    @required this.unpaidAmount,
   })  : assert(id != null),
         assert(name != null),
         assert(platform != null),
-        assert(holding != null),
+        assert(account != null),
         assert(profitability != null),
         assert(energy != null),
-        assert(active != null);
+        assert(active != null),
+        assert(unpaidAmount != null);
 
   static Future<Miner> deserialize(Map<String, dynamic> rawMiner) async {
     final assetId = rawMiner["assetId"];
-    final holdingId = rawMiner["holdingId"];
+    final accountId = rawMiner["accountId"];
     final profitability = rawMiner["profitability"];
     final energy = rawMiner["energy"];
+    final unpaid = rawMiner["unpaidAmount"];
 
     return Miner(
       id: rawMiner["id"],
       name: rawMiner["name"],
       platform: rawMiner["platform"],
       asset: assetId != null ? await Asset.findOneById(assetId) : null,
-      holding: holdingId != null ? await Holding.findOneById(holdingId) : null,
+      account: accountId != null ? await Account.findOneById(accountId) : null,
       profitability: profitability != null ? profitability.toDouble() : 0.0,
       energy: energy != null ? energy.toDouble() : 0.0,
+      unpaidAmount: unpaid != null ? unpaid.toDouble() : 0.0,
       active: rawMiner["active"] == 1,
     );
   }
@@ -104,9 +110,10 @@ class Miner {
     map["name"] = this.name;
     map["platform"] = this.platform;
     map["assetId"] = this.asset.id;
-    map["holdingId"] = this.holding.id;
+    map["accountId"] = this.account.id;
     map["profitability"] = this.profitability;
     map["energy"] = this.energy;
+    map["unpaidAmount"] = this.unpaidAmount;
     map["active"] = this.active ? 1 : 0;
 
     return map;
@@ -132,6 +139,6 @@ class Miner {
 
   double calculateFiatProfitability() {
     final cost = this.energy * ENERGY_COST;
-    return this.profitability * this.asset.value - cost;
+    return (this.profitability * this.asset.value) - cost;
   }
 }

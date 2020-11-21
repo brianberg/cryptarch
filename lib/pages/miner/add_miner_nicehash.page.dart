@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding, Miner;
+import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/services/services.dart"
     show NiceHashService, StorageService;
 
@@ -25,6 +25,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("NiceHash"),
@@ -142,7 +143,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              // Create miner and holding
+                              // Create miner and account
                               final miner = await _saveNiceHashMiner();
                               Navigator.pop(context, miner.id);
                             } catch (err) {
@@ -178,26 +179,26 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     final profitability = await nicehash.getProfitability();
     final uuid = Uuid();
 
-    final asset = await Asset.findOneByCurrency("BTC");
+    final asset = await Asset.findOneBySymbol("BTC");
 
-    final holding = Holding(
+    final account = Account(
       id: uuid.v1(),
-      name: "Bitcoin",
+      name: "NiceHash",
+      asset: asset,
       amount: balance.available,
-      currency: "BTC",
-      location: "NiceHash",
     );
-    await holding.save();
+    await account.save();
 
     final miner = Miner(
       id: uuid.v1(),
       name: "NiceHash",
       platform: "NiceHash",
       asset: asset,
-      holding: holding,
+      account: account,
       profitability: profitability,
       energy: this._formData["energy"],
       active: true,
+      unpaidAmount: balance.pending,
     );
     await miner.save();
 

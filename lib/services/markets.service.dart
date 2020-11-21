@@ -14,13 +14,12 @@ class Price {
 
   Price({
     @required this.current,
-    @required this.percentChange,
+    this.percentChange,
     this.last,
     this.high,
     this.low,
     this.absoluteChange,
-  })  : assert(current != null),
-        assert(percentChange != null);
+  }) : assert(current != null);
 }
 
 class MarketsService {
@@ -34,17 +33,21 @@ class MarketsService {
     }
 
     double current = 0.0;
-    double last = 0.0;
-    double high = 0.0;
-    double low = 0.0;
-    double percentChange = 0.0;
-    double absoluteChange = 0.0;
+    double last;
+    double high;
+    double low;
+    double percentChange;
+    double absoluteChange;
 
     final priceResponse = await this._provider.getPrice(ticker, exchange);
     final rawPriceBody =
         Map<String, dynamic>.from(jsonDecode(priceResponse.body));
 
-    if (rawPriceBody != null && rawPriceBody.keys.contains("result")) {
+    if (rawPriceBody == null || rawPriceBody.keys.contains("error")) {
+      return null;
+    }
+
+    if (rawPriceBody.keys.contains("result")) {
       final result = rawPriceBody["result"];
       if (result != null && result.keys.contains("price")) {
         final rawPrice = result["price"];
@@ -107,35 +110,35 @@ class MarketsService {
   Future<Price> getTokenPrice(
     String platform,
     String contractAddress,
-    String currency,
+    String symbol,
   ) async {
-    if (platform == null || contractAddress == null || currency == null) {
+    if (platform == null || contractAddress == null || symbol == null) {
       return null;
     }
 
     double current = 0.0;
-    double percentChange = 0.0;
+    double percentChange;
 
-    currency = currency.toLowerCase();
+    symbol = symbol.toLowerCase();
 
     final res = await this._provider.getTokenPrice(
           platform,
           contractAddress,
-          currency,
+          symbol,
         );
     final raw = Map<String, dynamic>.from(jsonDecode(res.body));
     if (raw != null && raw.keys.contains(contractAddress)) {
       final prices = raw[contractAddress];
       if (prices != null) {
-        if (prices.keys.contains(currency)) {
-          var rawPrice = prices[currency];
+        if (prices.keys.contains(symbol)) {
+          var rawPrice = prices[symbol];
           if (rawPrice is int) {
             rawPrice = rawPrice.toDouble();
           }
           current = rawPrice;
         }
-        if (prices.keys.contains("${currency}_24h_change")) {
-          var rawChange = prices["${currency}_24h_change"];
+        if (prices.keys.contains("${symbol}_24h_change")) {
+          var rawChange = prices["${symbol}_24h_change"];
           if (rawChange is int) {
             rawChange = rawChange.toDouble();
           }

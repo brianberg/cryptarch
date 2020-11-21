@@ -32,10 +32,10 @@ class MinerList extends StatelessWidget {
             if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             }
-            List<Miner> holdings = snapshot.data;
-            return _buildList(holdings);
+            List<Miner> miners = snapshot.data;
+            return _buildList(miners);
         }
-        return Container(child: const Text("Unable to get holdings"));
+        return Container(child: const Text("Unable to get miners"));
       },
     );
   }

@@ -96,14 +96,15 @@ class NiceHashService {
   }
 
   Future<Miner> refreshMiner(Miner miner) async {
-    final holding = miner.holding;
+    final account = miner.account;
     final balance = await this.getAccountBalance();
     final profitability = await this.getProfitability();
 
-    holding.amount = balance.available;
-    await holding.save();
+    account.amount = balance.available;
+    await account.save();
 
     miner.profitability = profitability;
+    miner.unpaidAmount = balance.pending;
     await miner.save();
 
     return miner;

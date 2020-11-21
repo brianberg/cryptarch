@@ -1,29 +1,30 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Holding;
+import "package:cryptarch/models/models.dart" show Account;
 
-class EditHoldingPage extends StatefulWidget {
-  final Holding holding;
+class EditAccountPage extends StatefulWidget {
+  final Account account;
 
-  EditHoldingPage({
+  EditAccountPage({
     Key key,
-    @required this.holding,
-  })  : assert(holding != null),
+    @required this.account,
+  })  : assert(account != null),
         super(key: key);
 
   @override
-  _EditHoldingPageState createState() => _EditHoldingPageState();
+  _EditAccountPageState createState() => _EditAccountPageState();
 }
 
-class _EditHoldingPageState extends State<EditHoldingPage> {
+class _EditAccountPageState extends State<EditAccountPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Holding"),
+        title: const Text("Edit Account"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -39,21 +40,19 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Amount",
+                        labelText: "Name",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
-                      initialValue: this.widget.holding.amount.toString(),
+                      initialValue: this.widget.account.name,
                       onSaved: (String value) {
                         setState(() {
-                          this.widget.holding.amount = double.parse(value);
+                          this.widget.account.name = value;
                         });
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Required";
-                        } else if (double.tryParse(value) == null) {
-                          return "Invalid";
                         }
                         return null;
                       },
@@ -64,19 +63,21 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Location",
+                        labelText: "Amount",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
-                      initialValue: this.widget.holding.location,
+                      initialValue: this.widget.account.amount.toString(),
                       onSaved: (String value) {
                         setState(() {
-                          this.widget.holding.location = value;
+                          this.widget.account.amount = double.parse(value);
                         });
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
                         }
                         return null;
                       },
@@ -95,7 +96,7 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              await this.widget.holding.save();
+                              await this.widget.account.save();
                               Navigator.pop(context);
                             } catch (err) {
                               // final snackBar = SnackBar(
@@ -120,7 +121,7 @@ class _EditHoldingPageState extends State<EditHoldingPage> {
                       ),
                       onPressed: () async {
                         try {
-                          await this.widget.holding.delete();
+                          await this.widget.account.delete();
                           Navigator.pop(context);
                         } catch (err) {
                           // final snackBar = SnackBar(

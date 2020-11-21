@@ -1,22 +1,22 @@
 import "package:meta/meta.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding;
+import "package:cryptarch/models/models.dart" show Asset, Account;
 
 class PortfolioItem {
   final Asset asset;
-  final List<Holding> holdings;
+  final List<Account> accounts;
 
   PortfolioItem({
     @required this.asset,
-    @required this.holdings,
+    @required this.accounts,
   })  : assert(asset != null),
-        assert(holdings != null);
+        assert(accounts != null);
 
   double get amount {
-    if (this.holdings.isEmpty) {
+    if (this.accounts.isEmpty) {
       return 0;
     }
-    final amounts = this.holdings.map((h) => h.amount);
+    final amounts = this.accounts.map((h) => h.amount);
     return amounts.reduce((value, amount) {
       return value + amount;
     });
@@ -32,11 +32,11 @@ class PortfolioService {
     final List<PortfolioItem> items = [];
     final assets = await Asset.find();
     for (Asset asset in assets) {
-      Map<String, dynamic> holdingFilters = {};
-      holdingFilters["currency"] = asset.currency;
+      Map<String, dynamic> accountFilters = {};
+      accountFilters["assetId"] = asset.id;
       final item = PortfolioItem(
         asset: asset,
-        holdings: await Holding.find(filters: holdingFilters),
+        accounts: await Account.find(filters: accountFilters),
       );
       items.add(item);
     }

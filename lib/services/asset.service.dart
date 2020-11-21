@@ -17,16 +17,14 @@ class AssetService {
           asset.percentChange = price.percentChange;
         }
       } else {
-        final ticker = "${asset.currency}/USD";
+        final ticker = "${asset.symbol}/USD";
         final price = await markets.getPrice(ticker, asset.exchange);
         if (price != null) {
           asset.value = price.current;
-        }
-        if (price != null) {
-          asset.lastPrice = price.last;
-          asset.highPrice = price.high;
-          asset.lowPrice = price.low;
-          asset.percentChange = price.percentChange;
+          asset.lastPrice = price.last ?? asset.lastPrice;
+          asset.highPrice = price.high ?? asset.highPrice;
+          asset.lowPrice = price.low ?? asset.lowPrice;
+          asset.percentChange = price.percentChange ?? asset.percentChange;
         }
       }
 

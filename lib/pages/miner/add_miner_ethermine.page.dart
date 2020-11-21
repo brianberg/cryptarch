@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding, Miner;
+import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/services/services.dart"
     show EthermineService, EtherscanService;
 
@@ -20,6 +20,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ethermine"),
@@ -119,7 +120,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              // Create miner and holding
+                              // Create miner and account
                               final miner = await _saveEthermineMiner();
                               Navigator.pop(context, miner.id);
                             } catch (err) {
@@ -147,32 +148,33 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
     final uuid = Uuid();
     final address = this._formData["address"];
 
-    final asset = await Asset.findOneByCurrency(this.coin);
+    final asset = await Asset.findOneBySymbol(this.coin);
 
     final etherscan = EtherscanService();
     final ethermine = EthermineService();
     final balance = await etherscan.getBalance(address);
     final profitability = await ethermine.getProfitability(address);
+    final unpaid = await ethermine.getUnpaid(address);
 
-    final holding = Holding(
+    final account = Account(
       id: uuid.v1(),
-      name: this.coin == "ETC" ? "Ethereum Classic" : "Ethereum",
+      name: "Ethermine",
+      asset: asset,
       amount: balance,
-      currency: asset.currency,
-      location: "Ethermine",
       address: address,
     );
-    await holding.save();
+    await account.save();
 
     final miner = Miner(
       id: uuid.v1(),
       name: "Ethermine",
       platform: "Ethermine",
       asset: asset,
-      holding: holding,
+      account: account,
       profitability: profitability,
       energy: this._formData["energy"],
       active: true,
+      unpaidAmount: unpaid,
     );
     await miner.save();
 

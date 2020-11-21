@@ -3,12 +3,12 @@ import "package:flutter/material.dart";
 import "package:cryptarch/models/models.dart";
 import "package:cryptarch/ui/widgets.dart";
 
-class HoldingList extends StatelessWidget {
+class AccountList extends StatelessWidget {
   final Function onTap;
-  final List<Holding> items;
+  final List<Account> items;
   final Map<String, dynamic> filters;
 
-  HoldingList({
+  AccountList({
     Key key,
     this.items,
     this.onTap,
@@ -20,9 +20,9 @@ class HoldingList extends StatelessWidget {
     if (this.items != null) {
       return _buildList(this.items);
     }
-    return FutureBuilder<List<Holding>>(
-      future: Holding.find(filters: this.filters),
-      builder: (BuildContext context, AsyncSnapshot<List<Holding>> snapshot) {
+    return FutureBuilder<List<Account>>(
+      future: Account.find(filters: this.filters),
+      builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
@@ -32,24 +32,24 @@ class HoldingList extends StatelessWidget {
             if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             }
-            List<Holding> holdings = snapshot.data;
-            return _buildList(holdings);
+            List<Account> accounts = snapshot.data;
+            return _buildList(accounts);
         }
-        return Container(child: const Text("Unable to get holdings"));
+        return Container(child: const Text("Unable to get accounts"));
       },
     );
   }
 
-  Widget _buildList(List<Holding> holdings) {
-    if (holdings.length == 0) {
+  Widget _buildList(List<Account> accounts) {
+    if (accounts.length == 0) {
       return Center(child: Text("Wow, so empty"));
     }
 
     return ListView.builder(
-      itemCount: holdings.length,
+      itemCount: accounts.length,
       itemBuilder: (BuildContext context, int index) {
-        return HoldingListItem(
-          holding: holdings[index],
+        return AccountListItem(
+          account: accounts[index],
           onTap: this.onTap,
         );
       },

@@ -1,47 +1,47 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Miner;
+import "package:cryptarch/models/models.dart" show Account;
 
-class MinerListItem extends StatelessWidget {
-  final Miner miner;
+class AccountListItem extends StatelessWidget {
+  final Account account;
   final Function onTap;
 
-  MinerListItem({
+  AccountListItem({
     Key key,
-    @required this.miner,
+    @required this.account,
     this.onTap,
-  })  : assert(miner != null),
+  })  : assert(account != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final symbol = this.miner.asset.symbol;
-    final fiatProfitability = this.miner.calculateFiatProfitability();
+    final asset = this.account.asset;
 
     return Padding(
+      key: ValueKey(this.account.id),
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
       child: Card(
         elevation: 1.0,
         child: ListTile(
-          title: Text(miner.name),
+          title: Text(this.account.name),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${miner.profitability.toStringAsFixed(6)} $symbol",
+                "\$${this.account.value.toStringAsFixed(2)}",
               ),
               Text(
-                "\$${fiatProfitability.toStringAsFixed(2)} / day",
+                "${this.account.amount.toStringAsFixed(6)} ${asset.symbol}",
                 style: theme.textTheme.subtitle2,
               ),
             ],
           ),
           onTap: () {
             if (this.onTap != null) {
-              this.onTap(this.miner);
+              this.onTap(this.account);
             }
           },
         ),

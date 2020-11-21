@@ -42,6 +42,7 @@ class AssetListItem extends StatelessWidget {
             ),
           ),
           subtitle: Text(
+            this.asset.symbol,
             this.asset.currency,
             style: theme.textTheme.subtitle1,
           ),

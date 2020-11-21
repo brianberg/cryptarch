@@ -40,7 +40,7 @@ class AssetPickerListItem extends StatelessWidget {
             ),
           ),
           trailing: Text(
-            this.asset.currency,
+            this.asset.symbol,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyText1.color,
             ),

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding;
+import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/ui/widgets.dart";
 
@@ -18,35 +18,32 @@ class AssetPage extends StatefulWidget {
 }
 
 class _AssetPageState extends State<AssetPage> {
-  List<Holding> holdings;
+  List<Account> accounts;
 
   @override
   void initState() {
     super.initState();
-    this._refreshHoldings();
+    this._refreshaccounts();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> holdingFilters = {};
-    holdingFilters["currency"] = this.widget.asset.currency;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.asset.name),
       ),
       body: SafeArea(
-        child: this.holdings != null
-            ? HoldingList(
-                items: this.holdings,
-                onTap: (holding) async {
+        child: this.accounts != null
+            ? AccountList(
+                items: this.accounts,
+                onTap: (account) async {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditHoldingPage(holding: holding),
+                      builder: (context) => EditAccountPage(account: account),
                     ),
                   );
-                  await this._refreshHoldings();
+                  await this._refreshaccounts();
                 },
               )
             : LoadingIndicator(),
@@ -54,12 +51,12 @@ class _AssetPageState extends State<AssetPage> {
     );
   }
 
-  Future<void> _refreshHoldings() async {
-    Map<String, dynamic> holdingFilters = {};
-    holdingFilters["currency"] = this.widget.asset.currency;
-    final holdings = await Holding.find(filters: holdingFilters);
+  Future<void> _refreshaccounts() async {
+    Map<String, dynamic> accountFilters = {};
+    accountFilters["assetId"] = this.widget.asset.id;
+    final accounts = await Account.find(filters: accountFilters);
     setState(() {
-      this.holdings = holdings;
+      this.accounts = accounts;
     });
   }
 }

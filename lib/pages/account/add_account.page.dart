@@ -2,15 +2,15 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Holding;
+import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/ui/widgets.dart";
 
-class AddHoldingPage extends StatefulWidget {
+class AddaccountPage extends StatefulWidget {
   @override
-  _AddHoldingPageState createState() => _AddHoldingPageState();
+  _AddaccountPageState createState() => _AddaccountPageState();
 }
 
-class _AddHoldingPageState extends State<AddHoldingPage> {
+class _AddaccountPageState extends State<AddaccountPage> {
   final _formKey = GlobalKey<FormState>();
 
   Map<String, dynamic> _formData = {};
@@ -19,9 +19,10 @@ class _AddHoldingPageState extends State<AddHoldingPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Holding"),
+        title: const Text("Add Account"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,6 +50,29 @@ class _AddHoldingPageState extends State<AddHoldingPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
+                        labelText: "Name",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                      ),
+                      initialValue: this._formData["name"],
+                      onSaved: (String value) {
+                        setState(() {
+                          this._formData["name"] = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
                         labelText: "Amount",
                         filled: true,
                         fillColor: theme.cardTheme.color,
@@ -68,28 +92,6 @@ class _AddHoldingPageState extends State<AddHoldingPage> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
-                      decoration: InputDecoration(
-                        labelText: "Location",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                      ),
-                      onSaved: (String value) {
-                        setState(() {
-                          this._formData["location"] = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
                   // Submit Button
                   SizedBox(
                     width: double.infinity,
@@ -103,7 +105,7 @@ class _AddHoldingPageState extends State<AddHoldingPage> {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              await _saveHolding();
+                              await _saveAccount();
                               Navigator.pop(context, 1);
                             } catch (err) {
                               // final snackBar = SnackBar(
@@ -126,11 +128,13 @@ class _AddHoldingPageState extends State<AddHoldingPage> {
     );
   }
 
-  Future<void> _saveHolding() async {
-    this._formData["id"] = Uuid().v1();
-    this._formData["name"] = this.asset.name;
-    this._formData["currency"] = this.asset.currency;
-    final holding = await Holding.deserialize(this._formData);
-    await holding.save();
+  Future<void> _saveAccount() async {
+    final account = Account(
+      id: Uuid().v1(),
+      name: this._formData["name"],
+      asset: this.asset,
+      amount: this._formData["amount"],
+    );
+    await account.save();
   }
 }

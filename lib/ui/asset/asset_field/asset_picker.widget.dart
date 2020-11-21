@@ -47,13 +47,13 @@ class _AssetPickerState extends State<AssetPicker> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              final currency = await Navigator.push(
+              final symbol = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddAssetPage(),
                 ),
               );
-              final asset = await Asset.findOneByCurrency(currency);
+              final asset = await Asset.findOneBySymbol(symbol);
               setState(() {
                 this.asset = asset;
               });
