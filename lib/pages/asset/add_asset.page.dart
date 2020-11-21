@@ -208,44 +208,45 @@ class _AddAssetPageState extends State<AddAssetPage> {
 
   Future<Asset> _saveAsset() async {
     final symbol = this._formData["symbol"];
+    final exchange = this._formData["exchange"];
+    final platform = this._formData["tokenPlatform"];
+    final contractAddress = this._formData["contractAddress"];
     final existingAsset = await Asset.findOneBySymbol(symbol);
+
     if (existingAsset != null) {
       throw new Exception("Asset already exists");
-    } else if (this.tab == 0) {
-      final exchange = this._formData["exchange"];
+    }
+
+    double value = 0.0;
+
+    if (this.tab == 0) {
       final ticker = "$symbol/USD";
       final price = await MarketsService().getPrice(ticker, exchange);
       if (price != null) {
-        this._formData["id"] = Uuid().v1();
-        this._formData["value"] = price.current;
-        this._formData["tokenPlatform"] = null;
-        this._formData["contractAddress"] = null;
-        final asset = await Asset.deserialize(this._formData);
-        await asset.save();
-
-        return asset;
-      } else {
-        throw new Exception("Market price not found, try another exchange");
+        value = price.current;
       }
     } else {
-      final platform = this._formData["tokenPlatform"];
-      final contractAddress = this._formData["contractAddress"];
       final price = await MarketsService().getTokenPrice(
         platform,
         contractAddress,
         "USD",
       );
       if (price != null) {
-        this._formData["id"] = Uuid().v1();
-        this._formData["value"] = price.current;
-        this._formData["exchange"] = null;
-        final asset = await Asset.deserialize(this._formData);
-        await asset.save();
-
-        return asset;
-      } else {
-        throw new Exception("Market price not found");
+        value = price.current;
       }
     }
+
+    final asset = Asset(
+      id: Uuid().v1(),
+      name: this._formData["name"],
+      symbol: this._formData["symbol"],
+      value: value,
+      exchange: exchange,
+      tokenPlatform: platform,
+      contractAddress: contractAddress,
+    );
+    await asset.save();
+
+    return asset;
   }
 }
