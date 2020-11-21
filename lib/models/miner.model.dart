@@ -5,7 +5,7 @@ import "package:sqflite/sqflite.dart";
 import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/services/services.dart" show DatabaseService;
 
-const ENERGY_COST = 0.00774; // TODO: set via settings
+const ENERGY_COST = 0.07746; // TODO: set via settings
 
 class Miner {
   final String id;
