@@ -208,11 +208,12 @@ class _AddAssetPageState extends State<AddAssetPage> {
 
   Future<Asset> _saveAsset() async {
     final symbol = this._formData["symbol"];
-    final exchange = this._formData["exchange"];
-    final platform = this._formData["tokenPlatform"];
-    final contractAddress = this._formData["contractAddress"];
-    final existingAsset = await Asset.findOneBySymbol(symbol);
 
+    String exchange = this._formData["exchange"];
+    String platform = this._formData["tokenPlatform"];
+    String contractAddress = this._formData["contractAddress"];
+
+    final existingAsset = await Asset.findOneBySymbol(symbol);
     if (existingAsset != null) {
       throw new Exception("Asset already exists");
     }
@@ -225,6 +226,8 @@ class _AddAssetPageState extends State<AddAssetPage> {
       if (price != null) {
         value = price.current;
       }
+      platform = null;
+      contractAddress = null;
     } else {
       final price = await MarketsService().getTokenPrice(
         platform,
@@ -234,6 +237,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
       if (price != null) {
         value = price.current;
       }
+      exchange = null;
     }
 
     final asset = Asset(

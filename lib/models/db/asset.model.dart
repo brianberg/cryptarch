@@ -50,6 +50,14 @@ class Asset {
         assert(symbol != null),
         assert(value != null);
 
+  bool get isCoin {
+    return this.exchange != null;
+  }
+
+  bool get isToken {
+    return this.tokenPlatform != null && this.contractAddress != null;
+  }
+
   static Future<Asset> deserialize(Map<String, dynamic> rawAsset) async {
     final value = rawAsset["value"];
     final lastPrice = rawAsset["lastPrice"];

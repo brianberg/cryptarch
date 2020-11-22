@@ -4,7 +4,6 @@ import "package:provider/provider.dart";
 import "package:settings_ui/settings_ui.dart";
 
 import "package:cryptarch/services/services.dart" show SettingsService;
-import "package:cryptarch/ui/widgets.dart";
 
 class SettingsPage extends StatelessWidget {
   static final routeName = "/settings";
