@@ -87,3 +87,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/cryptarch-logo.png"
+  image_path_ios: "assets/images/cryptarch-logo-ios.png"
+  adaptive_icon_background: "#000000"
