@@ -50,13 +50,21 @@ class Account {
     );
   }
 
-  static Future<List<Account>> find({Map<String, dynamic> filters}) async {
+  static Future<List<Account>> find({
+    Map<String, dynamic> filters,
+    String orderBy,
+    int limit,
+    int offset,
+  }) async {
     final List<Account> assets = new List();
 
     final List<Map<String, dynamic>> rawAccounts = await DatabaseService().find(
       Account.tableName,
       Account.tableColumns.keys.toList(),
       filters,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
     );
 
     for (Map<String, dynamic> rawAccount in rawAccounts) {

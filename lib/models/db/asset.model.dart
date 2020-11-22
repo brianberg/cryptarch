@@ -72,13 +72,21 @@ class Asset {
     );
   }
 
-  static Future<List<Asset>> find({Map<String, dynamic> filters}) async {
+  static Future<List<Asset>> find({
+    Map<String, dynamic> filters,
+    String orderBy,
+    int limit,
+    int offset,
+  }) async {
     final List<Asset> assets = new List();
 
     final List<Map<String, dynamic>> rawAssets = await DatabaseService().find(
       Asset.tableName,
       Asset.tableColumns.keys.toList(),
       filters,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
     );
 
     for (Map<String, dynamic> rawAsset in rawAssets) {

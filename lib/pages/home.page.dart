@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initialize() async {
     final settings = this.widget.settings;
-    final assets = await Asset.find();
+    final assets = await Asset.find(orderBy: "value DESC");
     final value = await this.portfolio.getValue();
 
     double miningProfitability;

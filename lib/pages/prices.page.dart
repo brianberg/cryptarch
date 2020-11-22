@@ -65,7 +65,7 @@ class _PricesPageState extends State<PricesPage> {
   }
 
   Future<void> _initialize() async {
-    final assets = await Asset.find();
+    final assets = await Asset.find(orderBy: "percentChange DESC");
 
     double totalChange = assets.fold(0, (value, asset) {
       return value + asset.percentChange;

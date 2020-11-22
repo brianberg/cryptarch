@@ -52,7 +52,7 @@ class DatabaseService {
   }
 
   Query getQuery(Map<String, dynamic> filters) {
-    String query = "";
+    String where = "";
     List<dynamic> args = [];
     List<String> keys = filters.keys.toList();
 
@@ -60,32 +60,39 @@ class DatabaseService {
       String key = keys[i];
       dynamic value = filters[key];
 
+      if (key == "orderBy") {
+        continue;
+      }
+
       if (value is List) {
         List<String> values = List<String>.from(value);
         List<String> qs = List<String>.filled(values.length, "?");
-        query += "$key IN (${qs.join(",")})";
+        where += "$key IN (${qs.join(",")})";
         args.addAll(values);
       } else {
         if (value is bool) {
           value = value ? 1 : 0;
         }
-        query += "$key = ?";
+        where += "$key = ?";
         args.add(value);
       }
 
       if (i < keys.length - 1) {
-        query += " AND ";
+        where += " AND ";
       }
     }
 
-    return Query(query, args);
+    return Query(where, args);
   }
 
   Future<List<Map<String, dynamic>>> find(
     String model,
     List<String> columns,
-    Map<String, dynamic> filters,
-  ) async {
+    Map<String, dynamic> filters, {
+    String orderBy,
+    int limit,
+    int offset,
+  }) async {
     final db = await this.connect();
     Query query;
     List<Map<String, dynamic>> rawModels;
@@ -96,9 +103,17 @@ class DatabaseService {
         columns: columns,
         where: query.where,
         whereArgs: query.args,
+        orderBy: orderBy,
+        limit: limit,
+        offset: offset,
       );
     } else {
-      rawModels = await db.query(model);
+      rawModels = await db.query(
+        model,
+        orderBy: orderBy,
+        limit: limit,
+        offset: offset,
+      );
     }
 
     return rawModels;

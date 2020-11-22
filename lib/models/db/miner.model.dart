@@ -80,13 +80,21 @@ class Miner {
     );
   }
 
-  static Future<List<Miner>> find({Map<String, dynamic> filters}) async {
+  static Future<List<Miner>> find({
+    Map<String, dynamic> filters,
+    String orderBy,
+    int limit,
+    int offset,
+  }) async {
     final List<Miner> assets = new List();
 
     final List<Map<String, dynamic>> rawMiners = await DatabaseService().find(
       Miner.tableName,
       Miner.tableColumns.keys.toList(),
       filters,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
     );
 
     for (Map<String, dynamic> rawMiner in rawMiners) {

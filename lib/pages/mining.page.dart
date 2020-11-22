@@ -97,6 +97,8 @@ class _MiningPageState extends State<MiningPage> {
       return value;
     });
 
+    miners.sort((a, b) => 0 - a.profitability.compareTo(b.profitability));
+
     setState(() {
       this.miners = miners;
       this.totalProfitability = totalProfitability;
