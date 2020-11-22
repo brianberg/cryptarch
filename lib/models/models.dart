@@ -1,3 +1,3 @@
-export "account.model.dart";
-export "asset.model.dart";
-export "miner.model.dart";
+export "db/db.models.dart";
+
+export "portfolio_item.model.dart";

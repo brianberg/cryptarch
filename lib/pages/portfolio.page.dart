@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 
+import "package:cryptarch/models/models.dart" show PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
-    show AssetService, PortfolioItem, PortfolioService;
+    show AssetService, PortfolioService;
 import "package:cryptarch/ui/widgets.dart";
 
 class PortfolioPage extends StatefulWidget {
