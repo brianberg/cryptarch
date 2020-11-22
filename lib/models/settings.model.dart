@@ -1,11 +1,14 @@
 class Settings {
-  String currency = "USD";
-  bool showMining = false;
+  String currency;
+  bool showMining;
 
   Settings({
     this.currency,
     this.showMining,
-  });
+  }) {
+    this.currency = this.currency ?? "USD";
+    this.showMining = this.showMining ?? false;
+  }
 
   factory Settings.fromMap(Map<String, dynamic> rawSettings) {
     return Settings(
@@ -17,7 +20,7 @@ class Settings {
   Map<String, dynamic> toJson() {
     return {
       "currency": this.currency,
-      "showMining": this.showMining ?? false,
+      "showMining": this.showMining,
     };
   }
 }
