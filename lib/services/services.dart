@@ -5,4 +5,5 @@ export "etherscan.service.dart";
 export "markets.service.dart";
 export "nicehash.service.dart";
 export "portfolio.service.dart";
+export "settings.service.dart";
 export "storage.service.dart";

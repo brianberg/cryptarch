@@ -1,13 +1,21 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/models/models.dart" show Asset, Miner;
+import "package:cryptarch/models/models.dart" show Asset, Miner, Settings;
 import "package:cryptarch/services/services.dart"
     show AssetService, EthermineService, NiceHashService, PortfolioService;
 import "package:cryptarch/ui/widgets.dart";
 
 class HomePage extends StatefulWidget {
   static const routeName = "/";
+
+  final Settings settings;
+
+  HomePage({
+    Key key,
+    @required this.settings,
+  })  : assert(settings != null),
+        super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -53,6 +61,15 @@ class _HomePageState extends State<HomePage> {
                 : Text(""),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.pushNamed(context, SettingsPage.routeName);
+              await this._initialize();
+            },
+          )
+        ],
       ),
       body: SafeArea(
         child: this.assets != null
@@ -83,16 +100,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initialize() async {
+    final settings = this.widget.settings;
     final assets = await Asset.find();
     final value = await this.portfolio.getValue();
-    final miners = await Miner.find();
 
-    final miningProfitability = miners.fold(0.0, (value, miner) {
-      if (miner.active) {
-        return value + miner.fiatProfitability;
-      }
-      return value;
-    });
+    double miningProfitability;
+
+    if (settings.showMining) {
+      final miners = await Miner.find();
+
+      miningProfitability = miners.fold(0.0, (value, miner) {
+        if (miner.active) {
+          return value + miner.fiatProfitability;
+        }
+        return value;
+      });
+    }
 
     setState(() {
       this.assets = assets;
@@ -124,8 +147,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refresh() async {
+    final settings = this.widget.settings;
     await this.assetService.refreshPrices();
-    await this._refreshMiners();
+    if (settings.showMining) {
+      await this._refreshMiners();
+    }
     await this._initialize();
   }
 }
