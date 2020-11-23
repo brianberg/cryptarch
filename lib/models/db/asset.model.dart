@@ -50,10 +50,6 @@ class Asset {
         assert(symbol != null),
         assert(value != null);
 
-  bool get isCoin {
-    return this.exchange != null;
-  }
-
   bool get isToken {
     return this.tokenPlatform != null && this.contractAddress != null;
   }

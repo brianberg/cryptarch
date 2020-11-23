@@ -6,7 +6,7 @@ class AssetService {
     final markets = MarketsService();
     final assets = await Asset.find();
     for (Asset asset in assets) {
-      if (asset.isCoin) {
+      if (asset.exchange != null) {
         final ticker = "${asset.symbol}/USD";
         final price = await markets.getPrice(ticker, asset.exchange);
         if (price != null) {
