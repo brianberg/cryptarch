@@ -26,7 +26,7 @@ class AssetListItem extends StatelessWidget {
 
     return Padding(
       key: ValueKey(this.asset.id),
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+      padding: const EdgeInsets.all(8.0),
       child: ListTile(
         leading: Column(
           mainAxisAlignment: MainAxisAlignment.center,

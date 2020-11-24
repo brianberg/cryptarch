@@ -129,7 +129,7 @@ class _MinerPageState extends State<MinerPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Asset",
                   style: theme.textTheme.bodyText1,
@@ -137,7 +137,7 @@ class _MinerPageState extends State<MinerPage> {
               ),
               AssetListItem(asset: this.miner.asset),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Wallet",
                   style: theme.textTheme.bodyText1,

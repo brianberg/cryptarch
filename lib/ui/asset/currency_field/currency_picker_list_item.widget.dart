@@ -18,7 +18,7 @@ class CurrencyPickerListItem extends StatelessWidget {
 
     return Padding(
       key: ValueKey(this.currency),
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+      padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,

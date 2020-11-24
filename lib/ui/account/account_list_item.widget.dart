@@ -25,7 +25,7 @@ class AccountListItem extends StatelessWidget {
 
     return Padding(
       key: ValueKey(this.account.id),
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+      padding: const EdgeInsets.all(8.0),
       child: ListTile(
         title: Text(
           this.account.name,

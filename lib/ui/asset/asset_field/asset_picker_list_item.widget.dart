@@ -21,7 +21,7 @@ class AssetPickerListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       key: ValueKey(this.asset.id),
-      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+      padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
