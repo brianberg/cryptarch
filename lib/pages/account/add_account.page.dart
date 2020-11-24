@@ -5,12 +5,12 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/ui/widgets.dart";
 
-class AddaccountPage extends StatefulWidget {
+class AddAccountPage extends StatefulWidget {
   @override
-  _AddaccountPageState createState() => _AddaccountPageState();
+  _AddAccountPageState createState() => _AddAccountPageState();
 }
 
-class _AddaccountPageState extends State<AddaccountPage> {
+class _AddAccountPageState extends State<AddAccountPage> {
   final _formKey = GlobalKey<FormState>();
 
   Map<String, dynamic> _formData = {};
