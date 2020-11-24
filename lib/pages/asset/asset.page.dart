@@ -20,17 +20,13 @@ class AssetPage extends StatefulWidget {
 }
 
 class _AssetPageState extends State<AssetPage> {
-  final AssetService assetService = AssetService();
-
   Asset asset;
   List<Account> accounts;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      this.asset = this.widget.asset;
-    });
+    this.asset = this.widget.asset;
     this._refreshAccounts();
   }
 
@@ -96,7 +92,7 @@ class _AssetPageState extends State<AssetPage> {
   }
 
   Future<void> _refreshPrice() async {
-    final asset = await this.assetService.refreshPrice(this.asset);
+    final asset = await AssetService.refreshPrice(this.asset);
     setState(() {
       this.asset = asset;
     });

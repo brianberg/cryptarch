@@ -24,7 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final assetService = AssetService();
   final portfolio = PortfolioService();
 
   List<Asset> assets;
@@ -151,7 +150,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _refresh() async {
     final settings = this.widget.settings;
-    await this.assetService.refreshPrices();
+    await AssetService.refreshPrices();
     if (settings.showMining) {
       await MiningService.refreshMiners(filters: {"active": 1});
     }

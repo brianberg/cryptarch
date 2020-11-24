@@ -16,8 +16,6 @@ class MiningPage extends StatefulWidget {
 }
 
 class _MiningPageState extends State<MiningPage> {
-  final assetService = AssetService();
-
   List<Miner> miners;
   double totalProfitability;
 
@@ -108,6 +106,7 @@ class _MiningPageState extends State<MiningPage> {
   }
 
   Future<void> _refresh() async {
+    await AssetService.refreshPrices();
     await MiningService.refreshMiners(filters: {"active": 1});
     await this._getMiners();
   }

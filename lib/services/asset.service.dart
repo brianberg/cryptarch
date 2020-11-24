@@ -2,14 +2,14 @@ import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show MarketsService;
 
 class AssetService {
-  Future<void> refreshPrices() async {
+  static Future<void> refreshPrices() async {
     final assets = await Asset.find();
     for (Asset asset in assets) {
-      await this.refreshPrice(asset);
+      await AssetService.refreshPrice(asset);
     }
   }
 
-  Future<Asset> refreshPrice(Asset asset) async {
+  static Future<Asset> refreshPrice(Asset asset) async {
     final markets = MarketsService();
     if (asset.exchange != null) {
       final ticker = "${asset.symbol}/USD";

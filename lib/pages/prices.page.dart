@@ -13,8 +13,6 @@ class PricesPage extends StatefulWidget {
 }
 
 class _PricesPageState extends State<PricesPage> {
-  final assetService = AssetService();
-
   List<Asset> assets;
   double totalChange;
 
@@ -94,7 +92,7 @@ class _PricesPageState extends State<PricesPage> {
   }
 
   Future<void> _refresh() async {
-    await this.assetService.refreshPrices();
+    await AssetService.refreshPrices();
     await this._initialize();
   }
 }

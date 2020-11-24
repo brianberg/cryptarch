@@ -16,7 +16,6 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
-  final assetService = AssetService();
   final portfolio = PortfolioService();
 
   List<PortfolioItem> items;
@@ -136,7 +135,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   }
 
   Future<void> _refresh() async {
-    await this.assetService.refreshPrices();
+    await AssetService.refreshPrices();
     await this._refreshItems();
   }
 }
