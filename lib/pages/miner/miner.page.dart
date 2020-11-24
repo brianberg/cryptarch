@@ -129,22 +129,48 @@ class _MinerPageState extends State<MinerPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(
                   "Asset",
                   style: theme.textTheme.bodyText1,
                 ),
               ),
-              AssetListItem(asset: this.miner.asset),
               Padding(
                 padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor,
+                    border: Border.all(
+                      color: theme.dividerColor,
+                    ),
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                  child: AssetListItem(asset: this.miner.asset),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(
                   "Wallet",
                   style: theme.textTheme.bodyText1,
                 ),
               ),
-              AccountListItem(
-                account: this.miner.account,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor,
+                    border: Border.all(
+                      color: theme.dividerColor,
+                    ),
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                  child: AccountListItem(
+                    account: this.miner.account,
+                  ),
+                ),
               ),
             ],
           ),
