@@ -6,11 +6,14 @@ class PortfolioService {
     final List<PortfolioItem> items = [];
     final assets = await Asset.find();
     for (Asset asset in assets) {
-      final item = PortfolioItem(
-        asset: asset,
-        accounts: await Account.find(filters: {"assetId": asset.id}),
-      );
-      items.add(item);
+      final accounts = await Account.find(filters: {"assetId": asset.id});
+      if (accounts.length > 0) {
+        final item = PortfolioItem(
+          asset: asset,
+          accounts: accounts,
+        );
+        items.add(item);
+      }
     }
 
     items.sort((a, b) => 0 - a.value.compareTo(b.value));
