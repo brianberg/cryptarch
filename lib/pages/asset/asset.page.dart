@@ -3,6 +3,7 @@ import "package:intl/intl.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/pages/pages.dart";
+import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/ui/widgets.dart";
 
 class AssetPage extends StatefulWidget {
@@ -19,22 +20,27 @@ class AssetPage extends StatefulWidget {
 }
 
 class _AssetPageState extends State<AssetPage> {
+  final AssetService assetService = AssetService();
+
+  Asset asset;
   List<Account> accounts;
 
   @override
   void initState() {
     super.initState();
-    this._refreshaccounts();
+    setState(() {
+      this.asset = this.widget.asset;
+    });
+    this._refreshAccounts();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final asset = this.widget.asset;
-    final value = NumberFormat.simpleCurrency().format(asset.value);
-    final changePrefix = asset.percentChange > 0 ? '+' : '';
-    final percentChange = "${asset.percentChange.toStringAsFixed(2)}%";
+    final value = NumberFormat.simpleCurrency().format(this.asset.value);
+    final changePrefix = this.asset.percentChange > 0 ? '+' : '';
+    final percentChange = "${this.asset.percentChange.toStringAsFixed(2)}%";
 
     return Scaffold(
       appBar: AppBar(
@@ -60,29 +66,44 @@ class _AssetPageState extends State<AssetPage> {
       ),
       body: SafeArea(
         child: this.accounts != null
-            ? AccountList(
-                items: this.accounts,
-                onTap: (account) async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditAccountPage(account: account),
-                    ),
-                  );
-                  await this._refreshaccounts();
-                },
+            ? RefreshIndicator(
+                child: AccountList(
+                  items: this.accounts,
+                  onTap: (account) async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditAccountPage(account: account),
+                      ),
+                    );
+                    await this._refreshAccounts();
+                  },
+                ),
+                onRefresh: this._refresh,
               )
             : LoadingIndicator(),
       ),
     );
   }
 
-  Future<void> _refreshaccounts() async {
-    Map<String, dynamic> accountFilters = {};
-    accountFilters["assetId"] = this.widget.asset.id;
-    final accounts = await Account.find(filters: accountFilters);
+  Future<void> _refreshAccounts() async {
+    final accounts = await Account.find(
+      filters: {"assetId": this.asset.id},
+    );
     setState(() {
       this.accounts = accounts;
     });
+  }
+
+  Future<void> _refreshPrice() async {
+    final asset = await this.assetService.refreshPrice(this.asset);
+    setState(() {
+      this.asset = asset;
+    });
+  }
+
+  Future<void> _refresh() async {
+    await this._refreshPrice();
+    await this._refreshAccounts();
   }
 }
