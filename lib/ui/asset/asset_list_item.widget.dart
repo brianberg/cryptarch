@@ -24,50 +24,47 @@ class AssetListItem extends StatelessWidget {
     final changePrefix = this.asset.percentChange > 0 ? '+' : '';
     final percentChange = "${this.asset.percentChange.toStringAsFixed(2)}%";
 
-    return Padding(
+    return ListTile(
       key: ValueKey(this.asset.id),
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 32.0,
-              width: 32.0,
-              child: AssetIcon(asset: this.asset),
-            ),
-          ],
-        ),
-        title: Text(
-          this.asset.name,
-          style: TextStyle(
-            color: theme.textTheme.bodyText1.color,
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 32.0,
+            width: 32.0,
+            child: AssetIcon(asset: this.asset),
           ),
-        ),
-        subtitle: Text(
-          this.asset.symbol,
-          style: theme.textTheme.subtitle2,
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              value,
-              style: theme.textTheme.bodyText1,
-            ),
-            Text(
-              "$changePrefix$percentChange",
-              style: theme.textTheme.subtitle2,
-            ),
-          ],
-        ),
-        onTap: this.onTap != null
-            ? () {
-                this.onTap(this.asset);
-              }
-            : null,
+        ],
       ),
+      title: Text(
+        this.asset.name,
+        style: TextStyle(
+          color: theme.textTheme.bodyText1.color,
+        ),
+      ),
+      subtitle: Text(
+        this.asset.symbol,
+        style: theme.textTheme.subtitle2,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            value,
+            style: theme.textTheme.bodyText1,
+          ),
+          Text(
+            "$changePrefix$percentChange",
+            style: theme.textTheme.subtitle2,
+          ),
+        ],
+      ),
+      onTap: this.onTap != null
+          ? () {
+              this.onTap(this.asset);
+            }
+          : null,
     );
   }
 }

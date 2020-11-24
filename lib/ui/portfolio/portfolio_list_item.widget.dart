@@ -23,42 +23,40 @@ class PortfolioListItem extends StatelessWidget {
     final amount = this.item.amount.toStringAsFixed(6);
     final value = NumberFormat.simpleCurrency().format(this.item.value);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text(
-          this.item.asset.name,
-          style: TextStyle(
-            color: theme.textTheme.bodyText1.color,
-          ),
+    return ListTile(
+      key: ValueKey(this.item),
+      title: Text(
+        this.item.asset.name,
+        style: TextStyle(
+          color: theme.textTheme.bodyText1.color,
         ),
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 32.0,
-              width: 32.0,
-              child: AssetIcon(asset: this.item.asset),
-            ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(value),
-            Text(
-              "$amount ${this.item.asset.symbol}",
-              style: theme.textTheme.subtitle2,
-            ),
-          ],
-        ),
-        onTap: () {
-          if (this.onTap != null) {
-            this.onTap(this.item);
-          }
-        },
       ),
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 32.0,
+            width: 32.0,
+            child: AssetIcon(asset: this.item.asset),
+          ),
+        ],
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(value),
+          Text(
+            "$amount ${this.item.asset.symbol}",
+            style: theme.textTheme.subtitle2,
+          ),
+        ],
+      ),
+      onTap: () {
+        if (this.onTap != null) {
+          this.onTap(this.item);
+        }
+      },
     );
   }
 }

@@ -23,33 +23,30 @@ class AccountListItem extends StatelessWidget {
     final value = NumberFormat.simpleCurrency().format(this.account.value);
     final amount = this.account.amount.toStringAsFixed(6);
 
-    return Padding(
+    return ListTile(
       key: ValueKey(this.account.id),
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text(
-          this.account.name,
-          style: TextStyle(
-            color: theme.textTheme.bodyText1.color,
-          ),
+      title: Text(
+        this.account.name,
+        style: TextStyle(
+          color: theme.textTheme.bodyText1.color,
         ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(value),
-            Text(
-              "$amount ${asset.symbol}",
-              style: theme.textTheme.subtitle2,
-            ),
-          ],
-        ),
-        onTap: () {
-          if (this.onTap != null) {
-            this.onTap(this.account);
-          }
-        },
       ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(value),
+          Text(
+            "$amount ${asset.symbol}",
+            style: theme.textTheme.subtitle2,
+          ),
+        ],
+      ),
+      onTap: () {
+        if (this.onTap != null) {
+          this.onTap(this.account);
+        }
+      },
     );
   }
 }

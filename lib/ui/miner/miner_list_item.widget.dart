@@ -24,32 +24,30 @@ class MinerListItem extends StatelessWidget {
     final fiatProfitability =
         NumberFormat.simpleCurrency().format(this.miner.fiatProfitability);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text(
-          this.miner.name,
-          style: TextStyle(
-            color: theme.textTheme.bodyText1.color,
-          ),
+    return ListTile(
+      key: ValueKey(this.miner.id),
+      title: Text(
+        this.miner.name,
+        style: TextStyle(
+          color: theme.textTheme.bodyText1.color,
         ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text("$profitability $symbol"),
-            Text(
-              "$fiatProfitability / day",
-              style: theme.textTheme.subtitle2,
-            ),
-          ],
-        ),
-        onTap: () {
-          if (this.onTap != null) {
-            this.onTap(this.miner);
-          }
-        },
       ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text("$profitability $symbol"),
+          Text(
+            "$fiatProfitability / day",
+            style: theme.textTheme.subtitle2,
+          ),
+        ],
+      ),
+      onTap: () {
+        if (this.onTap != null) {
+          this.onTap(this.miner);
+        }
+      },
     );
   }
 }
