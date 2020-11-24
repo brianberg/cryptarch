@@ -21,34 +21,31 @@ class MinerListItem extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-      child: Card(
-        elevation: 1.0,
-        child: ListTile(
-          title: Text(
-            this.miner.name,
-            style: TextStyle(
-              color: theme.textTheme.bodyText1.color,
-            ),
+      child: ListTile(
+        title: Text(
+          this.miner.name,
+          style: TextStyle(
+            color: theme.textTheme.bodyText1.color,
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "${this.miner.profitability.toStringAsFixed(6)} $symbol",
-              ),
-              Text(
-                "\$${this.miner.fiatProfitability.toStringAsFixed(2)} / day",
-                style: theme.textTheme.subtitle2,
-              ),
-            ],
-          ),
-          onTap: () {
-            if (this.onTap != null) {
-              this.onTap(this.miner);
-            }
-          },
         ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              "${this.miner.profitability.toStringAsFixed(6)} $symbol",
+            ),
+            Text(
+              "\$${this.miner.fiatProfitability.toStringAsFixed(2)} / day",
+              style: theme.textTheme.subtitle2,
+            ),
+          ],
+        ),
+        onTap: () {
+          if (this.onTap != null) {
+            this.onTap(this.miner);
+          }
+        },
       ),
     );
   }

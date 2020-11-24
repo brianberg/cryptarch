@@ -1,7 +1,7 @@
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Asset;
+import "package:cryptarch/ui/widgets.dart";
 
 class AssetListItem extends StatelessWidget {
   final Asset asset;
@@ -23,48 +23,46 @@ class AssetListItem extends StatelessWidget {
     return Padding(
       key: ValueKey(this.asset.id),
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-      child: Card(
-        elevation: 1.0,
-        child: ListTile(
-          leading: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.circle,
-                color: theme.colorScheme.onSurface,
-              ),
-            ],
-          ),
-          title: Text(
-            this.asset.name,
-            style: TextStyle(
-              color: theme.textTheme.bodyText1.color,
+      child: ListTile(
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 32.0,
+              width: 32.0,
+              child: AssetIcon(asset: this.asset),
             ),
-          ),
-          subtitle: Text(
-            this.asset.symbol,
-            style: theme.textTheme.subtitle2,
-          ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "\$${this.asset.value.toStringAsFixed(2)}",
-                style: theme.textTheme.bodyText1,
-              ),
-              Text(
-                "${percentChange > 0 ? '+' : ''}${percentChange.toStringAsFixed(2)}%",
-                style: theme.textTheme.subtitle2,
-              ),
-            ],
-          ),
-          onTap: this.onTap != null
-              ? () {
-                  this.onTap(this.asset);
-                }
-              : null,
+          ],
         ),
+        title: Text(
+          this.asset.name,
+          style: TextStyle(
+            color: theme.textTheme.bodyText1.color,
+          ),
+        ),
+        subtitle: Text(
+          this.asset.symbol,
+          style: theme.textTheme.subtitle2,
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              "\$${this.asset.value.toStringAsFixed(2)}",
+              style: theme.textTheme.bodyText1,
+            ),
+            Text(
+              "${percentChange > 0 ? '+' : ''}${percentChange.toStringAsFixed(2)}%",
+              style: theme.textTheme.subtitle2,
+            ),
+          ],
+        ),
+        onTap: this.onTap != null
+            ? () {
+                this.onTap(this.asset);
+              }
+            : null,
       ),
     );
   }

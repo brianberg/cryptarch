@@ -68,39 +68,45 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         return Padding(
                           padding:
                               const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                          child: Card(
-                            elevation: 1.0,
-                            child: ListTile(
-                                title: Text(
-                                  item.asset.name,
-                                  style: TextStyle(
-                                    color: theme.textTheme.bodyText1.color,
+                          child: ListTile(
+                              title: Text(
+                                item.asset.name,
+                                style: TextStyle(
+                                  color: theme.textTheme.bodyText1.color,
+                                ),
+                              ),
+                              leading: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 32.0,
+                                    width: 32.0,
+                                    child: AssetIcon(asset: item.asset),
                                   ),
-                                ),
-                                leading: Icon(Icons.circle),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text("\$$value"),
-                                    Text(
-                                      "$amount ${item.asset.symbol}",
-                                      style: theme.textTheme.subtitle2,
+                                ],
+                              ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("\$$value"),
+                                  Text(
+                                    "$amount ${item.asset.symbol}",
+                                    style: theme.textTheme.subtitle2,
+                                  ),
+                                ],
+                              ),
+                              onTap: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AssetPage(
+                                      asset: item.asset,
                                     ),
-                                  ],
-                                ),
-                                onTap: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AssetPage(
-                                        asset: item.asset,
-                                      ),
-                                    ),
-                                  );
-                                  await this._refreshItems();
-                                }),
-                          ),
+                                  ),
+                                );
+                                await this._refreshItems();
+                              }),
                         );
                       },
                     ),
