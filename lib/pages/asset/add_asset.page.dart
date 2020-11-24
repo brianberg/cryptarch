@@ -46,14 +46,16 @@ class _AddAssetPageState extends State<AddAssetPage> {
                     currencies: CURRENCIES.values.toList(),
                     initialValue: this.currency,
                     onChange: (currency) {
-                      final exchanges = currency["exchanges"] as List;
-                      setState(() {
-                        this.currency = currency;
-                        this.exchanges = exchanges;
-                        if (exchanges.length > 0) {
-                          this._formData["exchange"] = exchanges.first;
-                        }
-                      });
+                      if (currency != null) {
+                        final exchanges = currency["exchanges"] as List;
+                        setState(() {
+                          this.currency = currency;
+                          this.exchanges = exchanges;
+                          if (exchanges.length > 0) {
+                            this._formData["exchange"] = exchanges.first;
+                          }
+                        });
+                      }
                     },
                   ),
                   this.exchanges.length > 0

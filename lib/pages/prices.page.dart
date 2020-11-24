@@ -38,6 +38,20 @@ class _PricesPageState extends State<PricesPage> {
       appBar: AppBar(
         title: Text("$changePrefix$totalChange"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddAssetPage(),
+                ),
+              );
+              await this._initialize();
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: this.assets != null
