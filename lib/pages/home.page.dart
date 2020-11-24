@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         );
-                        await this._refreshPortfolio();
+                        await this._refresh();
                       },
                     ),
                     onRefresh: this._refresh,
@@ -128,10 +128,10 @@ class _HomePageState extends State<HomePage> {
     final assets = await Asset.find(orderBy: "value DESC");
     final value = await this.portfolio.getValue();
 
+    List<Miner> miners;
     double miningProfitability;
-
     if (settings.showMining) {
-      final miners = await Miner.find();
+      miners = await Miner.find();
 
       miningProfitability = miners.fold(0.0, (value, miner) {
         if (miner.active) {
@@ -146,14 +146,6 @@ class _HomePageState extends State<HomePage> {
       this.miners = miners;
       this.portfolioValue = value;
       this.miningProfitability = miningProfitability;
-    });
-  }
-
-  Future<void> _refreshPortfolio() async {
-    final value = await this.portfolio.getValue();
-
-    setState(() {
-      this.portfolioValue = value;
     });
   }
 
