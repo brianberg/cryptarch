@@ -60,61 +60,18 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 ? RefreshIndicator(
                     color: theme.colorScheme.onSurface,
                     backgroundColor: theme.colorScheme.surface,
-                    child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final item = items[index];
-                        final amount = item.amount.toStringAsFixed(6);
-                        final value =
-                            NumberFormat.simpleCurrency().format(item.value);
-
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            16.0,
-                            16.0,
-                            16.0,
-                            0.0,
+                    child: PortfolioList(
+                      items: this.items,
+                      onTap: (item) async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AssetPage(
+                              asset: item.asset,
+                            ),
                           ),
-                          child: ListTile(
-                              title: Text(
-                                item.asset.name,
-                                style: TextStyle(
-                                  color: theme.textTheme.bodyText1.color,
-                                ),
-                              ),
-                              leading: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 32.0,
-                                    width: 32.0,
-                                    child: AssetIcon(asset: item.asset),
-                                  ),
-                                ],
-                              ),
-                              trailing: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(value),
-                                  Text(
-                                    "$amount ${item.asset.symbol}",
-                                    style: theme.textTheme.subtitle2,
-                                  ),
-                                ],
-                              ),
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AssetPage(
-                                      asset: item.asset,
-                                    ),
-                                  ),
-                                );
-                                await this._refreshItems();
-                              }),
                         );
+                        await this._refreshItems();
                       },
                     ),
                     onRefresh: this._refresh,
