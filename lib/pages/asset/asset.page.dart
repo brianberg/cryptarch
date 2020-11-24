@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/pages/pages.dart";
@@ -28,9 +29,34 @@ class _AssetPageState extends State<AssetPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final asset = this.widget.asset;
+    final value = NumberFormat.simpleCurrency().format(asset.value);
+    final changePrefix = asset.percentChange > 0 ? '+' : '';
+    final percentChange = "${asset.percentChange.toStringAsFixed(2)}%";
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.asset.name),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              asset.name,
+              style: theme.textTheme.subtitle2,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(value),
+                Text(
+                  " $changePrefix$percentChange",
+                  style: theme.textTheme.subtitle1,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: this.accounts != null

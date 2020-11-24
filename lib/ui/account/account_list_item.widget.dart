@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/models/models.dart" show Account;
 
 class AccountListItem extends StatelessWidget {
@@ -18,6 +20,8 @@ class AccountListItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     final asset = this.account.asset;
+    final value = NumberFormat.simpleCurrency().format(this.account.value);
+    final amount = this.account.amount.toStringAsFixed(6);
 
     return Padding(
       key: ValueKey(this.account.id),
@@ -33,11 +37,9 @@ class AccountListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
+            Text(value),
             Text(
-              "\$${this.account.value.toStringAsFixed(2)}",
-            ),
-            Text(
-              "${this.account.amount.toStringAsFixed(6)} ${asset.symbol}",
+              "$amount ${asset.symbol}",
               style: theme.textTheme.subtitle2,
             ),
           ],

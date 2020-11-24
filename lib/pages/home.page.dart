@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Asset, Miner, Settings;
 import "package:cryptarch/services/services.dart"
@@ -40,25 +42,47 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final portfolioValue = this.portfolioValue != null
+        ? NumberFormat.simpleCurrency().format(this.portfolioValue)
+        : "";
+    final miningProfitability = this.miningProfitability != null
+        ? NumberFormat.simpleCurrency().format(this.miningProfitability)
+        : null;
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              this.portfolioValue != null
-                  ? "\$${this.portfolioValue.toStringAsFixed(2)}"
-                  : "",
+            // Text(portfolioValue),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Portfolio",
+                  style: theme.textTheme.subtitle2,
+                ),
+                Text(portfolioValue),
+              ],
             ),
-            this.miningProfitability != null
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+            miningProfitability != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("\$${this.miningProfitability.toStringAsFixed(2)}"),
-                      Text(" / day", style: theme.textTheme.subtitle1),
+                      Text(
+                        "Mining",
+                        style: theme.textTheme.subtitle2,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(miningProfitability),
+                          Text(" / day", style: theme.textTheme.subtitle1),
+                        ],
+                      ),
                     ],
                   )
-                : Text(""),
+                : Container(),
           ],
         ),
         actions: [

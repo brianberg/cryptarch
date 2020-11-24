@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
@@ -29,16 +31,16 @@ class _MiningPageState extends State<MiningPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final totalProfitability = this.totalProfitability != null
+        ? NumberFormat.simpleCurrency().format(this.totalProfitability)
+        : "";
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              this.totalProfitability != null
-                  ? "\$${this.totalProfitability.toStringAsFixed(2)}"
-                  : "",
-            ),
+            Text(totalProfitability),
             Text(
               " / day",
               style: theme.textTheme.subtitle1,

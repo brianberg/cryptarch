@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/ui/widgets.dart";
 
@@ -18,7 +20,9 @@ class AssetListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final percentChange = this.asset.percentChange;
+    final value = NumberFormat.simpleCurrency().format(this.asset.value);
+    final changePrefix = this.asset.percentChange > 0 ? '+' : '';
+    final percentChange = "${this.asset.percentChange.toStringAsFixed(2)}%";
 
     return Padding(
       key: ValueKey(this.asset.id),
@@ -49,11 +53,11 @@ class AssetListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              "\$${this.asset.value.toStringAsFixed(2)}",
+              value,
               style: theme.textTheme.bodyText1,
             ),
             Text(
-              "${percentChange > 0 ? '+' : ''}${percentChange.toStringAsFixed(2)}%",
+              "$changePrefix$percentChange",
               style: theme.textTheme.subtitle2,
             ),
           ],

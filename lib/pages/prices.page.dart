@@ -28,13 +28,15 @@ class _PricesPageState extends State<PricesPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final changePrefix =
+        this.totalChange != null && this.totalChange > 0 ? '+' : '';
+    final totalChange = this.totalChange != null
+        ? "${this.totalChange.toStringAsFixed(2)}%"
+        : "";
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          this.totalChange != null
-              ? "${this.totalChange > 0 ? '+' : ''}${this.totalChange.toStringAsFixed(2)}%"
-              : "",
-        ),
+        title: Text("$changePrefix$totalChange"),
         centerTitle: true,
       ),
       body: SafeArea(

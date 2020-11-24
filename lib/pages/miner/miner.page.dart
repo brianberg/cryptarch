@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/ui/widgets.dart";
@@ -31,6 +33,12 @@ class _MinerPageState extends State<MinerPage> {
     final theme = Theme.of(context);
 
     final symbol = this.miner.asset.symbol;
+    final profitability = this.miner.profitability.toStringAsFixed(6);
+    final unpaidAmount = this.miner.unpaidAmount.toStringAsFixed(6);
+    final fiatUnpaidAmount =
+        NumberFormat.simpleCurrency().format(this.miner.fiatUnpaidAmount);
+    final fiatProfitability =
+        NumberFormat.simpleCurrency().format(this.miner.fiatProfitability);
 
     return Scaffold(
       appBar: AppBar(
@@ -83,11 +91,9 @@ class _MinerPageState extends State<MinerPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            Text("$profitability $symbol"),
                             Text(
-                              "${this.miner.profitability.toStringAsFixed(6)} $symbol",
-                            ),
-                            Text(
-                              "\$${this.miner.fiatProfitability.toStringAsFixed(2)} / day",
+                              "$fiatProfitability / day",
                               style: theme.textTheme.subtitle2,
                             ),
                           ],
@@ -108,11 +114,9 @@ class _MinerPageState extends State<MinerPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            Text("$unpaidAmount $symbol"),
                             Text(
-                              "${this.miner.unpaidAmount.toStringAsFixed(6)} $symbol",
-                            ),
-                            Text(
-                              "\$${this.miner.fiatUnpaidAmount.toStringAsFixed(2)}",
+                              fiatUnpaidAmount,
                               style: theme.textTheme.subtitle2,
                             ),
                           ],

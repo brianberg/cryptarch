@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:intl/intl.dart";
+
 import "package:cryptarch/models/models.dart" show PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
@@ -30,13 +32,13 @@ class _PortfolioPageState extends State<PortfolioPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final totalValue = this.totalValue != null
+        ? NumberFormat.simpleCurrency().format(this.totalValue)
+        : "";
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          this.totalValue != null
-              ? "\$${this.totalValue.toStringAsFixed(2)}"
-              : "",
-        ),
+        title: Text(totalValue),
         centerTitle: true,
         actions: [
           IconButton(
@@ -64,10 +66,16 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       itemBuilder: (BuildContext context, int index) {
                         final item = items[index];
                         final amount = item.amount.toStringAsFixed(6);
-                        final value = item.value.toStringAsFixed(2);
+                        final value =
+                            NumberFormat.simpleCurrency().format(item.value);
+
                         return Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            16.0,
+                            16.0,
+                            0.0,
+                          ),
                           child: ListTile(
                               title: Text(
                                 item.asset.name,
@@ -89,7 +97,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text("\$$value"),
+                                  Text(value),
                                   Text(
                                     "$amount ${item.asset.symbol}",
                                     style: theme.textTheme.subtitle2,
