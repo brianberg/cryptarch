@@ -5,7 +5,7 @@ import "package:intl/intl.dart";
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
-    show AssetService, EthermineService, NiceHashService;
+    show AssetService, MiningService;
 import "package:cryptarch/ui/widgets.dart";
 
 class MiningPage extends StatefulWidget {
@@ -108,17 +108,7 @@ class _MiningPageState extends State<MiningPage> {
   }
 
   Future<void> _refresh() async {
-    await this.assetService.refreshPrices();
-    for (Miner miner in this.miners) {
-      if (!miner.active) continue;
-      if (miner.platform == "Ethermine") {
-        final ethermine = EthermineService();
-        await ethermine.refreshMiner(miner);
-      } else if (miner.platform == "NiceHash") {
-        final nicehash = NiceHashService();
-        await nicehash.refreshMiner(miner);
-      }
-    }
+    await MiningService.refreshMiners(filters: {"active": 1});
     await this._getMiners();
   }
 }

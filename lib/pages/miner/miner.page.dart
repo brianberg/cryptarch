@@ -4,6 +4,7 @@ import "package:intl/intl.dart";
 
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
+import "package:cryptarch/services/services.dart" show MiningService;
 import "package:cryptarch/ui/widgets.dart";
 
 class MinerPage extends StatefulWidget {
@@ -65,94 +66,103 @@ class _MinerPageState extends State<MinerPage> {
                   builder: (context) => EditMinerPage(miner: this.widget.miner),
                 ),
               );
-              await this._refresh();
+              await this._refreshMiner();
             },
           )
         ],
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Profitability",
-                          style: theme.textTheme.bodyText1,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$profitability $symbol"),
-                            Text(
-                              "$fiatProfitability / day",
-                              style: theme.textTheme.subtitle2,
-                            ),
-                          ],
-                        ),
-                      ],
+        child: RefreshIndicator(
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Profitability",
+                            style: theme.textTheme.bodyText1,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("$profitability $symbol"),
+                              Text(
+                                "$fiatProfitability / day",
+                                style: theme.textTheme.subtitle2,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Unpaid",
-                          style: theme.textTheme.bodyText1,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("$unpaidAmount $symbol"),
-                            Text(
-                              fiatUnpaidAmount,
-                              style: theme.textTheme.subtitle2,
-                            ),
-                          ],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Unpaid",
+                            style: theme.textTheme.bodyText1,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("$unpaidAmount $symbol"),
+                              Text(
+                                fiatUnpaidAmount,
+                                style: theme.textTheme.subtitle2,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-              child: Text(
-                "Asset",
-                style: theme.textTheme.bodyText1,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: Text(
+                  "Asset",
+                  style: theme.textTheme.bodyText1,
+                ),
               ),
-            ),
-            AssetListItem(asset: this.miner.asset),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-              child: Text(
-                "Wallet",
-                style: theme.textTheme.bodyText1,
+              AssetListItem(asset: this.miner.asset),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: Text(
+                  "Wallet",
+                  style: theme.textTheme.bodyText1,
+                ),
               ),
-            ),
-            AccountListItem(
-              account: this.miner.account,
-            ),
-          ],
+              AccountListItem(
+                account: this.miner.account,
+              ),
+            ],
+          ),
+          onRefresh: this._refresh,
         ),
       ),
     );
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refreshMiner() async {
     final miner = await Miner.findOneById(this.miner.id);
+    setState(() {
+      this.miner = miner;
+    });
+  }
+
+  Future<void> _refresh() async {
+    final miner = await MiningService.refreshMiner(this.miner);
     setState(() {
       this.miner = miner;
     });
