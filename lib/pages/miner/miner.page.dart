@@ -146,7 +146,19 @@ class _MinerPageState extends State<MinerPage> {
                     ),
                     borderRadius: BorderRadius.circular(4.0),
                   ),
-                  child: AssetListItem(asset: this.miner.asset),
+                  child: AssetListItem(
+                    asset: this.miner.asset,
+                    onTap: (asset) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AssetPage(
+                            asset: asset,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               Padding(
