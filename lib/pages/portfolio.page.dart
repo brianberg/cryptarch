@@ -41,7 +41,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.add_circle),
             onPressed: () async {
               await Navigator.push(
                 context,

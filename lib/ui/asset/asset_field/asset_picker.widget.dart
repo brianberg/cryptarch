@@ -45,7 +45,7 @@ class _AssetPickerState extends State<AssetPicker> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.add_circle),
             onPressed: () async {
               final symbol = await Navigator.push(
                 context,
