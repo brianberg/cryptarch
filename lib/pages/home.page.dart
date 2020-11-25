@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
 
     final portfolioValue = this.portfolioValue != null
         ? NumberFormat.simpleCurrency().format(this.portfolioValue)
-        : "";
+        : null;
     final miningProfitability = this.miningProfitability != null
         ? NumberFormat.simpleCurrency().format(this.miningProfitability)
         : null;
@@ -53,17 +53,18 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Text(portfolioValue),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Portfolio",
-                  style: theme.textTheme.subtitle2,
-                ),
-                Text(portfolioValue),
-              ],
-            ),
+            portfolioValue != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Portfolio",
+                        style: theme.textTheme.subtitle2,
+                      ),
+                      Text(portfolioValue),
+                    ],
+                  )
+                : Container(),
             miningProfitability != null
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
