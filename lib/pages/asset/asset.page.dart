@@ -49,9 +49,12 @@ class _AssetPageState extends State<AssetPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(value),
-                PercentChange(
-                  value: this.asset.percentChange,
-                  style: theme.textTheme.subtitle1,
+                Padding(
+                  padding: const EdgeInsets.only(left: 2.0),
+                  child: PercentChange(
+                    value: this.asset.percentChange,
+                    style: theme.textTheme.subtitle1,
+                  ),
                 ),
               ],
             ),
