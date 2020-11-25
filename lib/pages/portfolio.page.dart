@@ -6,7 +6,7 @@ import "package:cryptarch/models/models.dart" show PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
     show AssetService, PortfolioService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class PortfolioPage extends StatefulWidget {
   static const routeName = "/portfolio";

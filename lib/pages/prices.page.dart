@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show AssetService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class PricesPage extends StatefulWidget {
   static const routeName = "/prices";

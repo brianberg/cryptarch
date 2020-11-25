@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 import "asset_picker_list_item.widget.dart";
 

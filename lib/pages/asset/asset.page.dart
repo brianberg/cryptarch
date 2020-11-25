@@ -4,7 +4,7 @@ import "package:intl/intl.dart";
 import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show AssetService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class AssetPage extends StatefulWidget {
   final Asset asset;

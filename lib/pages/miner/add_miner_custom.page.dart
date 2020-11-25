@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class AddCustomMinerPage extends StatefulWidget {
   @override

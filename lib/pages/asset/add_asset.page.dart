@@ -5,7 +5,7 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/constants/constants.dart" show CURRENCIES;
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show MarketsService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class AddAssetPage extends StatefulWidget {
   @override

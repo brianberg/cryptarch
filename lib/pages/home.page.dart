@@ -6,7 +6,7 @@ import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Asset, Miner, Settings;
 import "package:cryptarch/services/services.dart"
     show AssetService, MiningService, PortfolioService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class HomePage extends StatefulWidget {
   static const routeName = "/";

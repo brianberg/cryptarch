@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show PortfolioItem;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class PortfolioList extends StatelessWidget {
   final Function onTap;

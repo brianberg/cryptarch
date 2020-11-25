@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
 import "package:cryptarch/models/models.dart" show Asset;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class AssetListItem extends StatelessWidget {
   final Asset asset;

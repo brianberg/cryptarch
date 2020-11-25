@@ -1,14 +1,14 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
-class MinerList extends StatelessWidget {
+class AccountList extends StatelessWidget {
   final Function onTap;
-  final List<Miner> items;
+  final List<Account> items;
   final Map<String, dynamic> filters;
 
-  MinerList({
+  AccountList({
     Key key,
     this.items,
     this.onTap,
@@ -20,9 +20,9 @@ class MinerList extends StatelessWidget {
     if (this.items != null) {
       return _buildList(this.items);
     }
-    return FutureBuilder<List<Miner>>(
-      future: Miner.find(filters: this.filters),
-      builder: (BuildContext context, AsyncSnapshot<List<Miner>> snapshot) {
+    return FutureBuilder<List<Account>>(
+      future: Account.find(filters: this.filters),
+      builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
@@ -32,24 +32,24 @@ class MinerList extends StatelessWidget {
             if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             }
-            List<Miner> miners = snapshot.data;
-            return _buildList(miners);
+            List<Account> accounts = snapshot.data;
+            return _buildList(accounts);
         }
-        return Container(child: const Text("Unable to get miners"));
+        return Container(child: const Text("Unable to get accounts"));
       },
     );
   }
 
-  Widget _buildList(List<Miner> miners) {
-    if (miners.length == 0) {
+  Widget _buildList(List<Account> accounts) {
+    if (accounts.length == 0) {
       return Center(child: Text("Wow, so empty"));
     }
 
     return ListView.builder(
-      itemCount: miners.length,
+      itemCount: accounts.length,
       itemBuilder: (BuildContext context, int index) {
-        return MinerListItem(
-          miner: miners[index],
+        return AccountListItem(
+          account: accounts[index],
           onTap: this.onTap,
         );
       },

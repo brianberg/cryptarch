@@ -6,7 +6,7 @@ import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
     show AssetService, MiningService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class MiningPage extends StatefulWidget {
   static const routeName = "/mining";

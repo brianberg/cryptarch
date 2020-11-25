@@ -4,7 +4,7 @@ import "package:provider/provider.dart";
 
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show SettingsService;
-import "package:cryptarch/ui/theme.dart";
+import 'package:cryptarch/theme.dart';
 
 class App extends StatelessWidget {
   @override

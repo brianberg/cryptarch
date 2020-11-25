@@ -5,7 +5,7 @@ import "package:intl/intl.dart";
 import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show MiningService;
-import "package:cryptarch/ui/widgets.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class MinerPage extends StatefulWidget {
   final Miner miner;
