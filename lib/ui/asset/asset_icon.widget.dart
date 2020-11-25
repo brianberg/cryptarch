@@ -33,7 +33,7 @@ class AssetIcon extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           width: 1,
-          color: theme.colorScheme.onSurface,
+          color: theme.dividerColor,
         ),
       ),
       child: Padding(
