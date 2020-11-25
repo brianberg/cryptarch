@@ -19,15 +19,18 @@ class CurrencyPickerList extends StatelessWidget {
       return Center(child: Text("Wow, so empty"));
     }
 
-    return ListView.builder(
-      itemCount: this.items.length,
-      itemBuilder: (BuildContext context, int index) {
-        final currency = this.items[index];
-        return CurrencyPickerListItem(
-          currency: currency,
-          onTap: this.onTap,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListView.builder(
+        itemCount: this.items.length,
+        itemBuilder: (BuildContext context, int index) {
+          final currency = this.items[index];
+          return CurrencyPickerListItem(
+            currency: currency,
+            onTap: this.onTap,
+          );
+        },
+      ),
     );
   }
 }

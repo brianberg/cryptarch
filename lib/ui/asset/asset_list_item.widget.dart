@@ -21,8 +21,6 @@ class AssetListItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     final value = NumberFormat.simpleCurrency().format(this.asset.value);
-    final changePrefix = this.asset.percentChange > 0 ? '+' : '';
-    final percentChange = "${this.asset.percentChange.toStringAsFixed(2)}%";
 
     return ListTile(
       key: ValueKey(this.asset.id),
@@ -54,8 +52,8 @@ class AssetListItem extends StatelessWidget {
             value,
             style: theme.textTheme.bodyText1,
           ),
-          Text(
-            "$changePrefix$percentChange",
+          PercentChange(
+            value: this.asset.percentChange,
             style: theme.textTheme.subtitle2,
           ),
         ],

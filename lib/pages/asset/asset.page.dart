@@ -35,8 +35,6 @@ class _AssetPageState extends State<AssetPage> {
     final theme = Theme.of(context);
 
     final value = NumberFormat.simpleCurrency().format(this.asset.value);
-    final changePrefix = this.asset.percentChange > 0 ? '+' : '';
-    final percentChange = "${this.asset.percentChange.toStringAsFixed(2)}%";
 
     return Scaffold(
       appBar: AppBar(
@@ -51,8 +49,8 @@ class _AssetPageState extends State<AssetPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(value),
-                Text(
-                  " $changePrefix$percentChange",
+                PercentChange(
+                  value: this.asset.percentChange,
                   style: theme.textTheme.subtitle1,
                 ),
               ],

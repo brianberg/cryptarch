@@ -51,20 +51,23 @@ class AssetPickerList extends StatelessWidget {
       return Center(child: Text("Wow, so empty"));
     }
 
-    return ListView.builder(
-      itemCount: assets.length,
-      itemBuilder: (BuildContext context, int index) {
-        final asset = assets[index];
-        var selected = false;
-        if (this.selectedItem != null) {
-          selected = this.selectedItem.id == asset.id;
-        }
-        return AssetPickerListItem(
-          asset: asset,
-          selected: selected,
-          onTap: this.onTap,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListView.builder(
+        itemCount: assets.length,
+        itemBuilder: (BuildContext context, int index) {
+          final asset = assets[index];
+          var selected = false;
+          if (this.selectedItem != null) {
+            selected = this.selectedItem.id == asset.id;
+          }
+          return AssetPickerListItem(
+            asset: asset,
+            selected: selected,
+            onTap: this.onTap,
+          );
+        },
+      ),
     );
   }
 }
