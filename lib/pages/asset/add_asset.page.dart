@@ -133,12 +133,21 @@ class _AddAssetPageState extends State<AddAssetPage> {
     }
 
     double value = 0.0;
+    double lastPrice = 0.0;
+    double highPrice = 0.0;
+    double lowPrice = 0.0;
+    double percentChange = 0.0;
 
     if (exchange != null) {
       final ticker = "$symbol/USD";
       final price = await MarketsService().getPrice(ticker, exchange);
       if (price != null) {
         value = price.current;
+        value = price.current;
+        lastPrice = price.last;
+        highPrice = price.high;
+        lowPrice = price.low;
+        percentChange = price.percentChange;
       }
       platform = null;
       contractAddress = null;
@@ -150,6 +159,10 @@ class _AddAssetPageState extends State<AddAssetPage> {
       );
       if (price != null) {
         value = price.current;
+        lastPrice = price.last;
+        highPrice = price.high;
+        lowPrice = price.low;
+        percentChange = price.percentChange;
       }
       exchange = null;
     }
@@ -162,6 +175,10 @@ class _AddAssetPageState extends State<AddAssetPage> {
       exchange: exchange,
       tokenPlatform: platform,
       contractAddress: contractAddress,
+      lastPrice: lastPrice,
+      highPrice: highPrice,
+      lowPrice: lowPrice,
+      percentChange: percentChange,
     );
     await asset.save();
 

@@ -75,7 +75,7 @@ const CURRENCIES = {
     "name": "Maker",
     "icon": "assets/images/currencies/mkr.svg",
     "exchanges": [
-      "Kraken",
+      "Coinbase Pro",
     ],
   },
   "RVN": {
@@ -83,7 +83,7 @@ const CURRENCIES = {
     "name": "Ravencoin",
     "icon": "assets/images/currencies/rvn.svg",
     "exchanges": [
-      "Kraken",
+      "Bittrex",
     ],
   },
   "USDC": {
