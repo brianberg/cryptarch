@@ -165,7 +165,7 @@ class _MinerPageState extends State<MinerPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(
-                  "Wallet",
+                  "Account",
                   style: theme.textTheme.bodyText1,
                 ),
               ),
