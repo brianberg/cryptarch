@@ -42,20 +42,8 @@ class _MinerPageState extends State<MinerPage> {
         NumberFormat.simpleCurrency().format(this.miner.fiatProfitability);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Text(this.widget.miner.name),
-        bottom: this.miner.active
-            ? null
-            : AppBar(
-                toolbarHeight: 40.0,
-                centerTitle: true,
-                title: Text(
-                  "Inactive",
-                  style: theme.textTheme.bodyText1,
-                ),
-                leading: Container(),
-                backgroundColor: theme.colorScheme.surface,
-              ),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
@@ -75,6 +63,23 @@ class _MinerPageState extends State<MinerPage> {
         child: RefreshIndicator(
           child: ListView(
             children: [
+              this.miner.active
+                  ? Container()
+                  : SizedBox(
+                      width: double.infinity,
+                      child: Container(
+                        color: theme.colorScheme.surface,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Inactive"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(

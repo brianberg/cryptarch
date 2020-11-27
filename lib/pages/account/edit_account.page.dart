@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Account;
+import "package:cryptarch/widgets/widgets.dart";
 
 class EditAccountPage extends StatefulWidget {
   final Account account;
@@ -23,7 +24,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Edit Account"),
       ),
       body: SafeArea(

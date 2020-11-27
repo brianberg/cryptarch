@@ -5,6 +5,7 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/services/services.dart"
     show NiceHashService, StorageService;
+import "package:cryptarch/widgets/widgets.dart";
 
 class AddNiceHashMinerPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("NiceHash"),
       ),
       body: SafeArea(

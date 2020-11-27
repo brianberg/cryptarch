@@ -22,7 +22,7 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Custom Miner"),
       ),
       body: SafeArea(

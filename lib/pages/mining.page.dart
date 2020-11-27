@@ -34,7 +34,7 @@ class _MiningPageState extends State<MiningPage> {
         : "";
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

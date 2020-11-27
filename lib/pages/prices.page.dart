@@ -27,7 +27,7 @@ class _PricesPageState extends State<PricesPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: this.totalChange != null
             ? PercentChange(value: this.totalChange)
             : Text(""),

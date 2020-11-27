@@ -30,7 +30,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Add Asset"),
       ),
       body: SafeArea(

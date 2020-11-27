@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Miner;
+import "package:cryptarch/widgets/widgets.dart";
 
 class EditMinerPage extends StatefulWidget {
   final Miner miner;
@@ -31,7 +32,7 @@ class _EditMinerPageState extends State<EditMinerPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Edit Miner"),
       ),
       body: SafeArea(

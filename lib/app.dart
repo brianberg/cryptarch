@@ -48,6 +48,11 @@ class TabContainer extends StatefulWidget {
 }
 
 class _TabContainerState extends State<TabContainer> {
+  final _homeTab = GlobalKey<NavigatorState>();
+  final _portfolioTab = GlobalKey<NavigatorState>();
+  final _pricesTab = GlobalKey<NavigatorState>();
+  final _miningTab = GlobalKey<NavigatorState>();
+
   int _tabIndex = 0;
 
   @override
@@ -59,7 +64,53 @@ class _TabContainerState extends State<TabContainer> {
 
         return Scaffold(
           body: SafeArea(
-            child: this._getTabBody(),
+            child: IndexedStack(
+              index: this._tabIndex,
+              children: <Widget>[
+                Navigator(
+                  key: this._homeTab,
+                  onGenerateRoute: (route) {
+                    return MaterialPageRoute(
+                      settings: route,
+                      builder: (context) {
+                        return Consumer<SettingsService>(
+                          builder: (context, settingsService, child) {
+                            return HomePage(settings: settingsService.settings);
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+                Navigator(
+                  key: this._portfolioTab,
+                  onGenerateRoute: (route) {
+                    return MaterialPageRoute(
+                      settings: route,
+                      builder: (context) => PortfolioPage(),
+                    );
+                  },
+                ),
+                Navigator(
+                  key: this._pricesTab,
+                  onGenerateRoute: (route) {
+                    return MaterialPageRoute(
+                      settings: route,
+                      builder: (context) => PricesPage(),
+                    );
+                  },
+                ),
+                Navigator(
+                  key: this._miningTab,
+                  onGenerateRoute: (route) {
+                    return MaterialPageRoute(
+                      settings: route,
+                      builder: (context) => MiningPage(),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
@@ -89,31 +140,36 @@ class _TabContainerState extends State<TabContainer> {
                     )
                   : null,
             ].where((w) => w != null).toList(),
-            onTap: (index) {
-              setState(() {
-                this._tabIndex = index;
-              });
-            },
+            onTap: this._onSelectTab,
           ),
         );
       },
     );
   }
 
-  Widget _getTabBody() {
-    switch (this._tabIndex) {
-      case 1:
-        return PortfolioPage();
-      case 2:
-        return PricesPage();
-      case 3:
-        return MiningPage();
-      default:
-        return Consumer<SettingsService>(
-          builder: (context, settingsService, child) {
-            return HomePage(settings: settingsService.settings);
-          },
-        );
+  void _onSelectTab(int index) {
+    if (this._tabIndex == index) {
+      switch (index) {
+        case 0:
+          this._homeTab.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 1:
+          this._portfolioTab.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 2:
+          this._pricesTab.currentState.popUntil((route) => route.isFirst);
+          break;
+        case 3:
+          this._miningTab.currentState.popUntil((route) => route.isFirst);
+          break;
+        default:
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          this._tabIndex = index;
+        });
+      }
     }
   }
 }

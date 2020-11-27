@@ -36,7 +36,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
         : "";
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Text(totalValue),
         centerTitle: true,
         actions: [

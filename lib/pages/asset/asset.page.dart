@@ -37,7 +37,7 @@ class _AssetPageState extends State<AssetPage> {
     final value = NumberFormat.simpleCurrency().format(this.asset.value);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

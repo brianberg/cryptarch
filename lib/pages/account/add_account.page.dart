@@ -21,7 +21,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Add Account"),
       ),
       body: SafeArea(

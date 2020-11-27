@@ -49,23 +49,21 @@ class _HomePageState extends State<HomePage> {
         : null;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            portfolioValue != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Portfolio",
-                        style: theme.textTheme.subtitle2,
-                      ),
-                      Text(portfolioValue),
-                    ],
-                  )
-                : Container(),
-            miningProfitability != null
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Portfolio",
+                  style: theme.textTheme.subtitle2,
+                ),
+                Text(portfolioValue != null ? portfolioValue : "..."),
+              ],
+            ),
+            this.widget.settings.showMining
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -76,7 +74,9 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(miningProfitability),
+                          Text(miningProfitability != null
+                              ? miningProfitability
+                              : "..."),
                           Text(" / day", style: theme.textTheme.subtitle1),
                         ],
                       ),
@@ -89,7 +89,12 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () async {
-              await Navigator.pushNamed(context, SettingsPage.routeName);
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(),
+                ),
+              );
               await this._initialize();
             },
           )

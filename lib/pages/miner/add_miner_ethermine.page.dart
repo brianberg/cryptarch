@@ -5,6 +5,7 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/services/services.dart"
     show EthermineService, EtherscanService;
+import "package:cryptarch/widgets/widgets.dart";
 
 class AddEthermineMinerPage extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Ethermine"),
       ),
       body: SafeArea(

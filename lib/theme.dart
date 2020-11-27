@@ -9,7 +9,7 @@ class AppTheme {
     buttonColor: Colors.white,
     cursorColor: Colors.black,
     focusColor: Colors.black,
-    scaffoldBackgroundColor: Colors.grey[100],
+    scaffoldBackgroundColor: Colors.white,
     backgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
       primary: Colors.white,

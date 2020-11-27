@@ -4,6 +4,7 @@ import "package:provider/provider.dart";
 import "package:settings_ui/settings_ui.dart";
 
 import "package:cryptarch/services/services.dart" show SettingsService;
+import "package:cryptarch/widgets/widgets.dart";
 
 class SettingsPage extends StatelessWidget {
   static final routeName = "/settings";
@@ -14,7 +15,7 @@ class SettingsPage extends StatelessWidget {
     final settings = settingsService.settings;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Settings"),
       ),
       body: SafeArea(
