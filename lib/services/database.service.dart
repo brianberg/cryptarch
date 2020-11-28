@@ -3,7 +3,7 @@ import "package:sqflite/sqflite.dart";
 
 import "package:cryptarch/models/models.dart";
 
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 
 class Query {
   final String where;
@@ -42,6 +42,9 @@ class DatabaseService {
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Migrations
+        if (oldVersion == 1) {
+          await this._migrateV1(db);
+        }
       },
     );
     return this._db;
@@ -159,5 +162,14 @@ class DatabaseService {
     String minerTable = Miner.tableName;
     String minerColumns = _mapToSqlTableString(Miner.tableColumns);
     await db.execute("CREATE TABLE $minerTable ($minerColumns)");
+  }
+
+  Future<void> _migrateV1(Database db) async {
+    String payoutTable = Payout.tableName;
+    String payoutColumns = _mapToSqlTableString(Payout.tableColumns);
+    await db.execute("CREATE TABLE $payoutTable ($payoutColumns)");
+    String energyTable = Energy.tableName;
+    String energyColumns = _mapToSqlTableString(Energy.tableColumns);
+    await db.execute("CREATE TABLE $energyTable ($energyColumns)");
   }
 }
