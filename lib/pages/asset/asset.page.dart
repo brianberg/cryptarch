@@ -70,7 +70,7 @@ class _AssetPageState extends State<AssetPage> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditAccountPage(account: account),
+                        builder: (context) => AccountPage(account: account),
                       ),
                     );
                     await this._refreshAccounts();
