@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   final portfolio = PortfolioService();
 
   List<Asset> assets;
-  List<Miner> miners;
   double portfolioValue;
   double miningProfitability;
 
@@ -133,22 +132,13 @@ class _HomePageState extends State<HomePage> {
     final assets = await Asset.find(orderBy: "value DESC");
     final value = await this.portfolio.getValue();
 
-    List<Miner> miners;
     double miningProfitability;
     if (settings.showMining) {
-      miners = await Miner.find();
-
-      miningProfitability = miners.fold(0.0, (value, miner) {
-        if (miner.active) {
-          return value + miner.fiatProfitability;
-        }
-        return value;
-      });
+      miningProfitability = await MiningService.getProfitability();
     }
 
     setState(() {
       this.assets = assets;
-      this.miners = miners;
       this.portfolioValue = value;
       this.miningProfitability = miningProfitability;
     });

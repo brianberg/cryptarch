@@ -21,4 +21,14 @@ class MiningService {
 
     return miner;
   }
+
+  static Future<double> getProfitability() async {
+    final miners = await Miner.find(filters: {"active": 1});
+    final profitability = miners.fold(
+      0.0,
+      (double value, miner) => value + miner.fiatProfitability,
+    );
+
+    return profitability;
+  }
 }
