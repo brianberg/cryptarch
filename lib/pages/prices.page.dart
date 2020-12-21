@@ -23,6 +23,12 @@ class _PricesPageState extends State<PricesPage> {
   }
 
   @override
+  void didUpdateWidget(Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    this._initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 

@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/models/models.dart" show Asset, Miner, Settings;
+import "package:cryptarch/models/models.dart" show Asset, Settings;
 import "package:cryptarch/services/services.dart"
     show AssetService, MiningService, PortfolioService;
 import "package:cryptarch/widgets/widgets.dart";
@@ -33,6 +33,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    this._initialize();
+  }
+
+  @override
+  void didUpdateWidget(Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
     this._initialize();
   }
 
