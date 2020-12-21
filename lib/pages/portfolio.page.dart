@@ -28,6 +28,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
   }
 
   @override
+  void didUpdateWidget(Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    this._refreshItems();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
