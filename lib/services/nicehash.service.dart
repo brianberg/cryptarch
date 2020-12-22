@@ -6,6 +6,8 @@ import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/providers/providers.dart" show NiceHashProvider;
 import "package:cryptarch/services/services.dart" show StorageService;
 
+const PAYOUT_USER = "USER";
+
 class NiceHashBalance {
   final double available;
   final double pending;
@@ -58,8 +60,78 @@ class NiceHashRig {
   }
 }
 
+class NiceHashPayout {
+  final String id;
+  final String currency;
+  final String accountType;
+  final DateTime created;
+  final double amount;
+
+  NiceHashPayout({
+    @required this.id,
+    @required this.currency,
+    @required this.accountType,
+    @required this.created,
+    @required this.amount,
+  })  : assert(id != null),
+        assert(currency != null),
+        assert(accountType != null),
+        assert(created != null),
+        assert(amount != null);
+
+  factory NiceHashPayout.fromMap(Map<String, dynamic> rawPayout) {
+    var currency = rawPayout["curreny"];
+    if (currency != null) {
+      currency = currency["enumName"];
+    }
+
+    var accountType = rawPayout["accountType"];
+    if (accountType != null) {
+      accountType = accountType["enumName"];
+    }
+
+    final createdMillis = int.tryParse(rawPayout["created"]);
+    final created = createdMillis != null
+        ? DateTime.fromMillisecondsSinceEpoch(createdMillis)
+        : null;
+
+    var amount = rawPayout["amount"];
+    if (amount is int) {
+      amount = double.parse(amount);
+    }
+
+    var fee = rawPayout["feeAmount"];
+    if (fee is int) {
+      fee = double.parse(fee);
+    }
+
+    return NiceHashPayout(
+      id: rawPayout["id"],
+      currency: currency,
+      accountType: accountType,
+      created: created,
+      amount: amount - fee,
+    );
+  }
+}
+
 class NiceHashService {
   NiceHashProvider _provider;
+
+  Future<Miner> refreshMiner(Miner miner) async {
+    final account = miner.account;
+    final balance = await this.getAccountBalance();
+    final profitability = await this.getProfitability();
+
+    account.amount = balance.available;
+    await account.save();
+
+    miner.profitability = profitability;
+    miner.unpaidAmount = balance.pending;
+    await miner.save();
+
+    return miner;
+  }
 
   Future<NiceHashBalance> getAccountBalance() async {
     final provider = await this._getProvider();
@@ -97,19 +169,28 @@ class NiceHashService {
     return 0.0;
   }
 
-  Future<Miner> refreshMiner(Miner miner) async {
-    final account = miner.account;
-    final balance = await this.getAccountBalance();
-    final profitability = await this.getProfitability();
+  Future<List<NiceHashPayout>> getPayouts({
+    int pageSize = 84,
+    int page,
+    int afterMillis,
+  }) async {
+    final provider = await this._getProvider();
+    if (provider != null) {
+      final res = await provider.getRigPayouts(
+        pageSize: pageSize,
+        page: page,
+        afterMillis: afterMillis,
+      );
+      final rawPayouts = jsonDecode(res.body) as List;
+      if (rawPayouts.isEmpty) {
+        return List<NiceHashPayout>();
+      }
+      return List<NiceHashPayout>.from(rawPayouts.map((rawPayout) {
+        return NiceHashPayout.fromMap(rawPayout);
+      }));
+    }
 
-    account.amount = balance.available;
-    await account.save();
-
-    miner.profitability = profitability;
-    miner.unpaidAmount = balance.pending;
-    await miner.save();
-
-    return miner;
+    return null;
   }
 
   Future<NiceHashProvider> _getProvider() async {
