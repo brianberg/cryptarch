@@ -156,7 +156,9 @@ class DatabaseService {
     final tables = {
       Asset.tableName: Asset.tableColumns,
       Account.tableName: Account.tableColumns,
+      Energy.tableName: Energy.tableColumns,
       Miner.tableName: Miner.tableColumns,
+      Payout.tableName: Payout.tableColumns,
     };
     for (String tableName in tables.keys) {
       String columns = _mapToSqlColumnsString(tables[tableName]);
