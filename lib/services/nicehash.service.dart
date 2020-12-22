@@ -59,8 +59,10 @@ class NiceHashRig {
 }
 
 class NiceHashService {
+  NiceHashProvider _provider;
+
   Future<NiceHashBalance> getAccountBalance() async {
-    final provider = await this._createProvider();
+    final provider = await this._getProvider();
     if (provider != null) {
       final res = await provider.getAccounts();
       final rawAccounts = Map<String, dynamic>.from(jsonDecode(res.body));
@@ -74,7 +76,7 @@ class NiceHashService {
   }
 
   Future<double> getProfitability() async {
-    final provider = await this._createProvider();
+    final provider = await this._getProvider();
     if (provider != null) {
       final res = await provider.getMiningRigs();
       final rawRigsData = Map<String, dynamic>.from(jsonDecode(res.body));
@@ -110,15 +112,17 @@ class NiceHashService {
     return miner;
   }
 
-  Future<NiceHashProvider> _createProvider() async {
-    final credentials = await StorageService.getItem("nicehash");
-    if (credentials != null) {
-      return NiceHashProvider(
-        organizationId: credentials["organization_id"],
-        key: credentials["api_key"],
-        secret: credentials["api_secret"],
-      );
+  Future<NiceHashProvider> _getProvider() async {
+    if (this._provider == null) {
+      final credentials = await StorageService.getItem("nicehash");
+      if (credentials != null) {
+        this._provider = NiceHashProvider(
+          organizationId: credentials["organization_id"],
+          key: credentials["api_key"],
+          secret: credentials["api_secret"],
+        );
+      }
     }
-    return null;
+    return this._provider;
   }
 }
