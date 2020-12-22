@@ -143,33 +143,33 @@ class DatabaseService {
     return numDeleted;
   }
 
-  String _mapToSqlTableString(Map<String, String> map) {
-    String table = "";
+  String _mapToSqlColumnsString(Map<String, String> map) {
+    String columns = "";
     map.forEach((key, value) {
-      table += "$key $value, ";
+      columns += "$key $value, ";
     });
-    table = table.substring(0, table.length - 2);
-    return table;
+    columns = columns.substring(0, columns.length - 2);
+    return columns;
   }
 
   Future<void> _initializeTables(Database db) async {
-    String assetTable = Asset.tableName;
-    String assetColumns = _mapToSqlTableString(Asset.tableColumns);
-    await db.execute("CREATE TABLE $assetTable ($assetColumns)");
-    String accountTable = Account.tableName;
-    String accountColumns = _mapToSqlTableString(Account.tableColumns);
-    await db.execute("CREATE TABLE $accountTable ($accountColumns)");
-    String minerTable = Miner.tableName;
-    String minerColumns = _mapToSqlTableString(Miner.tableColumns);
-    await db.execute("CREATE TABLE $minerTable ($minerColumns)");
+    final tables = {
+      Asset.tableName: Asset.tableColumns,
+      Account.tableName: Account.tableColumns,
+      Miner.tableName: Miner.tableColumns,
+    };
+    for (String tableName in tables.keys) {
+      String columns = _mapToSqlColumnsString(tables[tableName]);
+      await db.execute("CREATE TABLE $tableName ($columns)");
+    }
   }
 
   Future<void> _migrateV1(Database db) async {
     String payoutTable = Payout.tableName;
-    String payoutColumns = _mapToSqlTableString(Payout.tableColumns);
+    String payoutColumns = _mapToSqlColumnsString(Payout.tableColumns);
     await db.execute("CREATE TABLE $payoutTable ($payoutColumns)");
     String energyTable = Energy.tableName;
-    String energyColumns = _mapToSqlTableString(Energy.tableColumns);
+    String energyColumns = _mapToSqlColumnsString(Energy.tableColumns);
     await db.execute("CREATE TABLE $energyTable ($energyColumns)");
   }
 }
