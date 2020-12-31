@@ -6,8 +6,6 @@ import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/providers/providers.dart" show NiceHashProvider;
 import "package:cryptarch/services/services.dart" show StorageService;
 
-const PAYOUT_USER = "USER";
-
 class NiceHashBalance {
   final double available;
   final double pending;
@@ -116,25 +114,10 @@ class NiceHashPayout {
 }
 
 class NiceHashService {
-  NiceHashProvider _provider;
-
-  Future<Miner> refreshMiner(Miner miner) async {
-    final account = miner.account;
-    final balance = await this.getAccountBalance();
-    final profitability = await this.getProfitability();
-
-    account.amount = balance.available;
-    await account.save();
-
-    miner.profitability = profitability;
-    miner.unpaidAmount = balance.pending;
-    await miner.save();
-
-    return miner;
-  }
+  static const String PAYOUT_USER = "USER";
 
   Future<NiceHashBalance> getAccountBalance() async {
-    final provider = await this._getProvider();
+    final provider = await this._createProvider();
     if (provider != null) {
       final res = await provider.getAccounts();
       final rawAccounts = Map<String, dynamic>.from(jsonDecode(res.body));
@@ -148,7 +131,7 @@ class NiceHashService {
   }
 
   Future<double> getProfitability() async {
-    final provider = await this._getProvider();
+    final provider = await this._createProvider();
     if (provider != null) {
       final res = await provider.getMiningRigs();
       final rawRigsData = Map<String, dynamic>.from(jsonDecode(res.body));
@@ -174,7 +157,7 @@ class NiceHashService {
     int page,
     int afterMillis,
   }) async {
-    final provider = await this._getProvider();
+    final provider = await this._createProvider();
     if (provider != null) {
       final res = await provider.getRigPayouts(
         pageSize: pageSize,
@@ -193,17 +176,30 @@ class NiceHashService {
     return null;
   }
 
-  Future<NiceHashProvider> _getProvider() async {
-    if (this._provider == null) {
-      final credentials = await StorageService.getItem("nicehash");
-      if (credentials != null) {
-        this._provider = NiceHashProvider(
-          organizationId: credentials["organization_id"],
-          key: credentials["api_key"],
-          secret: credentials["api_secret"],
-        );
-      }
+  Future<Miner> refreshMiner(Miner miner) async {
+    final account = miner.account;
+    final balance = await this.getAccountBalance();
+    final profitability = await this.getProfitability();
+
+    account.amount = balance.available;
+    await account.save();
+
+    miner.profitability = profitability;
+    miner.unpaidAmount = balance.pending;
+    await miner.save();
+
+    return miner;
+  }
+
+  Future<NiceHashProvider> _createProvider() async {
+    final credentials = await StorageService.getItem("nicehash");
+    if (credentials != null) {
+      return NiceHashProvider(
+        organizationId: credentials["organization_id"],
+        key: credentials["api_key"],
+        secret: credentials["api_secret"],
+      );
     }
-    return this._provider;
+    return null;
   }
 }
