@@ -2,9 +2,10 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
+import "package:cryptarch/models/models.dart"
+    show Asset, Account, Miner, Payout;
 import "package:cryptarch/services/services.dart"
-    show NiceHashService, StorageService;
+    show NiceHashService, NiceHashPayout, StorageService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AddNiceHashMinerPage extends StatefulWidget {
@@ -15,13 +16,7 @@ class AddNiceHashMinerPage extends StatefulWidget {
 class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
   final _formKey = GlobalKey<FormState>();
 
-  Map<String, String> _credentials = {};
   Map<String, dynamic> _formData = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +45,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._credentials["organization_id"] = value;
+                          this._formData["organization_id"] = value;
                         });
                       },
                       validator: (value) {
@@ -72,7 +67,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._credentials["api_key"] = value;
+                          this._formData["api_key"] = value;
                         });
                       },
                       validator: (value) {
@@ -94,7 +89,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._credentials["api_secret"] = value;
+                          this._formData["api_secret"] = value;
                         });
                       },
                       validator: (value) {
@@ -146,7 +141,9 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                             try {
                               // Create miner and account
                               final miner = await _saveNiceHashMiner();
-                              Navigator.pop(context, miner.id);
+                              if (miner != null) {
+                                Navigator.pop(context, miner.id);
+                              }
                             } catch (err) {
                               // final snackBar = SnackBar(
                               //   content: Text(err),
@@ -170,9 +167,14 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
 
   Future<Miner> _saveNiceHashMiner() async {
     // Securely store NiceHash credentials
+    final credentials = {
+      "organization_id": this._formData["organization_id"],
+      "api_key": this._formData["api_key"],
+      "api_secret": this._formData["api_secret"],
+    };
     await StorageService.putItem(
       "nicehash",
-      this._credentials,
+      credentials,
     );
 
     final nicehash = NiceHashService();
@@ -181,6 +183,8 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     final uuid = Uuid();
 
     final asset = await Asset.findOneBySymbol("BTC");
+
+    // TODO: add bitcoin if not found
 
     final account = Account(
       id: uuid.v1(),
@@ -203,6 +207,77 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     );
     await miner.save();
 
-    return miner;
+    try {
+      await this._getMiningPayouts(miner, asset);
+      return miner;
+    } catch (err) {
+      await Payout.deleteMany({"minerId": miner.id});
+      await miner.delete();
+      await account.delete();
+      return null;
+    }
+  }
+
+  Future<void> _getMiningPayouts(Miner miner, Asset asset) async {
+    final uuid = Uuid();
+    final nicehash = NiceHashService();
+    final DateTime now = DateTime.now();
+    final int pageSize = 168; // 4 weeks * 7 days * 6 payouts per day
+
+    // Keep track of the previous page's last payout
+    // in case the next page has payouts on the same day
+    Payout currentPayout;
+    List<NiceHashPayout> payouts;
+    int afterMillis = now.toUtc().millisecondsSinceEpoch;
+    do {
+      // Get a page of payouts
+      payouts = await nicehash.getPayouts(
+        pageSize: pageSize,
+        afterMillis: afterMillis,
+      );
+      // Aggregate payouts by day
+      DateTime firstDate;
+      DateTime lastDate;
+      final Map<DateTime, Payout> daily = {};
+      for (NiceHashPayout payout in payouts) {
+        // Only care about payouts to the user (mining payouts)
+        if (payout.accountType == NiceHashService.PAYOUT_USER) {
+          final created = payout.created.toLocal();
+          final date = DateTime(created.year, created.month, created.day);
+          final existingPayout = daily[date];
+          if (existingPayout == null) {
+            daily[date] = Payout(
+              id: uuid.v1(),
+              miner: miner,
+              asset: asset,
+              date: date,
+              amount: payout.amount,
+            );
+          } else {
+            existingPayout.amount += payout.amount;
+            daily[date] = existingPayout;
+          }
+          // Keep track of first and last date of page
+          if (payout.id == payouts.first.id) {
+            firstDate = date;
+          } else if (payout.id == payouts.last.id) {
+            lastDate = date;
+            afterMillis = created.millisecondsSinceEpoch;
+          }
+        }
+      }
+      // Save payouts
+      for (Payout payout in daily.values) {
+        // If payout is on the same day as current payout add to it instead
+        if (payout.date == firstDate && currentPayout?.date == firstDate) {
+          currentPayout.amount += payout.amount;
+          await currentPayout.save();
+        } else {
+          await payout.save();
+        }
+      }
+      // Set current payout to the last payout of this page
+      currentPayout = daily[lastDate];
+    } while (payouts.length == pageSize);
   }
 }

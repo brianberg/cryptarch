@@ -45,11 +45,22 @@ class NiceHashProvider {
     );
   }
 
-  Future<http.Response> getRigPayouts({int size = 84}) {
-    String path = "/main/api/v2/mining/rigs/payouts?size=$size";
+  Future<http.Response> getRigPayouts({
+    int pageSize = 84,
+    // int page, this doesn't seem to work, use `afterMillis`
+    int afterMillis,
+  }) {
+    String path = "/main/api/v2/mining/rigs/payouts";
+    String query = "size=$pageSize";
+    // if (page != null && page > 0) {
+    //   query += "&page=$page";
+    // }
+    if (afterMillis != null) {
+      query += "&afterTimestamp=$afterMillis";
+    }
     return http.get(
-      "$NICEHASH_API_URL$path",
-      headers: this._buildHeaders("GET", path),
+      "$NICEHASH_API_URL$path?$query",
+      headers: this._buildHeaders("GET", path, query: query),
     );
   }
 
