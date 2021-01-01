@@ -162,14 +162,12 @@ class NiceHashService {
 
   Future<List<NiceHashPayout>> getPayouts({
     int pageSize = 84,
-    int page,
     int afterMillis,
   }) async {
     final provider = await this._createProvider();
     if (provider != null) {
       final res = await provider.getRigPayouts(
         pageSize: pageSize,
-        page: page,
         afterMillis: afterMillis,
       );
       final rawPayoutsData = Map<String, dynamic>.from(jsonDecode(res.body));
