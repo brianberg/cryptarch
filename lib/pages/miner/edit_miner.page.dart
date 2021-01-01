@@ -173,30 +173,6 @@ class _EditMinerPageState extends State<EditMinerPage> {
                       ),
                     ),
                   ),
-                  // Delete Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlineButton(
-                      child: Text("Delete"),
-                      textColor: theme.colorScheme.onPrimary,
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                      onPressed: () async {
-                        try {
-                          await this.miner.account.delete();
-                          await this.miner.delete();
-                          Navigator.pop(context);
-                        } catch (err) {
-                          // final snackBar = SnackBar(
-                          //   content: Text(err.message),
-                          // );
-                          // Scaffold.of(context).showSnackBar(snackBar);
-                          print(err);
-                        }
-                      },
-                    ),
-                  ),
                 ].where((w) => w != null).toList(),
               ),
             ),

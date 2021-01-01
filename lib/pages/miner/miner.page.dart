@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show Miner;
+import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show MiningService;
 import "package:cryptarch/widgets/widgets.dart";
@@ -187,6 +187,27 @@ class _MinerPageState extends State<MinerPage> {
                   child: AccountListItem(
                     account: this.miner.account,
                   ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: FlatButton(
+                  child: Text("Delete"),
+                  textColor: Colors.red,
+                  onPressed: () async {
+                    try {
+                      await this.miner.account.delete();
+                      await Payout.deleteMany({"minerId": this.miner.id});
+                      await this.miner.delete();
+                      Navigator.pop(context);
+                    } catch (err) {
+                      // final snackBar = SnackBar(
+                      //   content: Text(err.message),
+                      // );
+                      // Scaffold.of(context).showSnackBar(snackBar);
+                      print(err);
+                    }
+                  },
                 ),
               ),
             ],
