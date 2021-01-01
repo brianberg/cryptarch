@@ -3,7 +3,7 @@ import "package:sqflite/sqflite.dart";
 
 import "package:cryptarch/models/models.dart";
 
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 
 class Query {
   final String where;
@@ -42,6 +42,9 @@ class DatabaseService {
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Migrations
+        if (oldVersion == 1) {
+          await this._migrateV1(db);
+        }
       },
     );
     return this._db;
@@ -140,7 +143,7 @@ class DatabaseService {
     return numDeleted;
   }
 
-  String _mapToSqlTableString(Map<String, String> map) {
+  String _mapToSqlColumnsString(Map<String, String> map) {
     String table = "";
     map.forEach((key, value) {
       table += "$key $value, ";
@@ -150,14 +153,25 @@ class DatabaseService {
   }
 
   Future<void> _initializeTables(Database db) async {
-    String assetTable = Asset.tableName;
-    String assetColumns = _mapToSqlTableString(Asset.tableColumns);
-    await db.execute("CREATE TABLE $assetTable ($assetColumns)");
-    String accountTable = Account.tableName;
-    String accountColumns = _mapToSqlTableString(Account.tableColumns);
-    await db.execute("CREATE TABLE $accountTable ($accountColumns)");
-    String minerTable = Miner.tableName;
-    String minerColumns = _mapToSqlTableString(Miner.tableColumns);
-    await db.execute("CREATE TABLE $minerTable ($minerColumns)");
+    final tables = {
+      Asset.tableName: Asset.tableColumns,
+      Account.tableName: Account.tableColumns,
+      // Energy.tableName: Energy.tableColumns,
+      Miner.tableName: Miner.tableColumns,
+      Payout.tableName: Payout.tableColumns,
+    };
+    for (String tableName in tables.keys) {
+      String columns = _mapToSqlColumnsString(tables[tableName]);
+      await db.execute("CREATE TABLE $tableName ($columns)");
+    }
+  }
+
+  Future<void> _migrateV1(Database db) async {
+    String payoutTable = Payout.tableName;
+    String payoutColumns = _mapToSqlColumnsString(Payout.tableColumns);
+    await db.execute("CREATE TABLE $payoutTable ($payoutColumns)");
+    // String energyTable = Energy.tableName;
+    // String energyColumns = _mapToSqlColumnsString(Energy.tableColumns);
+    // await db.execute("CREATE TABLE $energyTable ($energyColumns)");
   }
 }
