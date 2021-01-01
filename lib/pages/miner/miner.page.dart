@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
+import "package:fl_chart/fl_chart.dart";
+
 import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show MiningService;
@@ -81,84 +83,48 @@ class _MinerPageState extends State<MinerPage> {
                       ),
                     ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Profitability",
-                            style: theme.textTheme.bodyText1,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("$profitability $symbol"),
-                              Text(
-                                "$fiatProfitability / day",
-                                style: theme.textTheme.subtitle2,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    Text(
+                      "Profitability",
+                      style: theme.textTheme.bodyText1,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Unpaid",
-                            style: theme.textTheme.bodyText1,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("$unpaidAmount $symbol"),
-                              Text(
-                                fiatUnpaidAmount,
-                                style: theme.textTheme.subtitle2,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("$profitability $symbol"),
+                        Text(
+                          "$fiatProfitability / day",
+                          style: theme.textTheme.subtitle2,
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text(
-                  "Asset",
-                  style: theme.textTheme.bodyText1,
-                ),
+                padding: const EdgeInsets.all(16.0),
+                child: PayoutChart(filters: {"minerId": this.miner.id}),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    border: Border.all(
-                      color: theme.dividerColor,
-                    ),
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: AssetListItem(
-                    asset: this.miner.asset,
-                    onTap: (asset) {
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FlatButton(
+                    child: Text("View Payouts"),
+                    color: theme.colorScheme.surface,
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AssetPage(
-                            asset: asset,
+                          builder: (context) => MinerPayoutsPage(
+                            miner: this.miner,
                           ),
                         ),
                       );
@@ -189,23 +155,28 @@ class _MinerPageState extends State<MinerPage> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FlatButton(
-                    child: Text("View Payouts"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MinerPayoutsPage(
-                            miner: this.miner,
-                          ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Unpaid",
+                      style: theme.textTheme.bodyText1,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("$unpaidAmount $symbol"),
+                        Text(
+                          fiatUnpaidAmount,
+                          style: theme.textTheme.subtitle2,
                         ),
-                      );
-                    },
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
