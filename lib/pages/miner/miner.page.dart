@@ -191,6 +191,25 @@ class _MinerPageState extends State<MinerPage> {
               ),
               SizedBox(
                 width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    child: Text("View Payouts"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MinerPayoutsPage(
+                            miner: this.miner,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
                 child: FlatButton(
                   child: Text("Delete"),
                   textColor: Colors.red,
