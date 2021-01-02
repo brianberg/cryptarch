@@ -17,6 +17,7 @@ class Miner {
   double energy;
   bool active;
   double unpaidAmount;
+  DateTime recentPayoutDate;
 
   static final String tableName = "miners";
 
@@ -30,6 +31,7 @@ class Miner {
     "energy": "REAL",
     "active": "INTEGER",
     "unpaidAmount": "REAL",
+    "recentPayoutDate": "INTEGER",
   };
 
   Miner({
@@ -38,10 +40,11 @@ class Miner {
     @required this.platform,
     @required this.asset,
     @required this.account,
-    @required this.profitability,
-    @required this.energy,
-    @required this.active,
-    @required this.unpaidAmount,
+    this.profitability = 0.0,
+    this.energy = 0.0,
+    this.active = true,
+    this.unpaidAmount = 0.0,
+    this.recentPayoutDate,
   })  : assert(id != null),
         assert(name != null),
         assert(platform != null),
@@ -66,6 +69,13 @@ class Miner {
     final profitability = rawMiner["profitability"];
     final energy = rawMiner["energy"];
     final unpaid = rawMiner["unpaidAmount"];
+    final recentPayoutMillis = rawMiner["recentPayoutDate"];
+    final recentPayoutDate = recentPayoutMillis != null
+        ? DateTime.fromMillisecondsSinceEpoch(
+            recentPayoutMillis,
+            isUtc: true,
+          )
+        : null;
 
     return Miner(
       id: rawMiner["id"],
@@ -77,6 +87,7 @@ class Miner {
       energy: energy != null ? energy.toDouble() : 0.0,
       unpaidAmount: unpaid != null ? unpaid.toDouble() : 0.0,
       active: rawMiner["active"] == 1,
+      recentPayoutDate: recentPayoutDate?.toLocal(),
     );
   }
 
@@ -132,6 +143,8 @@ class Miner {
     map["energy"] = this.energy;
     map["unpaidAmount"] = this.unpaidAmount;
     map["active"] = this.active ? 1 : 0;
+    map["recentPayoutDate"] =
+        this.recentPayoutDate?.toUtc()?.millisecondsSinceEpoch;
 
     return map;
   }

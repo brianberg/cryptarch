@@ -1,8 +1,10 @@
 import "dart:convert";
 
-import "package:meta/meta.dart";
+import "package:flutter/foundation.dart";
 
-import "package:cryptarch/models/models.dart" show Miner;
+import "package:uuid/uuid.dart";
+
+import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/providers/providers.dart" show NiceHashProvider;
 import "package:cryptarch/services/services.dart" show StorageService;
 
@@ -183,6 +185,80 @@ class NiceHashService {
     }
 
     return null;
+  }
+
+  Future<void> getPayoutHistory(Miner miner) async {
+    final uuid = Uuid();
+    final DateTime now = DateTime.now();
+    final int pageSize = 168; // 4 weeks * 7 days * 6 payouts per day
+
+    // Keep track of the previous page's last payout
+    // in case the next page has payouts on the same day
+    Payout currentPayout;
+    DateTime recentPayoutDate;
+    List<NiceHashPayout> payouts;
+    int afterMillis = now.toUtc().millisecondsSinceEpoch;
+    do {
+      // Get a page of payouts
+      payouts = await this.getPayouts(
+        pageSize: pageSize,
+        afterMillis: afterMillis,
+      );
+      if (payouts.isEmpty) {
+        break;
+      }
+      // Aggregate payouts by day
+      DateTime firstDate;
+      DateTime lastDate;
+      final Map<DateTime, Payout> daily = {};
+      for (NiceHashPayout payout in payouts) {
+        // Only care about payouts to the user (mining payouts)
+        if (payout.accountType == NiceHashService.PAYOUT_USER) {
+          final created = payout.created.toLocal();
+          final date = DateTime(created.year, created.month, created.day);
+          final existingPayout = daily[date];
+          if (existingPayout == null) {
+            daily[date] = Payout(
+              id: uuid.v1(),
+              miner: miner,
+              asset: miner.asset,
+              date: date,
+              amount: payout.amount,
+            );
+          } else {
+            existingPayout.amount += payout.amount;
+            daily[date] = existingPayout;
+          }
+          // Keep track of first and last date of page
+          if (payout.id == payouts.first.id) {
+            firstDate = date;
+            // If first payout of first page, set recent payout date
+            if (recentPayoutDate == null) {
+              recentPayoutDate = created;
+            }
+          } else if (payout.id == payouts.last.id) {
+            lastDate = date;
+            afterMillis = created.millisecondsSinceEpoch;
+          }
+        }
+      }
+      // Save payouts
+      for (Payout payout in daily.values) {
+        // If payout is on the same day as current payout add to it instead
+        if (payout.date == firstDate && currentPayout?.date == firstDate) {
+          currentPayout.amount += payout.amount;
+          await currentPayout.save();
+        } else {
+          await payout.save();
+        }
+      }
+      // Set current payout to the last payout of this page
+      currentPayout = daily[lastDate];
+    } while (payouts.length == pageSize);
+
+    // Set recent payout date on miner
+    miner.recentPayoutDate = recentPayoutDate;
+    await miner.save();
   }
 
   Future<Miner> refreshMiner(Miner miner) async {

@@ -208,7 +208,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     await miner.save();
 
     try {
-      await this._getMiningPayouts(miner, asset);
+      await nicehash.getPayoutHistory(miner);
       return miner;
     } catch (err) {
       await Payout.deleteMany({"minerId": miner.id});
@@ -216,68 +216,5 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
       await account.delete();
       return null;
     }
-  }
-
-  Future<void> _getMiningPayouts(Miner miner, Asset asset) async {
-    final uuid = Uuid();
-    final nicehash = NiceHashService();
-    final DateTime now = DateTime.now();
-    final int pageSize = 168; // 4 weeks * 7 days * 6 payouts per day
-
-    // Keep track of the previous page's last payout
-    // in case the next page has payouts on the same day
-    Payout currentPayout;
-    List<NiceHashPayout> payouts;
-    int afterMillis = now.toUtc().millisecondsSinceEpoch;
-    do {
-      // Get a page of payouts
-      payouts = await nicehash.getPayouts(
-        pageSize: pageSize,
-        afterMillis: afterMillis,
-      );
-      // Aggregate payouts by day
-      DateTime firstDate;
-      DateTime lastDate;
-      final Map<DateTime, Payout> daily = {};
-      for (NiceHashPayout payout in payouts) {
-        // Only care about payouts to the user (mining payouts)
-        if (payout.accountType == NiceHashService.PAYOUT_USER) {
-          final created = payout.created.toLocal();
-          final date = DateTime(created.year, created.month, created.day);
-          final existingPayout = daily[date];
-          if (existingPayout == null) {
-            daily[date] = Payout(
-              id: uuid.v1(),
-              miner: miner,
-              asset: asset,
-              date: date,
-              amount: payout.amount,
-            );
-          } else {
-            existingPayout.amount += payout.amount;
-            daily[date] = existingPayout;
-          }
-          // Keep track of first and last date of page
-          if (payout.id == payouts.first.id) {
-            firstDate = date;
-          } else if (payout.id == payouts.last.id) {
-            lastDate = date;
-            afterMillis = created.millisecondsSinceEpoch;
-          }
-        }
-      }
-      // Save payouts
-      for (Payout payout in daily.values) {
-        // If payout is on the same day as current payout add to it instead
-        if (payout.date == firstDate && currentPayout?.date == firstDate) {
-          currentPayout.amount += payout.amount;
-          await currentPayout.save();
-        } else {
-          await payout.save();
-        }
-      }
-      // Set current payout to the last payout of this page
-      currentPayout = daily[lastDate];
-    } while (payouts.length == pageSize);
   }
 }
