@@ -27,7 +27,11 @@ class PayoutChart extends StatelessWidget {
     final dateFormat = DateFormat("MM/dd/yy");
 
     return FutureBuilder<List<Payout>>(
-      future: Payout.find(filters: this.filters, limit: this.limit),
+      future: Payout.find(
+        filters: this.filters,
+        orderBy: "date DESC",
+        limit: this.limit,
+      ),
       builder: (
         BuildContext context,
         AsyncSnapshot<List<Payout>> snapshot,
@@ -40,6 +44,9 @@ class PayoutChart extends StatelessWidget {
           case ConnectionState.done:
             if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
+            }
+            if (snapshot.data.isEmpty) {
+              return Text("No payout data found");
             }
             final List<Payout> payouts = snapshot.data;
             final List<FlSpot> spots = payouts.map((payout) {
