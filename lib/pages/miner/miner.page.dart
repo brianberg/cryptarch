@@ -2,8 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:fl_chart/fl_chart.dart";
-
 import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show MiningService;
@@ -24,6 +22,7 @@ class MinerPage extends StatefulWidget {
 
 class _MinerPageState extends State<MinerPage> {
   Miner miner;
+  String payoutDuration = DurationChips.DURATION_7D;
 
   @override
   void initState() {
@@ -110,7 +109,17 @@ class _MinerPageState extends State<MinerPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: PayoutChart(filters: {"minerId": this.miner.id}),
+                child: PayoutChart(
+                  filters: this._getPayoutFilters(),
+                ),
+              ),
+              DurationChips(
+                selected: this.payoutDuration,
+                onSelected: (duration) {
+                  this.setState(() {
+                    this.payoutDuration = duration;
+                  });
+                },
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
@@ -220,5 +229,33 @@ class _MinerPageState extends State<MinerPage> {
     setState(() {
       this.miner = miner;
     });
+  }
+
+  Map<String, dynamic> _getPayoutFilters() {
+    Map<String, dynamic> filters = {"minerId": this.miner.id};
+    if (this.payoutDuration != DurationChips.DURATION_ALL) {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      switch (this.payoutDuration) {
+        case DurationChips.DURATION_7D:
+          final lastWeek = today.subtract(Duration(days: 7));
+          filters["date"] = "> ${lastWeek.millisecondsSinceEpoch}";
+          break;
+        case DurationChips.DURATION_30D:
+          final lastMonth = today.subtract(Duration(days: 30));
+          filters["date"] = "> ${lastMonth.millisecondsSinceEpoch}";
+          break;
+        case DurationChips.DURATION_90D:
+          final lastQuarter = today.subtract(Duration(days: 90));
+          filters["date"] = "> ${lastQuarter.millisecondsSinceEpoch}";
+          break;
+        case DurationChips.DURATION_1Y:
+          final lastYear = today.subtract(Duration(days: 365));
+          filters["date"] = "> ${lastYear.millisecondsSinceEpoch}";
+          break;
+      }
+    }
+
+    return filters;
   }
 }

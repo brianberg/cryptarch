@@ -36,17 +36,36 @@ class PayoutChart extends StatelessWidget {
         BuildContext context,
         AsyncSnapshot<List<Payout>> snapshot,
       ) {
+        final chartSize = this._getChartSize(MediaQuery.of(context).size);
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
           case ConnectionState.waiting:
-            return LoadingIndicator();
+            return SizedBox(
+              width: chartSize.width,
+              height: chartSize.height,
+              child: Center(
+                child: LoadingIndicator(),
+              ),
+            );
           case ConnectionState.done:
             if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}");
+              return SizedBox(
+                width: chartSize.width,
+                height: chartSize.height,
+                child: Center(
+                  child: Text("Error: ${snapshot.error}"),
+                ),
+              );
             }
             if (snapshot.data.isEmpty) {
-              return Text("No payout data found");
+              return SizedBox(
+                width: chartSize.width,
+                height: chartSize.height,
+                child: Center(
+                  child: Text("No payouts"),
+                ),
+              );
             }
             final List<Payout> payouts = snapshot.data;
             final List<FlSpot> spots = payouts.map((payout) {
@@ -73,7 +92,10 @@ class PayoutChart extends StatelessWidget {
                   leftTitles: SideTitles(
                     showTitles: true,
                     getTitles: (double value) {
-                      return "\$${value.floor()}";
+                      if (value.floor() % 5 == 0) {
+                        return "\$${value.floor()}";
+                      }
+                      return "";
                     },
                     getTextStyles: (double value) {
                       return TextStyle(
@@ -103,6 +125,11 @@ class PayoutChart extends StatelessWidget {
                         }).toList();
                       }),
                 ),
+                gridData: FlGridData(
+                  checkToShowHorizontalLine: (double value) {
+                    return value.floor() % 5 == 0;
+                  },
+                ),
                 borderData: FlBorderData(show: false),
               ),
             );
@@ -112,5 +139,17 @@ class PayoutChart extends StatelessWidget {
         );
       },
     );
+  }
+
+  Size _getChartSize(Size screenSize) {
+    Size resultSize;
+    if (screenSize.width < screenSize.height) {
+      resultSize = Size(screenSize.width, screenSize.width);
+    } else if (screenSize.height < screenSize.width) {
+      resultSize = Size(screenSize.height, screenSize.height);
+    } else {
+      resultSize = Size(screenSize.width, screenSize.height);
+    }
+    return resultSize * 0.7;
   }
 }

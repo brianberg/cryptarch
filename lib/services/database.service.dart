@@ -72,6 +72,12 @@ class DatabaseService {
         List<String> qs = List<String>.filled(values.length, "?");
         where += "$key IN (${qs.join(",")})";
         args.addAll(values);
+      } else if (value is String &&
+          (value.startsWith(">") || value.startsWith("<"))) {
+        final parts = value.split(" ");
+        final comparator = parts[0];
+        where += "$key $comparator ?";
+        args.add(parts[1]);
       } else {
         if (value is bool) {
           value = value ? 1 : 0;
