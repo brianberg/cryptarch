@@ -187,33 +187,46 @@ class NiceHashService {
     return null;
   }
 
-  Future<void> getPayoutHistory(Miner miner) async {
+  Future<void> getPayoutHistory(
+    Miner miner, {
+    int afterMillis,
+    Payout currentPayout,
+  }) async {
     final uuid = Uuid();
     final DateTime now = DateTime.now();
+    // final DateTime now = DateTime.now().subtract(Duration(days: 2));
     final int pageSize = 168; // 4 weeks * 7 days * 6 payouts per day
 
     // Keep track of the previous page's last payout
     // in case the next page has payouts on the same day
-    Payout currentPayout;
     DateTime recentPayoutDate;
+    DateTime lastPayoutDate; // of the current page
     List<NiceHashPayout> payouts;
-    int afterMillis = now.toUtc().millisecondsSinceEpoch;
+    int beforeMillis = now.toUtc().millisecondsSinceEpoch;
+    bool fetchMore = false;
+
     do {
       // Get a page of payouts
       payouts = await this.getPayouts(
         pageSize: pageSize,
-        afterMillis: afterMillis,
+        afterMillis: beforeMillis, // this is confusing
       );
       if (payouts.isEmpty) {
         break;
       }
+      // Keep fetching pages until we get back less than the limit
+      fetchMore = payouts.length == pageSize;
       // Aggregate payouts by day
-      DateTime firstDate;
-      DateTime lastDate;
       final Map<DateTime, Payout> daily = {};
       for (NiceHashPayout payout in payouts) {
         // Only care about payouts to the user (mining payouts)
         if (payout.accountType == NiceHashService.PAYOUT_USER) {
+          // Short-circuit if payout is too old
+          final createdMillis = payout.created.millisecondsSinceEpoch;
+          if (afterMillis != null && createdMillis <= afterMillis) {
+            fetchMore = false;
+            break;
+          }
           final created = payout.created.toLocal();
           final date = DateTime(created.year, created.month, created.day);
           final existingPayout = daily[date];
@@ -229,23 +242,21 @@ class NiceHashService {
             existingPayout.amount += payout.amount;
             daily[date] = existingPayout;
           }
-          // Keep track of first and last date of page
+          // If first payout of first page, set recent payout date
           if (payout.id == payouts.first.id) {
-            firstDate = date;
-            // If first payout of first page, set recent payout date
             if (recentPayoutDate == null) {
               recentPayoutDate = created;
             }
           } else if (payout.id == payouts.last.id) {
-            lastDate = date;
-            afterMillis = created.millisecondsSinceEpoch;
+            lastPayoutDate = date;
+            beforeMillis = created.millisecondsSinceEpoch;
           }
         }
       }
       // Save payouts
       for (Payout payout in daily.values) {
         // If payout is on the same day as current payout add to it instead
-        if (payout.date == firstDate && currentPayout?.date == firstDate) {
+        if (currentPayout?.date == payout.date) {
           currentPayout.amount += payout.amount;
           await currentPayout.save();
         } else {
@@ -253,12 +264,14 @@ class NiceHashService {
         }
       }
       // Set current payout to the last payout of this page
-      currentPayout = daily[lastDate];
-    } while (payouts.length == pageSize);
+      currentPayout = daily[lastPayoutDate];
+    } while (fetchMore);
 
     // Set recent payout date on miner
-    miner.recentPayoutDate = recentPayoutDate;
-    await miner.save();
+    if (recentPayoutDate != null) {
+      miner.recentPayoutDate = recentPayoutDate;
+      await miner.save();
+    }
   }
 
   Future<Miner> refreshMiner(Miner miner) async {
@@ -272,6 +285,23 @@ class NiceHashService {
     miner.profitability = profitability;
     miner.unpaidAmount = balance.pending;
     await miner.save();
+
+    if (miner.recentPayoutDate != null) {
+      final recentPayouts = await Payout.find(
+        filters: {
+          "minerId": miner.id,
+        },
+        orderBy: "date DESC",
+        limit: 1,
+      );
+      await this.getPayoutHistory(
+        miner,
+        currentPayout: recentPayouts.first,
+        afterMillis: miner.recentPayoutDate.toUtc().millisecondsSinceEpoch,
+      );
+    } else {
+      await this.getPayoutHistory(miner);
+    }
 
     return miner;
   }
