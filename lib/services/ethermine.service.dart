@@ -17,7 +17,9 @@ class EthermineService {
       final data = body["data"];
       final estimates = data["estimates"];
       final coinsPerMin = estimates["coinsPerMin"];
-      return coinsPerMin * 60 * 24;
+      if (coinsPerMin != null) {
+        return coinsPerMin * 60 * 24;
+      }
     }
 
     return 0.0;
