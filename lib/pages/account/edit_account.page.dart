@@ -111,29 +111,6 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       ),
                     ),
                   ),
-                  // Delete Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlineButton(
-                      child: Text("Delete"),
-                      textColor: theme.colorScheme.onPrimary,
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                      onPressed: () async {
-                        try {
-                          await this.widget.account.delete();
-                          Navigator.pop(context);
-                        } catch (err) {
-                          // final snackBar = SnackBar(
-                          //   content: Text(err.message),
-                          // );
-                          // Scaffold.of(context).showSnackBar(snackBar);
-                          print(err);
-                        }
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),

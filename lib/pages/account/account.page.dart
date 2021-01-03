@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show Account;
+import "package:cryptarch/models/models.dart" show Account, Miner;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
@@ -122,6 +122,37 @@ class _AccountPageState extends State<AccountPage> {
                     },
                   ),
                 ),
+              ),
+              FutureBuilder(
+                future: Miner.find(filters: {"accountId": this.account.id}),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Miner>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData && snapshot.data.length == 0) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: FlatButton(
+                          child: Text("Delete"),
+                          textColor: Colors.red,
+                          onPressed: () async {
+                            try {
+                              await this.account.delete();
+                              Navigator.pop(context);
+                            } catch (err) {
+                              // final snackBar = SnackBar(
+                              //   content: Text(err.message),
+                              // );
+                              // Scaffold.of(context).showSnackBar(snackBar);
+                              print(err);
+                            }
+                          },
+                        ),
+                      );
+                    }
+                  }
+
+                  return Container();
+                },
               ),
             ],
           ),
