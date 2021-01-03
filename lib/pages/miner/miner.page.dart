@@ -113,20 +113,26 @@ class _MinerPageState extends State<MinerPage> {
                   filters: this._getPayoutFilters(),
                 ),
               ),
-              DurationChips(
-                selected: this.payoutDuration,
-                onSelected: (duration) {
-                  this.setState(() {
-                    this.payoutDuration = duration;
-                  });
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: DurationChips(
+                  selected: this.payoutDuration,
+                  onSelected: (duration) {
+                    this.setState(() {
+                      this.payoutDuration = duration;
+                    });
+                  },
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: FlatButton(
-                    child: const Text("View Payouts"),
+                    child: Text(
+                      "View Payouts",
+                      style: theme.textTheme.button,
+                    ),
                     color: theme.buttonColor,
                     onPressed: () {
                       Navigator.push(

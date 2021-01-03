@@ -148,7 +148,7 @@ class AppTheme {
         color: Colors.white,
       ),
       button: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
       ),
       caption: TextStyle(
         color: Colors.white,
