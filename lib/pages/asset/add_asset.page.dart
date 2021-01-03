@@ -1,10 +1,8 @@
 import "package:flutter/material.dart";
 
-import "package:uuid/uuid.dart";
-
 import "package:cryptarch/constants/constants.dart" show CURRENCIES;
 import "package:cryptarch/models/models.dart" show Asset;
-import "package:cryptarch/services/services.dart" show MarketsService;
+import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AddAssetPage extends StatefulWidget {
@@ -121,7 +119,6 @@ class _AddAssetPageState extends State<AddAssetPage> {
 
   Future<Asset> _saveAsset() async {
     final symbol = this.currency["symbol"];
-    final name = this.currency["name"];
 
     String exchange = this._formData["exchange"];
     String platform = this.currency["tokenPlatform"];
@@ -132,56 +129,14 @@ class _AddAssetPageState extends State<AddAssetPage> {
       throw new Exception("Asset already exists");
     }
 
-    double value = 0.0;
-    double lastPrice = 0.0;
-    double highPrice = 0.0;
-    double lowPrice = 0.0;
-    double percentChange = 0.0;
-
     if (exchange != null) {
-      final ticker = "$symbol/USD";
-      final price = await MarketsService().getPrice(ticker, exchange);
-      if (price != null) {
-        value = price.current;
-        value = price.current;
-        lastPrice = price.last;
-        highPrice = price.high;
-        lowPrice = price.low;
-        percentChange = price.percentChange;
-      }
-      platform = null;
-      contractAddress = null;
+      return AssetService.addAsset(symbol, exchange: exchange);
     } else {
-      final price = await MarketsService().getTokenPrice(
-        platform,
-        contractAddress,
-        "USD",
+      return AssetService.addAsset(
+        symbol,
+        tokenPlatform: platform,
+        contractAddress: contractAddress,
       );
-      if (price != null) {
-        value = price.current;
-        lastPrice = price.last;
-        highPrice = price.high;
-        lowPrice = price.low;
-        percentChange = price.percentChange;
-      }
-      exchange = null;
     }
-
-    final asset = Asset(
-      id: Uuid().v1(),
-      name: name,
-      symbol: symbol,
-      value: value,
-      exchange: exchange,
-      tokenPlatform: platform,
-      contractAddress: contractAddress,
-      lastPrice: lastPrice,
-      highPrice: highPrice,
-      lowPrice: lowPrice,
-      percentChange: percentChange,
-    );
-    await asset.save();
-
-    return asset;
   }
 }

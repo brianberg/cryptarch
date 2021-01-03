@@ -1,7 +1,77 @@
+import "package:uuid/uuid.dart";
+
+import "package:cryptarch/constants/constants.dart" show CURRENCIES;
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show MarketsService;
 
 class AssetService {
+  static Future<Asset> addAsset(
+    String symbol, {
+    String exchange,
+    String tokenPlatform,
+    String contractAddress,
+  }) async {
+    double value = 0.0;
+    double lastPrice = 0.0;
+    double highPrice = 0.0;
+    double lowPrice = 0.0;
+    double percentChange = 0.0;
+
+    final currency = CURRENCIES[symbol];
+
+    if (currency == null) {
+      throw new Exception("Unsupported asset symbol");
+    }
+
+    if (exchange == null && currency.keys.contains("exchanges")) {
+      exchange = (currency["exchanges"] as List).first;
+    }
+
+    if (exchange != null) {
+      final ticker = "$symbol/USD";
+      final price = await MarketsService().getPrice(ticker, exchange);
+      if (price != null) {
+        value = price.current;
+        value = price.current;
+        lastPrice = price.last;
+        highPrice = price.high;
+        lowPrice = price.low;
+        percentChange = price.percentChange;
+      }
+    } else {
+      final price = await MarketsService().getTokenPrice(
+        tokenPlatform,
+        contractAddress,
+        "USD",
+      );
+      if (price != null) {
+        value = price.current;
+        lastPrice = price.last;
+        highPrice = price.high;
+        lowPrice = price.low;
+        percentChange = price.percentChange;
+      }
+      exchange = null;
+    }
+
+    final asset = Asset(
+      id: Uuid().v1(),
+      name: currency["name"],
+      symbol: symbol,
+      value: value,
+      exchange: exchange,
+      tokenPlatform: tokenPlatform,
+      contractAddress: contractAddress,
+      lastPrice: lastPrice,
+      highPrice: highPrice,
+      lowPrice: lowPrice,
+      percentChange: percentChange,
+    );
+    await asset.save();
+
+    return asset;
+  }
+
   static Future<void> refreshPrices() async {
     final assets = await Asset.find();
     for (Asset asset in assets) {
