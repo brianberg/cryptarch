@@ -110,16 +110,6 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   child: AssetListItem(
                     asset: this.account.asset,
-                    onTap: (asset) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AssetPage(
-                            asset: asset,
-                          ),
-                        ),
-                      );
-                    },
                   ),
                 ),
               ),

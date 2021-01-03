@@ -167,6 +167,16 @@ class _MinerPageState extends State<MinerPage> {
                   ),
                   child: AccountListItem(
                     account: this.miner.account,
+                    onTap: (account) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AccountPage(
+                            account: this.miner.account,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
