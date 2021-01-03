@@ -4,7 +4,7 @@ import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/services/services.dart"
-    show EthermineService, EtherscanService;
+    show AssetService, EthermineService, EtherscanService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AddEthermineMinerPage extends StatefulWidget {
@@ -149,7 +149,12 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
     final uuid = Uuid();
     final address = this._formData["address"];
 
-    final asset = await Asset.findOneBySymbol(this.coin);
+    Asset asset = await Asset.findOneBySymbol(this.coin);
+
+    // Add asset if it doesn't exist
+    if (asset == null) {
+      asset = await AssetService.addAsset(this.coin);
+    }
 
     final etherscan = EtherscanService();
     final ethermine = EthermineService();

@@ -5,7 +5,7 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/models/models.dart"
     show Asset, Account, Miner, Payout;
 import "package:cryptarch/services/services.dart"
-    show NiceHashService, NiceHashPayout, StorageService;
+    show AssetService, NiceHashService, StorageService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AddNiceHashMinerPage extends StatefulWidget {
@@ -182,9 +182,12 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     final profitability = await nicehash.getProfitability();
     final uuid = Uuid();
 
-    final asset = await Asset.findOneBySymbol("BTC");
+    Asset asset = await Asset.findOneBySymbol("BTC");
 
-    // TODO: add bitcoin if not found
+    // Add asset if it doesn't exist
+    if (asset == null) {
+      asset = await AssetService.addAsset("BTC");
+    }
 
     final account = Account(
       id: uuid.v1(),
