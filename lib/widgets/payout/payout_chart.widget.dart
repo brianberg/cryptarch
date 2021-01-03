@@ -79,9 +79,9 @@ class PayoutChart extends StatelessWidget {
                 lineBarsData: <LineChartBarData>[
                   LineChartBarData(
                     colors: [
-                      GRAPH_GREEN_DARK,
-                      GRAPH_GREEN,
-                      GRAPH_GREEN_LIGHT,
+                      GRAPH_PURPLE_DARK,
+                      GRAPH_PURPLE,
+                      GRAPH_PURPLE_LIGHT,
                     ],
                     spots: spots,
                     isCurved: true,
@@ -117,7 +117,7 @@ class PayoutChart extends StatelessWidget {
                             spot.x.toInt(),
                           );
                           return LineTooltipItem(
-                            "$value ${dateFormat.format(date)}",
+                            "$value\n${dateFormat.format(date)}",
                             theme.textTheme.bodyText1.copyWith(
                               color: theme.colorScheme.onSurface,
                             ),

@@ -29,9 +29,15 @@ class DurationChips extends StatelessWidget {
       DURATION_ALL,
     ].map((duration) {
       return ChoiceChip(
-        label: Text(duration, style: theme.textTheme.caption),
+        label: Text(
+          duration,
+          style: theme.textTheme.caption.copyWith(
+            color: theme.colorScheme.background,
+          ),
+        ),
         labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         selected: this.selected == duration,
+        selectedColor: theme.colorScheme.onBackground,
         onSelected: this.onSelected != null
             ? (selected) {
                 if (selected) {

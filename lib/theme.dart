@@ -6,7 +6,7 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primaryColor: Colors.white,
     accentColor: Colors.black87,
-    buttonColor: Colors.white,
+    buttonColor: Colors.black12,
     cursorColor: Colors.black,
     focusColor: Colors.black,
     scaffoldBackgroundColor: Colors.white,
@@ -30,7 +30,7 @@ class AppTheme {
       color: Colors.white,
     ),
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.white,
+      buttonColor: Colors.black12,
     ),
     cardTheme: CardTheme(
       color: Colors.white,
@@ -96,7 +96,7 @@ class AppTheme {
     accentColor: Colors.white,
     scaffoldBackgroundColor: Colors.black,
     backgroundColor: Colors.black,
-    buttonColor: Colors.white,
+    buttonColor: Colors.grey[900],
     cursorColor: Colors.white,
     dividerColor: Colors.grey[700],
     colorScheme: ColorScheme.dark(
@@ -118,7 +118,7 @@ class AppTheme {
       color: Colors.black,
     ),
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.white,
+      buttonColor: Colors.grey[900],
     ),
     cardTheme: CardTheme(
       color: Colors.grey[900],

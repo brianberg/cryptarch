@@ -122,12 +122,12 @@ class _MinerPageState extends State<MinerPage> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: FlatButton(
-                    child: Text("View Payouts"),
-                    color: theme.colorScheme.surface,
+                    child: const Text("View Payouts"),
+                    color: theme.buttonColor,
                     onPressed: () {
                       Navigator.push(
                         context,
