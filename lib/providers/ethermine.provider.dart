@@ -6,8 +6,13 @@ class EthermineProvider {
     return http.get(url);
   }
 
-  Future<http.Response> getPayouts(String address) {
+  Future<http.Response> getDashboardPayouts(String address) {
     String url = "https://api.ethermine.org/miner/$address/dashboard/payouts";
+    return http.get(url);
+  }
+
+  Future<http.Response> getPayouts(String address) {
+    String url = "https://api.ethermine.org/miner/$address/payouts";
     return http.get(url);
   }
 }

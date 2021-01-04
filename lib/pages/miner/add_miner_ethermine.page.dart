@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
+import "package:cryptarch/models/models.dart"
+    show Asset, Account, Miner, Payout;
 import "package:cryptarch/services/services.dart"
     show AssetService, EthermineService, EtherscanService;
 import "package:cryptarch/widgets/widgets.dart";
@@ -184,6 +185,14 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
     );
     await miner.save();
 
-    return miner;
+    try {
+      await ethermine.getPayoutHistory(miner);
+      return miner;
+    } catch (err) {
+      await Payout.deleteMany({"minerId": miner.id});
+      await miner.delete();
+      await account.delete();
+      return null;
+    }
   }
 }
