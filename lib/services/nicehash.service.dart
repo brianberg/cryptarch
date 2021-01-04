@@ -172,19 +172,18 @@ class NiceHashService {
         pageSize: pageSize,
         afterMillis: afterMillis,
       );
-      final rawPayoutsData = Map<String, dynamic>.from(jsonDecode(res.body));
-      if (rawPayoutsData.keys.contains("list")) {
-        final rawPayouts = rawPayoutsData["list"] as List;
-        if (rawPayouts.isEmpty) {
-          return List<NiceHashPayout>();
+      final rawData = Map<String, dynamic>.from(jsonDecode(res.body));
+      if (rawData.keys.contains("list")) {
+        final rawPayouts = rawData["list"] as List;
+        if (rawPayouts.isNotEmpty) {
+          return List<NiceHashPayout>.from(rawPayouts.map((rawPayout) {
+            return NiceHashPayout.fromMap(rawPayout);
+          }));
         }
-        return List<NiceHashPayout>.from(rawPayouts.map((rawPayout) {
-          return NiceHashPayout.fromMap(rawPayout);
-        }));
       }
     }
 
-    return null;
+    return List<NiceHashPayout>();
   }
 
   Future<void> getPayoutHistory(
