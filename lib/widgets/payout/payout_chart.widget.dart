@@ -76,6 +76,7 @@ class PayoutChart extends StatelessWidget {
 
             return LineChart(
               LineChartData(
+                minY: 0.0,
                 lineBarsData: <LineChartBarData>[
                   LineChartBarData(
                     colors: [
@@ -85,7 +86,7 @@ class PayoutChart extends StatelessWidget {
                     ],
                     spots: spots,
                     isCurved: true,
-                    dotData: FlDotData(show: false),
+                    dotData: FlDotData(show: spots.length == 1),
                   ),
                 ],
                 titlesData: FlTitlesData(
