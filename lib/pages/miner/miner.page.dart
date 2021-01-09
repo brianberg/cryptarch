@@ -121,7 +121,7 @@ class _MinerPageState extends State<MinerPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: PayoutChart(
+                child: MinerProfitChart(
                   filters: this._getPayoutFilters(),
                 ),
               ),
