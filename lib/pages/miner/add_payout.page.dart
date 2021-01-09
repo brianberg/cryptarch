@@ -4,24 +4,24 @@ import "package:intl/intl.dart";
 import "package:file_picker/file_picker.dart";
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart" show Energy, Miner;
+import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddEnergyPage extends StatefulWidget {
+class AddPayoutPage extends StatefulWidget {
   final Miner miner;
 
-  AddEnergyPage({
+  AddPayoutPage({
     Key key,
     @required this.miner,
   })  : assert(miner != null),
         super(key: key);
 
   @override
-  _AddEnergyPageState createState() => _AddEnergyPageState();
+  _AddPayoutPageState createState() => _AddPayoutPageState();
 }
 
-class _AddEnergyPageState extends State<AddEnergyPage> {
+class _AddPayoutPageState extends State<AddPayoutPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateInputController = TextEditingController();
   final DateFormat dateFormat = DateFormat("MM/dd/yyyy");
@@ -39,20 +39,21 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final miner = this.widget.miner;
     final selectedDate = this._formData["date"];
     this._dateInputController.text = this.dateFormat.format(selectedDate);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Energy Usage"),
+        title: const Text("Add Payout"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.upload_file),
+            icon: Icon(Icons.file_upload),
             onPressed: () async {
               final result = await FilePicker.platform.pickFiles();
               if (result != null) {
                 final path = result.files.first.path;
-                this._showImportDialog(context, this._importEnergy(path));
+                this._showImportDialog(context, this._importPayouts(path));
               }
             },
           )
@@ -71,10 +72,10 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Energy Usage",
+                        labelText: "Amount",
                         filled: true,
                         fillColor: theme.cardTheme.color,
-                        suffix: const Text("kWh"),
+                        suffix: Text(miner.asset.symbol),
                       ),
                       initialValue: "0",
                       onSaved: (String value) {
@@ -147,21 +148,25 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
                                 selectedDate.month,
                                 selectedDate.day,
                               );
-                              // Delete existing for date
-                              final existing = await Energy.find(filters: {
-                                "minerId": this.widget.miner.id,
+                              // Add to existing payout
+                              final existing = await Payout.find(filters: {
+                                "minerId": miner.id,
                                 "date": date.millisecondsSinceEpoch,
                               });
                               if (existing.isNotEmpty) {
-                                await existing.first.delete();
+                                final payout = existing.first;
+                                payout.amount += amount;
+                                await payout.save();
+                              } else {
+                                final payout = Payout(
+                                  id: Uuid().v1(),
+                                  miner: miner,
+                                  asset: miner.asset,
+                                  date: date,
+                                  amount: amount,
+                                );
+                                await payout.save();
                               }
-                              final energy = Energy(
-                                id: Uuid().v1(),
-                                miner: this.widget.miner,
-                                date: DateTime(date.year, date.month, date.day),
-                                amount: amount,
-                              );
-                              await energy.save();
                               Navigator.pop(context);
                             } catch (err) {
                               // final snackBar = SnackBar(
@@ -201,22 +206,22 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
     return null;
   }
 
-  Future<void> _importEnergy(String path) async {
+  Future<void> _importPayouts(String path) async {
     if (path != null) {
       final rows = await CsvService.import(path);
-      List<Energy> energyUsages = List<Energy>.from(rows.map((csvRow) {
-        return Energy.fromCsv(csvRow, this.widget.miner);
+      List<Payout> payouts = List<Payout>.from(rows.map((csvRow) {
+        return Payout.fromCsv(csvRow, this.widget.miner);
       })).toList();
-      for (Energy energy in energyUsages) {
-        final existing = await Energy.find(filters: {
+      for (Payout payout in payouts) {
+        final existing = await Payout.find(filters: {
           "minerId": this.widget.miner.id,
-          "date": energy.date.millisecondsSinceEpoch,
+          "date": payout.date.millisecondsSinceEpoch,
         });
         // Delete existing
         if (existing.isNotEmpty) {
           await existing.first.delete();
         }
-        await energy.save();
+        await payout.save();
       }
     }
   }
@@ -226,7 +231,7 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
     Future future,
   ) async {
     final dialog = AlertDialog(
-      title: Text("Importing energy"),
+      title: Text("Importing payouts"),
       content: FutureBuilder(
         future: future,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -239,9 +244,9 @@ class _AddEnergyPageState extends State<AddEnergyPage> {
               if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
               }
-              return Text("Successfully imported energy");
+              return Text("Successfully imported payouts");
           }
-          return Container(child: const Text("Unable to import energy"));
+          return Container(child: const Text("Unable to import payouts"));
         },
       ),
       actions: <Widget>[

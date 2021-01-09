@@ -1,6 +1,7 @@
 import "package:meta/meta.dart";
 
 import "package:sqflite/sqflite.dart";
+import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset, Miner;
 import "package:cryptarch/services/services.dart" show DatabaseService;
@@ -35,6 +36,30 @@ class Payout {
 
   double get value {
     return this.amount * this.asset.value;
+  }
+
+  factory Payout.fromCsv(List<dynamic> rawRow, Miner miner) {
+    if (rawRow.isEmpty || rawRow.length < 2) {
+      throw Exception("Malformed payout row");
+    }
+    if (miner == null) {
+      throw Exception("Must provide miner");
+    }
+
+    var amount = rawRow[1];
+    if (amount is String) {
+      amount = double.parse(amount);
+    } else if (amount is int) {
+      amount = amount.toDouble();
+    }
+
+    return Payout(
+      id: Uuid().v1(),
+      miner: miner,
+      asset: miner.asset,
+      amount: amount,
+      date: DateTime.parse(rawRow[0]).toLocal(),
+    );
   }
 
   static Future<Payout> deserialize(Map<String, dynamic> rawPayout) async {
@@ -122,6 +147,13 @@ class Payout {
     await DatabaseService().delete(Payout.tableName, filters);
   }
 
+  List<dynamic> toCsv() {
+    return [
+      this.date.toString().split(" ")[0],
+      this.amount.toStringAsFixed(8),
+    ];
+  }
+
   @override
-  String toString() => "$amount ${asset.symbol}";
+  String toString() => "${amount.toStringAsFixed(8)} ${asset.symbol}";
 }

@@ -35,6 +35,29 @@ class Energy {
     return this.amount * 0.07746;
   }
 
+  factory Energy.fromCsv(List<dynamic> rawRow, Miner miner) {
+    if (rawRow.isEmpty || rawRow.length < 2) {
+      throw Exception("Malformed energy cost row");
+    }
+    if (miner == null) {
+      throw Exception("Must provide miner");
+    }
+
+    var amount = rawRow[1];
+    if (amount is String) {
+      amount = double.parse(amount);
+    } else if (amount is int) {
+      amount = amount.toDouble();
+    }
+
+    return Energy(
+      id: Uuid().v1(),
+      miner: miner,
+      amount: amount,
+      date: DateTime.parse(rawRow[0]).toLocal(),
+    );
+  }
+
   static Future<Energy> deserialize(Map<String, dynamic> rawEnergy) async {
     final minerId = rawEnergy["minerId"];
     final amount = rawEnergy["amount"];
@@ -115,6 +138,13 @@ class Energy {
     Map<String, dynamic> filters = {};
     filters["id"] = this.id;
     await DatabaseService().delete(Energy.tableName, filters);
+  }
+
+  List<dynamic> toCsv() {
+    return [
+      this.date.toString().split(" ")[0],
+      this.amount,
+    ];
   }
 
   @override

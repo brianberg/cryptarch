@@ -47,18 +47,6 @@ class _MinerPageState extends State<MinerPage> {
         title: Text(this.widget.miner.name),
         actions: [
           IconButton(
-            icon: Icon(Icons.flash_on),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddEnergyPage(miner: this.widget.miner),
-                ),
-              );
-              await this._refreshMiner();
-            },
-          ),
-          IconButton(
             icon: Icon(Icons.edit),
             onPressed: () async {
               await Navigator.push(
@@ -69,6 +57,40 @@ class _MinerPageState extends State<MinerPage> {
               );
               await this._refreshMiner();
             },
+          ),
+          PopupMenuButton(
+            icon: Icon(
+              Icons.add_circle,
+              color: theme.accentColor,
+            ),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "energy":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddEnergyPage(miner: this.widget.miner),
+                    ),
+                  );
+                  await this._refreshMiner();
+                  break;
+                case "payout":
+                  // TODO:
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "energy",
+                child: Text("Energy"),
+              ),
+              const PopupMenuItem<String>(
+                value: "payout",
+                child: Text("Payout"),
+              ),
+            ],
           ),
         ],
       ),
@@ -138,25 +160,49 @@ class _MinerPageState extends State<MinerPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FlatButton(
-                    child: Text(
-                      "View Payouts",
-                      style: theme.textTheme.button,
-                    ),
-                    color: theme.buttonColor,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MinerPayoutsPage(
-                            miner: this.miner,
-                          ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: FlatButton(
+                        child: Text(
+                          "View Payouts",
+                          style: theme.textTheme.button,
                         ),
-                      );
-                    },
-                  ),
+                        color: theme.buttonColor,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MinerPayoutsPage(
+                                miner: this.miner,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlineButton(
+                        child: Text(
+                          "View Energy Usage",
+                          style: theme.textTheme.button,
+                        ),
+                        color: theme.buttonColor,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MinerEnergyUsagePage(
+                                miner: this.miner,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Padding(

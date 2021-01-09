@@ -1,5 +1,6 @@
 export "asset/asset.widgets.dart";
 export "account/account.widgets.dart";
+export "energy/energy.widgets.dart";
 export "miner/miner.widgets.dart";
 export "payout/payout.widgets.dart";
 export "portfolio/portfolio.widgets.dart";
