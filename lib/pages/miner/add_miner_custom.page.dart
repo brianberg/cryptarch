@@ -147,7 +147,7 @@ class _AddCustomMinerPageState extends State<AddCustomMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Energy Consumption",
+                        labelText: "Daily Energy Usage",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                         suffix: const Text("kWh"),

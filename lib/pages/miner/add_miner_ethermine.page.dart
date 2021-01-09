@@ -88,7 +88,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Energy Consumption",
+                        labelText: "Daily Energy Usage",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                         suffix: const Text("kWh"),
