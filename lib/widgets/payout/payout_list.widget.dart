@@ -21,7 +21,10 @@ class PayoutList extends StatelessWidget {
       return _buildList(this.items);
     }
     return FutureBuilder<List<Payout>>(
-      future: Payout.find(filters: this.filters),
+      future: Payout.find(
+        filters: this.filters,
+        orderBy: "date DESC",
+      ),
       builder: (BuildContext context, AsyncSnapshot<List<Payout>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
