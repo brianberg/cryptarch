@@ -47,6 +47,18 @@ class _MinerPageState extends State<MinerPage> {
         title: Text(this.widget.miner.name),
         actions: [
           IconButton(
+            icon: Icon(Icons.flash_on),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEnergyPage(miner: this.widget.miner),
+                ),
+              );
+              await this._refreshMiner();
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.edit),
             onPressed: () async {
               await Navigator.push(
@@ -57,7 +69,7 @@ class _MinerPageState extends State<MinerPage> {
               );
               await this._refreshMiner();
             },
-          )
+          ),
         ],
       ),
       body: SafeArea(
