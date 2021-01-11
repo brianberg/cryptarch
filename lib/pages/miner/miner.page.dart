@@ -115,36 +115,32 @@ class _MinerPageState extends State<MinerPage> {
                         ),
                       ),
                     ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 16.0,
+              ListTile(
+                title: Text(
+                  "Profitability",
+                  style: theme.textTheme.bodyText1,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Text("$profitability $symbol"),
                     Text(
-                      "Profitability",
-                      style: theme.textTheme.bodyText1,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text("$profitability $symbol"),
-                        Text(
-                          "$fiatProfitability / day",
-                          style: theme.textTheme.subtitle2,
-                        ),
-                      ],
+                      "$fiatProfitability / day",
+                      style: theme.textTheme.subtitle2,
                     ),
                   ],
                 ),
+                onTap: () {
+                  // TODO:
+                },
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: MinerProfitChart(
                   filters: this._getPayoutFilters(),
+                  showCost: false,
+                  showRevenue: false,
                 ),
               ),
               Padding(
@@ -160,54 +156,32 @@ class _MinerPageState extends State<MinerPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: FlatButton(
-                        child: Text(
-                          "View Payouts",
-                          style: theme.textTheme.button,
-                        ),
-                        color: theme.buttonColor,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MinerPayoutsPage(
-                                miner: this.miner,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FlatButton(
+                    child: Text(
+                      "View Payouts",
+                      style: theme.textTheme.button,
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlineButton(
-                        child: Text(
-                          "View Energy Usage",
-                          style: theme.textTheme.button,
+                    color: theme.buttonColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MinerPayoutsPage(
+                            miner: this.miner,
+                          ),
                         ),
-                        color: theme.buttonColor,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MinerEnergyUsagePage(
-                                miner: this.miner,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
                 child: Text(
                   "Account",
                   style: theme.textTheme.bodyText1,
@@ -238,26 +212,19 @@ class _MinerPageState extends State<MinerPage> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ListTile(
+                title: Text(
+                  "Unpaid",
+                  style: theme.textTheme.bodyText1,
+                ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Text("$unpaidAmount $symbol"),
                     Text(
-                      "Unpaid",
-                      style: theme.textTheme.bodyText1,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text("$unpaidAmount $symbol"),
-                        Text(
-                          fiatUnpaidAmount,
-                          style: theme.textTheme.subtitle2,
-                        ),
-                      ],
+                      fiatUnpaidAmount,
+                      style: theme.textTheme.subtitle2,
                     ),
                   ],
                 ),
