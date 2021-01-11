@@ -5,7 +5,7 @@ import "package:intl/intl.dart";
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Asset, Settings;
 import "package:cryptarch/services/services.dart"
-    show AssetService, MiningService, PortfolioService;
+    show AssetService, PortfolioService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class HomePage extends StatefulWidget {
@@ -49,14 +49,11 @@ class _HomePageState extends State<HomePage> {
     final portfolioValue = this.portfolioValue != null
         ? NumberFormat.simpleCurrency().format(this.portfolioValue)
         : null;
-    final miningProfitability = this.miningProfitability != null
-        ? NumberFormat.simpleCurrency().format(this.miningProfitability)
-        : null;
 
     return Scaffold(
       appBar: FlatAppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,26 +65,6 @@ class _HomePageState extends State<HomePage> {
                 Text(portfolioValue != null ? portfolioValue : "..."),
               ],
             ),
-            this.widget.settings.showMining
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Mining",
-                        style: theme.textTheme.subtitle2,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(miningProfitability != null
-                              ? miningProfitability
-                              : "..."),
-                          Text(" / day", style: theme.textTheme.subtitle1),
-                        ],
-                      ),
-                    ],
-                  )
-                : Container(),
           ],
         ),
         actions: [
@@ -134,28 +111,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initialize() async {
-    final settings = this.widget.settings;
     final assets = await Asset.find(orderBy: "value DESC");
     final value = await this.portfolio.getValue();
-
-    double miningProfitability;
-    if (settings.showMining) {
-      miningProfitability = await MiningService.getProfitability();
-    }
 
     setState(() {
       this.assets = assets;
       this.portfolioValue = value;
-      this.miningProfitability = miningProfitability;
     });
   }
 
   Future<void> _refresh() async {
-    final settings = this.widget.settings;
     await AssetService.refreshPrices();
-    if (settings.showMining) {
-      await MiningService.refreshMiners(filters: {"active": 1});
-    }
     await this._initialize();
   }
 }
