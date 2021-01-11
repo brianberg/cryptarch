@@ -4,6 +4,8 @@ export "portfolio.page.dart";
 export "prices.page.dart";
 export "settings.page.dart";
 
-export "asset/asset.pages.dart";
-export "miner/miner.pages.dart";
 export "account/account.pages.dart";
+export "asset/asset.pages.dart";
+export "energy/energy.pages.dart";
+export "miner/miner.pages.dart";
+export "payout/payout.pages.dart";
