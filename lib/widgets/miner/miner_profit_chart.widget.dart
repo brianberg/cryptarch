@@ -65,7 +65,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
     if (this.isBusy) {
       return SizedBox(
         width: chartSize.width,
-        height: chartSize.height,
+        height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
         child: Center(
           child: LoadingIndicator(),
         ),
@@ -115,10 +115,10 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
       children: [
         this.widget.showCheckboxes
             ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 16.0),
                     child: Row(
                       children: [
                         Checkbox(
@@ -136,7 +136,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
                   ),
                   this.widget.showRevenue
                       ? Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 16.0),
                           child: Row(
                             children: [
                               Checkbox(
@@ -155,7 +155,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
                       : null,
                   this.widget.showCost
                       ? Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 16.0),
                           child: Row(
                             children: [
                               Checkbox(

@@ -96,161 +96,171 @@ class _MinerPageState extends State<MinerPage> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          child: ListView(
-            children: [
-              this.miner.active
-                  ? Container()
-                  : SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        color: theme.colorScheme.surface,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Inactive"),
-                            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                this.miner.active
+                    ? Container()
+                    : SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          color: theme.colorScheme.surface,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Inactive"),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-              ListTile(
-                title: Text(
-                  "Profitability",
-                  style: theme.textTheme.bodyText1,
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text("$profitability $symbol"),
-                    Text(
-                      "$fiatProfitability / day",
-                      style: theme.textTheme.subtitle2,
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // TODO:
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: MinerProfitChart(
-                  filters: this._getPayoutFilters(),
-                  showCost: false,
-                  showRevenue: false,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: DurationChips(
-                  selected: this.payoutDuration,
-                  onSelected: (duration) {
-                    this.setState(() {
-                      this.payoutDuration = duration;
-                    });
+                ListTile(
+                  title: Text(
+                    "Profitability",
+                    style: theme.textTheme.bodyText1,
+                  ),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("$profitability $symbol"),
+                      Text(
+                        "$fiatProfitability / day",
+                        style: theme.textTheme.subtitle2,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MinerProfitabilityPage(
+                          miner: this.miner,
+                        ),
+                      ),
+                    );
                   },
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: MinerProfitChart(
+                    filters: this._getPayoutFilters(),
+                    showCost: false,
+                    showRevenue: false,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: DurationChips(
+                    selected: this.payoutDuration,
+                    onSelected: (duration) {
+                      this.setState(() {
+                        this.payoutDuration = duration;
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FlatButton(
+                      child: Text(
+                        "View Payouts",
+                        style: theme.textTheme.button,
+                      ),
+                      color: theme.buttonColor,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MinerPayoutsPage(
+                              miner: this.miner,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Text(
+                    "Account",
+                    style: theme.textTheme.bodyText1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor,
+                      border: Border.all(
+                        color: theme.dividerColor,
+                      ),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: AccountListItem(
+                      account: this.miner.account,
+                      onTap: (account) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccountPage(
+                              account: this.miner.account,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "Unpaid",
+                    style: theme.textTheme.bodyText1,
+                  ),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("$unpaidAmount $symbol"),
+                      Text(
+                        fiatUnpaidAmount,
+                        style: theme.textTheme.subtitle2,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
                   width: double.infinity,
                   child: FlatButton(
-                    child: Text(
-                      "View Payouts",
-                      style: theme.textTheme.button,
-                    ),
-                    color: theme.buttonColor,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MinerPayoutsPage(
-                            miner: this.miner,
-                          ),
-                        ),
-                      );
+                    child: Text("Delete"),
+                    textColor: Colors.red,
+                    onPressed: () async {
+                      try {
+                        await this.miner.account.delete();
+                        await Payout.deleteMany({"minerId": this.miner.id});
+                        await this.miner.delete();
+                        Navigator.pop(context);
+                      } catch (err) {
+                        // final snackBar = SnackBar(
+                        //   content: Text(err.message),
+                        // );
+                        // Scaffold.of(context).showSnackBar(snackBar);
+                        print(err);
+                      }
                     },
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Text(
-                  "Account",
-                  style: theme.textTheme.bodyText1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    border: Border.all(
-                      color: theme.dividerColor,
-                    ),
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: AccountListItem(
-                    account: this.miner.account,
-                    onTap: (account) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AccountPage(
-                            account: this.miner.account,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  "Unpaid",
-                  style: theme.textTheme.bodyText1,
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text("$unpaidAmount $symbol"),
-                    Text(
-                      fiatUnpaidAmount,
-                      style: theme.textTheme.subtitle2,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: FlatButton(
-                  child: Text("Delete"),
-                  textColor: Colors.red,
-                  onPressed: () async {
-                    try {
-                      await this.miner.account.delete();
-                      await Payout.deleteMany({"minerId": this.miner.id});
-                      await this.miner.delete();
-                      Navigator.pop(context);
-                    } catch (err) {
-                      // final snackBar = SnackBar(
-                      //   content: Text(err.message),
-                      // );
-                      // Scaffold.of(context).showSnackBar(snackBar);
-                      print(err);
-                    }
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           onRefresh: this._refresh,
         ),

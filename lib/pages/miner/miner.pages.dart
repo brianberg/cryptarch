@@ -6,3 +6,4 @@ export "edit_miner.page.dart";
 export "miner.page.dart";
 export "miner_energy_usage.page.dart";
 export "miner_payouts.page.dart";
+export "miner_profitabilty.page.dart";
