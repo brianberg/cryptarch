@@ -42,7 +42,7 @@ class PayoutChart extends StatelessWidget {
           case ConnectionState.active:
           case ConnectionState.waiting:
             return SizedBox(
-              width: chartSize.width,
+              width: double.infinity,
               height: chartSize.height,
               child: Center(
                 child: LoadingIndicator(),
@@ -51,19 +51,25 @@ class PayoutChart extends StatelessWidget {
           case ConnectionState.done:
             if (snapshot.hasError) {
               return SizedBox(
-                width: chartSize.width,
+                width: double.infinity,
                 height: chartSize.height,
                 child: Center(
-                  child: Text("Error: ${snapshot.error}"),
+                  child: Text(
+                    "Error: ${snapshot.error}",
+                    style: theme.textTheme.subtitle2,
+                  ),
                 ),
               );
             }
             if (snapshot.data.isEmpty) {
               return SizedBox(
-                width: chartSize.width,
+                width: double.infinity,
                 height: chartSize.height,
                 child: Center(
-                  child: Text("No payouts"),
+                  child: Text(
+                    "No payouts",
+                    style: theme.textTheme.subtitle2,
+                  ),
                 ),
               );
             }
