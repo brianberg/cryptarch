@@ -64,10 +64,23 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
 
     if (this.isBusy) {
       return SizedBox(
-        width: chartSize.width,
+        width: double.infinity,
         height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
         child: Center(
           child: LoadingIndicator(),
+        ),
+      );
+    }
+
+    if (this.profitSpots.isEmpty) {
+      return SizedBox(
+        width: double.infinity,
+        height: chartSize.height,
+        child: Center(
+          child: Text(
+            "No payouts",
+            style: theme.textTheme.subtitle2,
+          ),
         ),
       );
     }
