@@ -31,6 +31,10 @@ class PortfolioListItem extends StatelessWidget {
           color: theme.textTheme.bodyText1.color,
         ),
       ),
+      subtitle: Text(
+        "${this.item.accounts.length} account${this.item.accounts.length > 1 ? 's' : ''}",
+        style: theme.textTheme.subtitle2,
+      ),
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

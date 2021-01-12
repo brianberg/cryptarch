@@ -24,16 +24,6 @@ class AssetListItem extends StatelessWidget {
 
     return ListTile(
       key: ValueKey(this.asset.id),
-      leading: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 32.0,
-            width: 32.0,
-            child: AssetIcon(asset: this.asset),
-          ),
-        ],
-      ),
       title: Text(
         this.asset.name,
         style: TextStyle(
@@ -43,6 +33,16 @@ class AssetListItem extends StatelessWidget {
       subtitle: Text(
         this.asset.symbol,
         style: theme.textTheme.subtitle2,
+      ),
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 32.0,
+            width: 32.0,
+            child: AssetIcon(asset: this.asset),
+          ),
+        ],
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
 import "package:cryptarch/models/models.dart" show Miner;
+import "package:cryptarch/widgets/widgets.dart";
 
 class MinerListItem extends StatelessWidget {
   final Miner miner;
@@ -19,7 +20,7 @@ class MinerListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final symbol = this.miner.asset.symbol;
+    final asset = this.miner.asset;
     final profitability = this.miner.profitability.toStringAsFixed(6);
     final fiatProfitability =
         NumberFormat.simpleCurrency().format(this.miner.fiatProfitability);
@@ -32,11 +33,25 @@ class MinerListItem extends StatelessWidget {
           color: theme.textTheme.bodyText1.color,
         ),
       ),
+      subtitle: Text(
+        this.miner.active ? "Active" : "Inactive",
+        style: theme.textTheme.subtitle2,
+      ),
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 32.0,
+            width: 32.0,
+            child: AssetIcon(asset: asset),
+          ),
+        ],
+      ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text("$profitability $symbol"),
+          Text("$profitability ${asset.symbol}"),
           Text(
             "$fiatProfitability / day",
             style: theme.textTheme.subtitle2,
