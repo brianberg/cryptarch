@@ -77,7 +77,14 @@ class _MinerPageState extends State<MinerPage> {
                   await this._refreshMiner();
                   break;
                 case "payout":
-                  // TODO:
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddPayoutPage(miner: this.widget.miner),
+                    ),
+                  );
+                  await this._refreshMiner();
                   break;
               }
             },
