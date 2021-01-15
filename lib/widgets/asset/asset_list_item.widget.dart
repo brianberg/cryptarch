@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
@@ -50,7 +52,9 @@ class AssetListItem extends StatelessWidget {
         children: [
           Text(
             value,
-            style: theme.textTheme.bodyText1,
+            style: theme.textTheme.bodyText1.copyWith(
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
           ),
           PercentChange(
             value: this.asset.percentChange,

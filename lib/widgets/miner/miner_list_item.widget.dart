@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
@@ -51,10 +53,17 @@ class MinerListItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text("$profitability ${asset.symbol}"),
+          Text(
+            "$profitability ${asset.symbol}",
+            style: theme.textTheme.bodyText1.copyWith(
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
           Text(
             "$fiatProfitability / day",
-            style: theme.textTheme.subtitle2,
+            style: theme.textTheme.subtitle2.copyWith(
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
           ),
         ],
       ),
