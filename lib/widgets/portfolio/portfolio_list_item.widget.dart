@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
@@ -22,6 +24,7 @@ class PortfolioListItem extends StatelessWidget {
 
     final amount = this.item.amount.toStringAsFixed(6);
     final value = NumberFormat.simpleCurrency().format(this.item.value);
+    final valueChange = this.item.valueChange;
 
     return ListTile(
       key: ValueKey(this.item),
@@ -32,8 +35,10 @@ class PortfolioListItem extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        "${this.item.accounts.length} account${this.item.accounts.length > 1 ? 's' : ''}",
-        style: theme.textTheme.subtitle2,
+        "$amount ${this.item.asset.symbol}",
+        style: theme.textTheme.subtitle2.copyWith(
+          fontFeatures: [FontFeature.tabularFigures()],
+        ),
       ),
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -49,9 +54,14 @@ class PortfolioListItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(value),
           Text(
-            "$amount ${this.item.asset.symbol}",
+            value,
+            style: theme.textTheme.bodyText1.copyWith(
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+          CurrencyChange(
+            value: valueChange,
             style: theme.textTheme.subtitle2,
           ),
         ],

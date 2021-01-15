@@ -27,8 +27,19 @@ class PortfolioService {
     });
   }
 
+  double calculateValueChange(List<PortfolioItem> items) {
+    return items.fold(0, (value, item) {
+      return value + item.valueChange;
+    });
+  }
+
   Future<double> getValue() async {
     final items = await this.getItems();
     return this.calculateValue(items);
+  }
+
+  Future<double> getValueChange() async {
+    final items = await this.getItems();
+    return this.calculateValueChange(items);
   }
 }

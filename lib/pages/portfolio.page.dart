@@ -20,6 +20,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   List<PortfolioItem> items;
   double totalValue;
+  double totalValueChange;
 
   @override
   void initState() {
@@ -43,7 +44,18 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: Text(totalValue),
+        title: Row(
+          children: [
+            Text(totalValue),
+            Padding(
+              padding: const EdgeInsets.only(left: 2.0),
+              child: CurrencyChange(
+                value: this.totalValueChange,
+                style: theme.textTheme.subtitle1,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -94,6 +106,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
     setState(() {
       this.items = items;
       this.totalValue = this.portfolio.calculateValue(items);
+      this.totalValueChange = this.portfolio.calculateValueChange(items);
     });
   }
 

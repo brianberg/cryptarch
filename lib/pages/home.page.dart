@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Asset> assets;
   double portfolioValue;
-  double miningProfitability;
+  double portfolioValueChange;
 
   @override
   void initState() {
@@ -62,7 +62,20 @@ class _HomePageState extends State<HomePage> {
                   "Portfolio",
                   style: theme.textTheme.subtitle2,
                 ),
-                Text(portfolioValue != null ? portfolioValue : "..."),
+                this.portfolioValue != null
+                    ? Row(
+                        children: [
+                          Text(portfolioValue),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 2.0),
+                            child: CurrencyChange(
+                              value: this.portfolioValueChange,
+                              style: theme.textTheme.subtitle1,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text("..."),
               ],
             ),
           ],
@@ -113,10 +126,12 @@ class _HomePageState extends State<HomePage> {
   Future<void> _initialize() async {
     final assets = await Asset.find(orderBy: "value DESC");
     final value = await this.portfolio.getValue();
+    final valueChange = await this.portfolio.getValueChange();
 
     setState(() {
       this.assets = assets;
       this.portfolioValue = value;
+      this.portfolioValueChange = valueChange;
     });
   }
 
