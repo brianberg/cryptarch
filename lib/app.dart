@@ -50,7 +50,7 @@ class TabContainer extends StatefulWidget {
 class _TabContainerState extends State<TabContainer> {
   final _homeTab = GlobalKey<NavigatorState>();
   final _portfolioTab = GlobalKey<NavigatorState>();
-  final _pricesTab = GlobalKey<NavigatorState>();
+  // final _pricesTab = GlobalKey<NavigatorState>();
   final _miningTab = GlobalKey<NavigatorState>();
 
   int _tabIndex = 0;
@@ -91,15 +91,15 @@ class _TabContainerState extends State<TabContainer> {
                     );
                   },
                 ),
-                Navigator(
-                  key: this._pricesTab,
-                  onGenerateRoute: (route) {
-                    return MaterialPageRoute(
-                      settings: route,
-                      builder: (context) => PricesPage(),
-                    );
-                  },
-                ),
+                // Navigator(
+                //   key: this._pricesTab,
+                //   onGenerateRoute: (route) {
+                //     return MaterialPageRoute(
+                //       settings: route,
+                //       builder: (context) => PricesPage(),
+                //     );
+                //   },
+                // ),
                 Navigator(
                   key: this._miningTab,
                   onGenerateRoute: (route) {
@@ -129,10 +129,10 @@ class _TabContainerState extends State<TabContainer> {
                 label: "Portfolio",
                 icon: Icon(Icons.pie_chart),
               ),
-              BottomNavigationBarItem(
-                label: "Prices",
-                icon: Icon(Icons.bar_chart),
-              ),
+              // BottomNavigationBarItem(
+              //   label: "Prices",
+              //   icon: Icon(Icons.bar_chart),
+              // ),
               settings.showMining
                   ? BottomNavigationBarItem(
                       label: "Mining",
@@ -156,10 +156,10 @@ class _TabContainerState extends State<TabContainer> {
         case 1:
           this._portfolioTab.currentState.popUntil((route) => route.isFirst);
           break;
+        // case 2:
+        //   this._pricesTab.currentState.popUntil((route) => route.isFirst);
+        //   break;
         case 2:
-          this._pricesTab.currentState.popUntil((route) => route.isFirst);
-          break;
-        case 3:
           this._miningTab.currentState.popUntil((route) => route.isFirst);
           break;
         default:
