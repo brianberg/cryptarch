@@ -1,9 +1,9 @@
 import "package:path/path.dart" as path;
 import "package:sqflite/sqflite.dart";
 
-import "package:cryptarch/models/models.dart";
+import "package:cryptarch/models/models.dart" as models;
 
-const DATABASE_VERSION = 3;
+const DATABASE_VERSION = 4;
 
 class Query {
   final String where;
@@ -47,6 +47,9 @@ class DatabaseService {
         }
         if (oldVersion <= 2) {
           await this._migrateV2(db);
+        }
+        if (oldVersion <= 3) {
+          await this._migrateV3(db);
         }
       },
     );
@@ -163,11 +166,12 @@ class DatabaseService {
 
   Future<void> _initializeTables(Database db) async {
     final tables = {
-      Asset.tableName: Asset.tableColumns,
-      Account.tableName: Account.tableColumns,
-      Energy.tableName: Energy.tableColumns,
-      Miner.tableName: Miner.tableColumns,
-      Payout.tableName: Payout.tableColumns,
+      models.Asset.tableName: models.Asset.tableColumns,
+      models.Account.tableName: models.Account.tableColumns,
+      models.Energy.tableName: models.Energy.tableColumns,
+      models.Miner.tableName: models.Miner.tableColumns,
+      models.Payout.tableName: models.Payout.tableColumns,
+      models.Transaction.tableName: models.Transaction.tableColumns,
     };
     for (String tableName in tables.keys) {
       String columns = _mapToSqlColumnsString(tables[tableName]);
@@ -176,14 +180,21 @@ class DatabaseService {
   }
 
   Future<void> _migrateV1(Database db) async {
-    String payoutTable = Payout.tableName;
-    String payoutColumns = _mapToSqlColumnsString(Payout.tableColumns);
+    String payoutTable = models.Payout.tableName;
+    String payoutColumns = _mapToSqlColumnsString(models.Payout.tableColumns);
     await db.execute("CREATE TABLE $payoutTable ($payoutColumns)");
   }
 
   Future<void> _migrateV2(Database db) async {
-    String energyTable = Energy.tableName;
-    String energyColumns = _mapToSqlColumnsString(Energy.tableColumns);
+    String energyTable = models.Energy.tableName;
+    String energyColumns = _mapToSqlColumnsString(models.Energy.tableColumns);
     await db.execute("CREATE TABLE $energyTable ($energyColumns)");
+  }
+
+  Future<void> _migrateV3(Database db) async {
+    String transactionTable = models.Transaction.tableName;
+    String transactionColumns =
+        _mapToSqlColumnsString(models.Transaction.tableColumns);
+    await db.execute("CREATE TABLE $transactionTable ($transactionColumns)");
   }
 }
