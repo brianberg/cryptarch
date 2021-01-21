@@ -45,7 +45,7 @@ class CurrencyField extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(this.initialValue != null
                           ? this.initialValue["symbol"]
-                          : "Default"),
+                          : "None"),
                     ),
                   ],
                 ),

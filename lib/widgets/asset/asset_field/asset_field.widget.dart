@@ -47,7 +47,7 @@ class AssetField extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(this.initialValue != null
                           ? this.initialValue.name
-                          : "Default"),
+                          : "None"),
                     ),
                   ],
                 ),
