@@ -124,7 +124,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initialize() async {
-    final assets = await Asset.find(orderBy: "value DESC");
+    final assets = await Asset.find(
+      filters: {
+        "type": "!= ${Asset.TYPE_FIAT}",
+      },
+      orderBy: "value DESC",
+    );
     final value = await this.portfolio.getValue();
     final valueChange = await this.portfolio.getValueChange();
 

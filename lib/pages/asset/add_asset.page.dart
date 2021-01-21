@@ -20,7 +20,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
   @override
   void initState() {
     super.initState();
-    this._formData["tokenPlatform"] = "Ethereum";
+    this._formData["blockchain"] = "Ethereum";
   }
 
   @override
@@ -48,15 +48,15 @@ class _AddAssetPageState extends State<AddAssetPage> {
                         final exchanges = currency["exchanges"] as List;
                         setState(() {
                           this.currency = currency;
-                          this.exchanges = exchanges;
-                          if (exchanges.length > 0) {
+                          this.exchanges = exchanges ?? [];
+                          if (this.exchanges.isNotEmpty) {
                             this._formData["exchange"] = exchanges.first;
                           }
                         });
                       }
                     },
                   ),
-                  this.exchanges.length > 0
+                  this.exchanges.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(top: 16.0),
                           child: DropdownButtonFormField(
@@ -121,7 +121,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
     final symbol = this.currency["symbol"];
 
     String exchange = this._formData["exchange"];
-    String platform = this.currency["tokenPlatform"];
+    String platform = this.currency["blockchain"];
     String contractAddress = this.currency["contractAddress"];
 
     final existingAsset = await Asset.findOneBySymbol(symbol);
@@ -134,7 +134,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
     } else {
       return AssetService.addAsset(
         symbol,
-        tokenPlatform: platform,
+        blockchain: platform,
         contractAddress: contractAddress,
       );
     }

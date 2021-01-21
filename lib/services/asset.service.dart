@@ -8,7 +8,7 @@ class AssetService {
   static Future<Asset> addAsset(
     String symbol, {
     String exchange,
-    String tokenPlatform,
+    String blockchain,
     String contractAddress,
   }) async {
     double value = 0.0;
@@ -38,9 +38,9 @@ class AssetService {
         lowPrice = price.low;
         percentChange = price.percentChange;
       }
-    } else {
+    } else if (blockchain != null && contractAddress != null) {
       final price = await MarketsService().getTokenPrice(
-        tokenPlatform,
+        blockchain,
         contractAddress,
         "USD",
       );
@@ -58,9 +58,10 @@ class AssetService {
       id: Uuid().v1(),
       name: currency["name"],
       symbol: symbol,
+      type: currency["type"],
       value: value,
       exchange: exchange,
-      tokenPlatform: tokenPlatform,
+      blockchain: blockchain,
       contractAddress: contractAddress,
       lastPrice: lastPrice,
       highPrice: highPrice,
@@ -73,9 +74,13 @@ class AssetService {
   }
 
   static Future<void> refreshPrices() async {
-    final assets = await Asset.find();
-    for (Asset asset in assets) {
-      await AssetService.refreshPrice(asset);
+    final coins = await Asset.find(filters: {"type": Asset.TYPE_COIN});
+    for (Asset coin in coins) {
+      await AssetService.refreshPrice(coin);
+    }
+    final tokens = await Asset.find(filters: {"type": Asset.TYPE_TOKEN});
+    for (Asset token in tokens) {
+      await AssetService.refreshPrice(token);
     }
   }
 
@@ -91,9 +96,9 @@ class AssetService {
         asset.lowPrice = price.low ?? asset.lowPrice;
         asset.percentChange = price.percentChange ?? asset.percentChange;
       }
-    } else if (asset.isToken) {
+    } else if (asset.blockchain != null && asset.contractAddress != null) {
       final price = await markets.getTokenPrice(
-        asset.tokenPlatform,
+        asset.blockchain,
         asset.contractAddress,
         "USD",
       );

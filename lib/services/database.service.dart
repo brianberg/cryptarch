@@ -3,7 +3,7 @@ import "package:sqflite/sqflite.dart";
 
 import "package:cryptarch/models/models.dart" as models;
 
-const DATABASE_VERSION = 4;
+const DATABASE_VERSION = 1;
 
 class Query {
   final String where;
@@ -42,15 +42,15 @@ class DatabaseService {
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Migrations
-        if (oldVersion == 1) {
-          await this._migrateV1(db);
-        }
-        if (oldVersion <= 2) {
-          await this._migrateV2(db);
-        }
-        if (oldVersion <= 3) {
-          await this._migrateV3(db);
-        }
+        // if (oldVersion == 1) {
+        //   await this._migrateV1(db);
+        // }
+        // if (oldVersion <= 2) {
+        //   await this._migrateV2(db);
+        // }
+        // if (oldVersion <= 3) {
+        //   await this._migrateV3(db);
+        // }
       },
     );
     return this._db;
@@ -79,7 +79,9 @@ class DatabaseService {
         where += "$key IN (${qs.join(",")})";
         args.addAll(values);
       } else if (value is String &&
-          (value.startsWith(">") || value.startsWith("<"))) {
+          (value.startsWith(">") ||
+              value.startsWith("<") ||
+              value.startsWith("!"))) {
         final parts = value.split(" ");
         final comparator = parts[0];
         where += "$key $comparator ?";
@@ -177,24 +179,5 @@ class DatabaseService {
       String columns = _mapToSqlColumnsString(tables[tableName]);
       await db.execute("CREATE TABLE $tableName ($columns)");
     }
-  }
-
-  Future<void> _migrateV1(Database db) async {
-    String payoutTable = models.Payout.tableName;
-    String payoutColumns = _mapToSqlColumnsString(models.Payout.tableColumns);
-    await db.execute("CREATE TABLE $payoutTable ($payoutColumns)");
-  }
-
-  Future<void> _migrateV2(Database db) async {
-    String energyTable = models.Energy.tableName;
-    String energyColumns = _mapToSqlColumnsString(models.Energy.tableColumns);
-    await db.execute("CREATE TABLE $energyTable ($energyColumns)");
-  }
-
-  Future<void> _migrateV3(Database db) async {
-    String transactionTable = models.Transaction.tableName;
-    String transactionColumns =
-        _mapToSqlColumnsString(models.Transaction.tableColumns);
-    await db.execute("CREATE TABLE $transactionTable ($transactionColumns)");
   }
 }

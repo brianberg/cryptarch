@@ -8,10 +8,12 @@ class Asset {
   final String id;
   final String name;
   final String symbol;
+  final String type; // fiat, coin, token, nft
   double value;
   String exchange;
-  String tokenPlatform;
+  String blockchain;
   String contractAddress;
+  String tokenId;
   double lastPrice;
   double highPrice;
   double lowPrice;
@@ -23,23 +25,31 @@ class Asset {
     "id": "TEXT PRIMARY KEY",
     "name": "TEXT",
     "symbol": "TEXT",
+    "type": "TEXT",
     "value": "REAL",
     "exchange": "TEXT",
-    "tokenPlatform": "TEXT",
+    "blockchain": "TEXT",
     "contractAddress": "TEXT",
+    "tokenId": "TEXT",
     "lastPrice": "REAL",
     "highPrice": "REAL",
     "lowPrice": "REAL",
     "percentChange": "REAL",
   };
 
+  static const String TYPE_COIN = "coin";
+  static const String TYPE_TOKEN = "token";
+  static const String TYPE_FIAT = "fiat";
+  static const String TYPE_NFT = "nft";
+
   Asset({
     @required this.id,
     @required this.name,
     @required this.symbol,
     @required this.value,
+    @required this.type,
     this.exchange,
-    this.tokenPlatform,
+    this.blockchain,
     this.contractAddress,
     this.lastPrice,
     this.highPrice,
@@ -48,11 +58,8 @@ class Asset {
   })  : assert(id != null),
         assert(name != null),
         assert(symbol != null),
-        assert(value != null);
-
-  bool get isToken {
-    return this.tokenPlatform != null && this.contractAddress != null;
-  }
+        assert(value != null),
+        assert(type != null);
 
   static Future<Asset> deserialize(Map<String, dynamic> rawAsset) async {
     final value = rawAsset["value"];
@@ -65,9 +72,10 @@ class Asset {
       id: rawAsset["id"],
       name: rawAsset["name"],
       symbol: rawAsset["symbol"],
+      type: rawAsset["type"],
       value: value != null ? value.toDouble() : 0.0,
       exchange: rawAsset["exchange"],
-      tokenPlatform: rawAsset["tokenPlatform"],
+      blockchain: rawAsset["blockchain"],
       contractAddress: rawAsset["contractAddress"],
       lastPrice: lastPrice != null ? lastPrice.toDouble() : 0.0,
       highPrice: highPrice != null ? highPrice.toDouble() : 0.0,
@@ -138,9 +146,10 @@ class Asset {
     map["id"] = this.id;
     map["name"] = this.name;
     map["symbol"] = this.symbol;
+    map["type"] = this.type;
     map["value"] = this.value;
     map["exchange"] = this.exchange;
-    map["tokenPlatform"] = this.tokenPlatform;
+    map["blockchain"] = this.blockchain;
     map["contractAddress"] = this.contractAddress;
     map["lastPrice"] = this.lastPrice;
     map["highPrice"] = this.highPrice;
