@@ -2,6 +2,7 @@ import "package:flutter/foundation.dart";
 
 import "package:sqflite/sqflite.dart";
 
+import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show DatabaseService;
 
 class Transaction {
@@ -13,15 +14,15 @@ class Transaction {
   // Sent
   String sendAccount;
   String sentAddress;
-  String sentCurrency;
+  Asset sentAsset;
   double sentQuantity;
   // Receive
   String receivedAccount;
   String receivedAddress;
-  String receivedCurrency;
+  Asset receivedAsset;
   double receivedQuantity;
   // Fee
-  String feeCurrency;
+  Asset feeAsset;
   double feeQuantity;
 
   static final String tableName = "transactions";
@@ -34,15 +35,21 @@ class Transaction {
     "comment": "TEXT",
     "sendAccount": "TEXT",
     "sentAddress": "TEXT",
-    "sentCurrency": "TEXT",
+    "sentAssetId": "TEXT",
     "sentQuantity": "REAL",
     "receivedAccount": "TEXT",
     "receivedAddress": "TEXT",
-    "receivedCurrency": "TEXT",
+    "receivedAssetId": "TEXT",
     "receivedQuantity": "REAL",
-    "feeCurrency": "TEXT",
+    "feeAssetId": "TEXT",
     "feeQuantity": "REAL",
   };
+
+  static const TYPE_BUY = "buy";
+  static const TYPE_CONVERT = "convert";
+  static const TYPE_RECEIVE = "received";
+  static const TYPE_SELL = "sell";
+  static const TYPE_SEND = "send";
 
   Transaction({
     @required this.id,
@@ -52,13 +59,13 @@ class Transaction {
     this.comment,
     this.sendAccount,
     this.sentAddress,
-    this.sentCurrency,
+    this.sentAsset,
     this.sentQuantity,
     this.receivedAccount,
     this.receivedAddress,
-    this.receivedCurrency,
+    this.receivedAsset,
     this.receivedQuantity,
-    this.feeCurrency,
+    this.feeAsset,
     this.feeQuantity,
   })  : assert(id != null),
         assert(type != null),
@@ -69,8 +76,14 @@ class Transaction {
   }
 
   double get total {
-    if (this.feeCurrency == this.sentCurrency) {
-      return this.sentQuantity - this.feeQuantity;
+    if (this.feeAsset.id == this.sentAsset.id) {
+      if (this.type == Transaction.TYPE_CONVERT) {
+        return this.sentQuantity - this.feeQuantity;
+      }
+      return this.sentQuantity + this.feeQuantity;
+    }
+    if (this.type == Transaction.TYPE_CONVERT) {
+      return this.receivedQuantity - this.feeQuantity;
     }
     return this.receivedQuantity - this.feeQuantity;
   }
@@ -81,6 +94,9 @@ class Transaction {
     final rawSentQuantity = rawTransaction["sentQuantity"];
     final rawReceivedQuantity = rawTransaction["receivedQuantity"];
     final rawFeeQuantity = rawTransaction["feeQuantity"];
+    final sentAssetId = rawTransaction["sentAssetId"];
+    final receivedAssetId = rawTransaction["receivedAssetId"];
+    final feeAssetId = rawTransaction["feeAssetId"];
 
     return Transaction(
       id: rawTransaction["id"],
@@ -90,14 +106,17 @@ class Transaction {
       comment: rawTransaction["comment"],
       sendAccount: rawTransaction["sendAccount"],
       sentAddress: rawTransaction["sentAddress"],
-      sentCurrency: rawTransaction["sentCurrency"],
+      sentAsset:
+          sentAssetId != null ? await Asset.findOneById(sentAssetId) : null,
       sentQuantity: rawSentQuantity != null ? rawSentQuantity.toDouble() : null,
       receivedAccount: rawTransaction["receivedAccount"],
       receivedAddress: rawTransaction["receivedAddress"],
-      receivedCurrency: rawTransaction["receivedCurrency"],
+      receivedAsset: receivedAssetId != null
+          ? await Asset.findOneById(receivedAssetId)
+          : null,
       receivedQuantity:
           rawReceivedQuantity != null ? rawReceivedQuantity.toDouble() : null,
-      feeCurrency: rawTransaction["feeCurrency"],
+      feeAsset: feeAssetId != null ? await Asset.findOneById(feeAssetId) : null,
       feeQuantity: rawFeeQuantity != null ? rawFeeQuantity.toDouble() : null,
     );
   }
@@ -153,13 +172,13 @@ class Transaction {
     map["comment"] = this.comment;
     map["sendAccount"] = this.sendAccount;
     map["sentAddress"] = this.sentAddress;
-    map["sentCurrency"] = this.sentCurrency;
+    map["sentAssetId"] = this.sentAsset?.id;
     map["sentQuantity"] = this.sentQuantity;
     map["receivedAccount"] = this.receivedAccount;
     map["receivedAddress"] = this.receivedAddress;
-    map["receivedCurrency"] = this.receivedCurrency;
+    map["receivedAssetId"] = this.receivedAsset?.id;
     map["receivedQuantity"] = this.receivedQuantity;
-    map["feeCurrency"] = this.feeCurrency;
+    map["feeAssetId"] = this.feeAsset?.id;
     map["feeQuantity"] = this.feeQuantity;
 
     return map;
@@ -182,9 +201,9 @@ class Transaction {
 
   @override
   String toString() {
-    if (this.receivedCurrency == null) {
-      return "$type $sentQuantity $sentCurrency";
+    if (this.receivedAsset == null) {
+      return "$type $sentQuantity ${sentAsset.symbol}";
     }
-    return "$type $receivedQuantity $receivedCurrency";
+    return "$type $receivedQuantity ${receivedAsset.symbol}";
   }
 }

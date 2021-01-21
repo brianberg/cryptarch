@@ -47,28 +47,56 @@ class _PortfolioPageState extends State<PortfolioPage> {
         title: Row(
           children: [
             Text(totalValue),
-            Padding(
-              padding: const EdgeInsets.only(left: 2.0),
-              child: CurrencyChange(
-                value: this.totalValueChange,
-                style: theme.textTheme.subtitle1,
-              ),
-            ),
+            this.totalValueChange != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 2.0),
+                    child: CurrencyChange(
+                      value: this.totalValueChange,
+                      style: theme.textTheme.subtitle1,
+                    ),
+                  )
+                : Container(),
           ],
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: Icon(Icons.add_circle),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddAccountPage(),
-                ),
-              );
-              await this._refreshItems();
+          PopupMenuButton(
+            icon: Icon(
+              Icons.add_circle,
+              color: theme.accentColor,
+            ),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "account":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddAccountPage(),
+                    ),
+                  );
+                  await this._refreshItems();
+                  break;
+                case "trade":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTradePage(),
+                    ),
+                  );
+                  break;
+              }
             },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "account",
+                child: Text("Account"),
+              ),
+              const PopupMenuItem<String>(
+                value: "trade",
+                child: Text("Trade"),
+              ),
+            ],
           ),
         ],
       ),
