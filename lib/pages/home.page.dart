@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 this.portfolioValue != null
                     ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(portfolioValue),
                           Padding(

@@ -45,6 +45,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
     return Scaffold(
       appBar: FlatAppBar(
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(totalValue),
             this.totalValueChange != null
@@ -60,43 +61,20 @@ class _PortfolioPageState extends State<PortfolioPage> {
         ),
         centerTitle: true,
         actions: [
-          PopupMenuButton(
+          IconButton(
             icon: Icon(
               Icons.add_circle,
               color: theme.accentColor,
             ),
-            color: theme.cardTheme.color,
-            onSelected: (String selected) async {
-              switch (selected) {
-                case "account":
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddAccountPage(),
-                    ),
-                  );
-                  await this._refreshItems();
-                  break;
-                case "trade":
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddTradePage(),
-                    ),
-                  );
-                  break;
-              }
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddAccountPage(),
+                ),
+              );
+              await this._refreshItems();
             },
-            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-              const PopupMenuItem<String>(
-                value: "account",
-                child: Text("Account"),
-              ),
-              const PopupMenuItem<String>(
-                value: "trade",
-                child: Text("Trade"),
-              ),
-            ],
           ),
         ],
       ),
