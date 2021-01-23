@@ -1,2 +1,2 @@
-export "add_trade.page.dart";
-export "trade.page.dart";
+export "add_transaction.page.dart";
+export "transaction.page.dart";

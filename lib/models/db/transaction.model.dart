@@ -60,32 +60,68 @@ class Transaction {
     this.sendAccount,
     this.sentAddress,
     this.sentAsset,
-    this.sentQuantity,
+    this.sentQuantity = 0.0,
     this.receivedAccount,
     this.receivedAddress,
     this.receivedAsset,
-    this.receivedQuantity,
+    this.receivedQuantity = 0.0,
     this.feeAsset,
-    this.feeQuantity,
+    this.feeQuantity = 0.0,
   })  : assert(id != null),
         assert(type != null),
         assert(date != null);
 
   double get rate {
-    return this.receivedQuantity / this.sentQuantity;
+    switch (this.type) {
+      case Transaction.TYPE_CONVERT:
+      case Transaction.TYPE_SELL:
+        return this.receivedQuantity / this.sentQuantity;
+      default:
+        return this.sentQuantity / this.receivedQuantity;
+    }
   }
 
   double get total {
-    if (this.feeAsset.id == this.sentAsset.id) {
-      if (this.type == Transaction.TYPE_CONVERT) {
-        return this.sentQuantity - this.feeQuantity;
-      }
-      return this.sentQuantity + this.feeQuantity;
+    switch (this.type) {
+      case Transaction.TYPE_CONVERT:
+        if (this.feeAsset.id == this.sentAsset.id) {
+          return this.sentQuantity - this.feeQuantity;
+        }
+        return this.receivedQuantity - this.feeQuantity;
+      default:
+        if (this.feeAsset.id == this.sentAsset.id) {
+          return this.sentQuantity + this.feeQuantity;
+        }
+        return this.receivedQuantity - this.feeQuantity;
     }
-    if (this.type == Transaction.TYPE_CONVERT) {
-      return this.receivedQuantity - this.feeQuantity;
+  }
+
+  double get currentValue {
+    switch (this.type) {
+      case Transaction.TYPE_BUY:
+        return this.receivedAsset.value * this.receivedQuantity;
+      case Transaction.TYPE_SELL:
+        return this.sentAsset.value * this.sentQuantity;
+      case Transaction.TYPE_CONVERT:
+        return this.receivedAsset.value * this.receivedQuantity;
+      default:
+        return 0.0;
     }
-    return this.receivedQuantity - this.feeQuantity;
+  }
+
+  double get returnValue {
+    switch (type) {
+      case Transaction.TYPE_BUY:
+        return this.currentValue - this.total;
+      case Transaction.TYPE_SELL:
+        return this.currentValue - this.total;
+      case Transaction.TYPE_CONVERT:
+        final sentValue = this.sentAsset.value * this.sentQuantity;
+        final totalValue = this.receivedAsset.value * this.total;
+        return totalValue - sentValue;
+      default:
+        return 0.0;
+    }
   }
 
   static Future<Transaction> deserialize(

@@ -4,7 +4,8 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Transaction;
+import "package:cryptarch/models/models.dart" show Transaction;
+import "package:cryptarch/widgets/widgets.dart";
 
 class TradeListItem extends StatelessWidget {
   final Transaction trade;
@@ -20,27 +21,16 @@ class TradeListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateFormat = DateFormat("MM/dd/yyyy");
+    final dateFormat = DateFormat("MMM dd, yyyy");
     final fiatFormat = NumberFormat.simpleCurrency();
 
-    String received;
-    if (this.trade.receivedAsset.type == Asset.TYPE_FIAT) {
-      received = fiatFormat.format(this.trade.receivedQuantity);
-    } else {
-      final quantity = this.trade.receivedQuantity.toStringAsFixed(6);
-      received = "$quantity ${this.trade.receivedAsset.symbol}";
-    }
-
-    String sent;
-    if (this.trade.sentAsset.type == Asset.TYPE_FIAT) {
-      sent = fiatFormat.format(this.trade.sentQuantity);
-    } else {
-      final quantity = this.trade.sentQuantity.toStringAsFixed(6);
-      sent = "$quantity ${this.trade.sentAsset.symbol}";
-    }
+    final date = dateFormat.format(this.trade.date.toLocal());
 
     String title;
     Icon leadingIcon;
+    String quantity;
+    String price;
+
     switch (this.trade.type) {
       case Transaction.TYPE_BUY:
         title = "Buy";
@@ -48,6 +38,9 @@ class TradeListItem extends StatelessWidget {
           Icons.add_circle_outline,
           size: 32.0,
         );
+        final receivedQuantity = this.trade.receivedQuantity.toStringAsFixed(6);
+        quantity = "$receivedQuantity ${this.trade.receivedAsset.symbol}";
+        price = fiatFormat.format(this.trade.rate);
         break;
       case Transaction.TYPE_CONVERT:
         title = "Convert";
@@ -55,13 +48,10 @@ class TradeListItem extends StatelessWidget {
           Icons.swap_horizontal_circle_outlined,
           size: 32.0,
         );
-        break;
-      case Transaction.TYPE_RECEIVE:
-        title = "Receive";
-        leadingIcon = Icon(
-          Icons.arrow_circle_down,
-          size: 32.0,
-        );
+        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
+        final rate = this.trade.rate.toStringAsFixed(6);
+        quantity = "$sentQuantity ${this.trade.sentAsset.symbol}";
+        price = "$rate ${this.trade.receivedAsset.symbol}";
         break;
       case Transaction.TYPE_SELL:
         title = "Sell";
@@ -69,26 +59,35 @@ class TradeListItem extends StatelessWidget {
           Icons.remove_circle_outline,
           size: 32.0,
         );
+        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
+        quantity = "$sentQuantity ${this.trade.sentAsset.symbol}";
+        price = fiatFormat.format(this.trade.rate);
         break;
-      case Transaction.TYPE_SEND:
-        title = "Send";
-        leadingIcon = Icon(
-          Icons.arrow_circle_up,
-          size: 32.0,
-        );
-        break;
+      // case Transaction.TYPE_SEND:
+      //   title = "Send";
+      //   leadingIcon = Icon(
+      //     Icons.arrow_circle_up,
+      //     size: 32.0,
+      //   );
+      //   break;
+      // case Transaction.TYPE_RECEIVE:
+      //   title = "Receive";
+      //   leadingIcon = Icon(
+      //     Icons.arrow_circle_down,
+      //     size: 32.0,
+      //   );
+      //   break;
     }
 
     return ListTile(
       key: ValueKey(this.trade),
+      isThreeLine: true,
       title: Text(
         title,
-        style: TextStyle(
-          color: theme.textTheme.bodyText1.color,
-        ),
+        style: theme.textTheme.bodyText1,
       ),
       subtitle: Text(
-        dateFormat.format(this.trade.date.toLocal()),
+        "${this.trade.receivedAsset.symbol}-${this.trade.sentAsset.symbol}\n$date",
         style: theme.textTheme.subtitle2.copyWith(
           fontFeatures: [FontFeature.tabularFigures()],
         ),
@@ -104,16 +103,20 @@ class TradeListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            received,
+            quantity,
             style: theme.textTheme.bodyText1.copyWith(
               fontFeatures: [FontFeature.tabularFigures()],
             ),
           ),
           Text(
-            sent,
+            price,
             style: theme.textTheme.subtitle2.copyWith(
               fontFeatures: [FontFeature.tabularFigures()],
             ),
+          ),
+          CurrencyChange(
+            value: this.trade.returnValue,
+            style: theme.textTheme.subtitle2,
           ),
         ],
       ),

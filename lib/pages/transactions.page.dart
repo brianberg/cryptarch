@@ -37,17 +37,63 @@ class _TransactionsPageState extends State<TransactionsPage> {
         title: Text("Trades"),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: Icon(Icons.add_circle),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddTradePage(),
-                ),
-              );
-              await this._initialize();
+          PopupMenuButton(
+            icon: Icon(
+              Icons.add_circle,
+              color: theme.accentColor,
+            ),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "buy":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTransactionPage(
+                        type: Transaction.TYPE_BUY,
+                      ),
+                    ),
+                  );
+                  await this._initialize();
+                  break;
+                case "sell":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTransactionPage(
+                        type: Transaction.TYPE_SELL,
+                      ),
+                    ),
+                  );
+                  await this._initialize();
+                  break;
+                case "convert":
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTransactionPage(
+                        type: Transaction.TYPE_CONVERT,
+                      ),
+                    ),
+                  );
+                  await this._initialize();
+                  break;
+              }
             },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "buy",
+                child: Text("Buy"),
+              ),
+              const PopupMenuItem<String>(
+                value: "sell",
+                child: Text("Sell"),
+              ),
+              const PopupMenuItem<String>(
+                value: "convert",
+                child: Text("Convert"),
+              ),
+            ],
           ),
         ],
       ),
