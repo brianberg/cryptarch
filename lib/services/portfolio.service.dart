@@ -1,5 +1,5 @@
 import "package:cryptarch/models/models.dart"
-    show Asset, Account, PortfolioItem;
+    show Asset, Account, PortfolioItem, Transaction;
 
 class PortfolioService {
   Future<List<PortfolioItem>> getItems() async {
@@ -41,5 +41,27 @@ class PortfolioService {
   Future<double> getValueChange() async {
     final items = await this.getItems();
     return this.calculateValueChange(items);
+  }
+
+  Future<double> getTotalReturn() async {
+    final trades = await Transaction.find(filters: {
+      "type": [Transaction.TYPE_BUY, Transaction.TYPE_SELL],
+    });
+
+    if (trades.isEmpty) {
+      return null;
+    }
+
+    final portfolioValue = await this.getValue();
+    final totalSpent = trades.fold(0.0, (total, trade) {
+      if (trade.type == Transaction.TYPE_BUY) {
+        total += trade.total;
+      } else if (trade.type == Transaction.TYPE_SELL) {
+        total -= trade.total;
+      }
+      return total;
+    });
+
+    return portfolioValue - totalSpent;
   }
 }

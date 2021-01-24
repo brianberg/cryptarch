@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/models/models.dart" show Transaction;
-import "package:cryptarch/services/services.dart" show AssetService;
+import "package:cryptarch/services/services.dart"
+    show AssetService, PortfolioService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class TransactionsPage extends StatefulWidget {
@@ -13,8 +14,10 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
+  final portfolio = PortfolioService();
+
   List<Transaction> transactions;
-  double totalChange;
+  double totalReturn;
 
   @override
   void initState() {
@@ -34,8 +37,23 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: Text("Trades"),
-        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Total Return",
+                  style: theme.textTheme.subtitle2,
+                ),
+                this.totalReturn != null
+                    ? CurrencyChange(value: this.totalReturn)
+                    : Text("..."),
+              ],
+            ),
+          ],
+        ),
         actions: [
           PopupMenuButton(
             icon: Icon(
@@ -126,14 +144,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
   Future<void> _initialize() async {
     final transactions = await Transaction.find(orderBy: "date DESC");
-
-    // double totalChange = transactions.fold(0, (value, asset) {
-    //   return value + asset.percentChange;
-    // });
+    final totalReturn = await this.portfolio.getTotalReturn();
 
     setState(() {
       this.transactions = transactions;
-      // this.totalChange = totalChange;
+      this.totalReturn = totalReturn ?? 0.0;
     });
   }
 
