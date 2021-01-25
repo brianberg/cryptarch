@@ -7,20 +7,20 @@ import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AccountPage extends StatefulWidget {
+class AccountDetailPage extends StatefulWidget {
   final Account account;
 
-  AccountPage({
+  AccountDetailPage({
     Key key,
     @required this.account,
   })  : assert(account != null),
         super(key: key);
 
   @override
-  _AccountPageState createState() => _AccountPageState();
+  _AccountDetailPageState createState() => _AccountDetailPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _AccountDetailPageState extends State<AccountDetailPage> {
   Account account;
 
   @override
@@ -47,8 +47,9 @@ class _AccountPageState extends State<AccountPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      EditAccountPage(account: this.widget.account),
+                  builder: (context) => AccountEditPage(
+                    account: this.widget.account,
+                  ),
                 ),
               );
               await this._refreshAccount();

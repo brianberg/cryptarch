@@ -72,7 +72,7 @@ class _MiningPageState extends State<MiningPage> {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MinerPage(
+                            builder: (context) => MinerDetailPage(
                               miner: miner,
                             ),
                           ),

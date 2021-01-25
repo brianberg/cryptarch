@@ -7,20 +7,20 @@ import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show MiningService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class MinerPage extends StatefulWidget {
+class MinerDetailPage extends StatefulWidget {
   final Miner miner;
 
-  MinerPage({
+  MinerDetailPage({
     Key key,
     @required this.miner,
   })  : assert(miner != null),
         super(key: key);
 
   @override
-  _MinerPageState createState() => _MinerPageState();
+  _MinerDetailPageState createState() => _MinerDetailPageState();
 }
 
-class _MinerPageState extends State<MinerPage> {
+class _MinerDetailPageState extends State<MinerDetailPage> {
   Miner miner;
   String payoutDuration = DurationChips.DURATION_7D;
 
@@ -52,7 +52,7 @@ class _MinerPageState extends State<MinerPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditMinerPage(miner: this.widget.miner),
+                  builder: (context) => MinerEditPage(miner: this.widget.miner),
                 ),
               );
               await this._refreshMiner();
@@ -70,8 +70,9 @@ class _MinerPageState extends State<MinerPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          AddEnergyPage(miner: this.widget.miner),
+                      builder: (context) => EnergyAddPage(
+                        miner: this.widget.miner,
+                      ),
                     ),
                   );
                   await this._refreshMiner();
@@ -219,7 +220,7 @@ class _MinerPageState extends State<MinerPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AccountPage(
+                            builder: (context) => AccountDetailPage(
                               account: this.miner.account,
                             ),
                           ),

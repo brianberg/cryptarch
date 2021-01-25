@@ -2,13 +2,13 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show Asset, Transaction;
+import "package:cryptarch/models/models.dart" show Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
-class TradePage extends StatelessWidget {
+class TransactionDetailPage extends StatelessWidget {
   final Transaction trade;
 
-  TradePage({
+  TransactionDetailPage({
     Key key,
     @required this.trade,
   })  : assert(trade != null),

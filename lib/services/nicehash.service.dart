@@ -196,7 +196,7 @@ class NiceHashService {
     // final DateTime now = DateTime.now().subtract(Duration(days: 2));
     final int pageSize = 168; // 4 weeks * 7 days * 6 payouts per day
 
-    // Keep track of the previous page's last payout
+    // Keep track of the previous page"s last payout
     // in case the next page has payouts on the same day
     DateTime recentPayoutDate;
     DateTime lastPayoutDate; // of the current page

@@ -89,7 +89,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddAccountPage(),
+                  builder: (context) => AccountAddPage(),
                 ),
               );
               await this._refreshItems();
@@ -109,7 +109,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AssetPage(
+                            builder: (context) => AssetDetailPage(
                               asset: item.asset,
                             ),
                           ),

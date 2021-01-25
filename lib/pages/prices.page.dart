@@ -65,7 +65,7 @@ class _PricesPageState extends State<PricesPage> {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AssetPage(
+                            builder: (context) => AssetDetailPage(
                               asset: asset,
                             ),
                           ),

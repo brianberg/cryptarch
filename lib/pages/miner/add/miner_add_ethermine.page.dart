@@ -1,31 +1,23 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart" show Miner;
+import "package:uuid/uuid.dart";
+
+import "package:cryptarch/models/models.dart"
+    show Asset, Account, Miner, Payout;
+import "package:cryptarch/services/services.dart"
+    show AssetService, EthermineService, EtherscanService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class EditMinerPage extends StatefulWidget {
-  final Miner miner;
-
-  EditMinerPage({
-    Key key,
-    @required this.miner,
-  })  : assert(miner != null),
-        super(key: key);
-
+class MinerAddEtherminePage extends StatefulWidget {
   @override
-  _EditMinerPageState createState() => _EditMinerPageState();
+  _MinerAddEtherminePageState createState() => _MinerAddEtherminePageState();
 }
 
-class _EditMinerPageState extends State<EditMinerPage> {
+class _MinerAddEtherminePageState extends State<MinerAddEtherminePage> {
   final _formKey = GlobalKey<FormState>();
 
-  Miner miner;
-
-  @override
-  void initState() {
-    super.initState();
-    this.miner = this.widget.miner;
-  }
+  String coin;
+  Map<String, dynamic> _formData = {};
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +25,7 @@ class _EditMinerPageState extends State<EditMinerPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: const Text("Edit Miner"),
+        title: const Text("Ethermine"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -42,97 +34,20 @@ class _EditMinerPageState extends State<EditMinerPage> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
-                      decoration: InputDecoration(
-                        labelText: "Name",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                        enabled: this.miner.platform == "Custom",
-                      ),
-                      initialValue: this.miner.name,
-                      onSaved: (String value) {
-                        setState(() {
-                          this.miner.name = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
-                      decoration: InputDecoration(
-                        labelText: "Profitability",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                        suffix: const Text("/ day"),
-                      ),
-                      initialValue: this.miner.profitability.toString(),
-                      onSaved: (String value) {
-                        setState(() {
-                          this.miner.profitability = double.parse(value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        } else if (double.tryParse(value) == null) {
-                          return "Invalid";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextFormField(
-                      cursorColor: theme.cursorColor,
-                      decoration: InputDecoration(
-                        labelText: "Energy Consumption",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                        suffix: const Text("kWh"),
-                      ),
-                      initialValue: this.miner.energy.toString(),
-                      onSaved: (String value) {
-                        setState(() {
-                          this.miner.energy = double.parse(value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return "Required";
-                        } else if (double.tryParse(value) == null) {
-                          return "Invalid";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                        labelText: "Active",
+                        labelText: "Coin",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
                       dropdownColor: theme.backgroundColor,
-                      value: this.miner.active ? "Yes" : "No",
+                      value: this.coin,
                       items: <String>[
-                        "Yes",
-                        "No",
+                        "ETH",
+                        "ETC",
                       ].map((String value) {
                         return new DropdownMenuItem<String>(
                           value: value,
@@ -141,8 +56,56 @@ class _EditMinerPageState extends State<EditMinerPage> {
                       }).toList(),
                       onChanged: (String value) {
                         setState(() {
-                          this.miner.active = value == "Yes";
+                          this.coin = value;
                         });
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
+                        labelText: "Wallet Address",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                      ),
+                      onSaved: (String value) {
+                        setState(() {
+                          this._formData["address"] = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
+                        labelText: "Daily Energy Usage",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                        suffix: const Text("kWh"),
+                      ),
+                      initialValue: "0",
+                      onSaved: (String value) {
+                        setState(() {
+                          this._formData["energy"] = double.parse(value);
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
+                        }
+                        return null;
                       },
                     ),
                   ),
@@ -152,18 +115,19 @@ class _EditMinerPageState extends State<EditMinerPage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
-                        child: Text("Update", style: theme.textTheme.button),
+                        child: Text("Add", style: theme.textTheme.button),
                         color: theme.buttonColor,
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              await this.miner.save();
-                              Navigator.pop(context);
+                              // Create miner and account
+                              final miner = await _saveEthermineMiner();
+                              Navigator.pop(context, miner.id);
                             } catch (err) {
                               // final snackBar = SnackBar(
-                              //   content: Text(err.message),
+                              //   content: Text(err),
                               // );
                               // Scaffold.of(context).showSnackBar(snackBar);
                               print(err);
@@ -173,12 +137,62 @@ class _EditMinerPageState extends State<EditMinerPage> {
                       ),
                     ),
                   ),
-                ].where((w) => w != null).toList(),
+                ],
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<Miner> _saveEthermineMiner() async {
+    final uuid = Uuid();
+    final address = this._formData["address"];
+
+    Asset asset = await Asset.findOneBySymbol(this.coin);
+
+    // Add asset if it doesn"t exist
+    if (asset == null) {
+      asset = await AssetService.addAsset(this.coin);
+    }
+
+    final etherscan = EtherscanService();
+    final ethermine = EthermineService();
+    final balance = await etherscan.getBalance(address);
+    final profitability = await ethermine.getProfitability(address);
+    final unpaid = await ethermine.getUnpaid(address);
+
+    final account = Account(
+      id: uuid.v1(),
+      name: "Ethermine",
+      asset: asset,
+      amount: balance,
+      address: address,
+    );
+    await account.save();
+
+    final miner = Miner(
+      id: uuid.v1(),
+      name: "Ethermine",
+      platform: "Ethermine",
+      asset: asset,
+      account: account,
+      profitability: profitability,
+      energy: this._formData["energy"],
+      active: true,
+      unpaidAmount: unpaid,
+    );
+    await miner.save();
+
+    try {
+      await ethermine.getPayoutHistory(miner);
+      return miner;
+    } catch (err) {
+      await Payout.deleteMany({"minerId": miner.id});
+      await miner.delete();
+      await account.delete();
+      return null;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Energy;
-import 'package:intl/intl.dart';
+import "package:intl/intl.dart";
 
 class EnergyListItem extends StatelessWidget {
   final Energy energy;

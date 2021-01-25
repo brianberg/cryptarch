@@ -3,20 +3,20 @@ import "package:flutter/material.dart";
 import "package:cryptarch/models/models.dart" show Account;
 import "package:cryptarch/widgets/widgets.dart";
 
-class EditAccountPage extends StatefulWidget {
+class AccountEditPage extends StatefulWidget {
   final Account account;
 
-  EditAccountPage({
+  AccountEditPage({
     Key key,
     @required this.account,
   })  : assert(account != null),
         super(key: key);
 
   @override
-  _EditAccountPageState createState() => _EditAccountPageState();
+  _AccountEditPageState createState() => _AccountEditPageState();
 }
 
-class _EditAccountPageState extends State<EditAccountPage> {
+class _AccountEditPageState extends State<AccountEditPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override

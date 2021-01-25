@@ -2,20 +2,19 @@ import "package:flutter/material.dart";
 
 import "package:uuid/uuid.dart";
 
-import "package:cryptarch/models/models.dart"
-    show Asset, Account, Miner, Payout;
-import "package:cryptarch/services/services.dart"
-    show AssetService, NiceHashService, StorageService;
+import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddNiceHashMinerPage extends StatefulWidget {
+class MinerAddCustomPage extends StatefulWidget {
   @override
-  _AddNiceHashMinerPageState createState() => _AddNiceHashMinerPageState();
+  _MinerAddCustomPageState createState() => _MinerAddCustomPageState();
 }
 
-class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
+class _MinerAddCustomPageState extends State<MinerAddCustomPage> {
   final _formKey = GlobalKey<FormState>();
 
+  Asset asset;
+  double balance;
   Map<String, dynamic> _formData = {};
 
   @override
@@ -24,7 +23,7 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: const Text("NiceHash"),
+        title: const Text("Custom Miner"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -36,16 +35,28 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: AssetField(
+                      label: "Asset",
+                      initialValue: this.asset,
+                      onChange: (Asset asset) {
+                        setState(() {
+                          this.asset = asset;
+                        });
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Organization ID",
+                        labelText: "Name",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["organization_id"] = value;
+                          this._formData["name"] = value;
                         });
                       },
                       validator: (value) {
@@ -61,18 +72,20 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "API Key",
+                        labelText: "Wallet Balance",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["api_key"] = value;
+                          this.balance = double.parse(value);
                         });
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
                         }
                         return null;
                       },
@@ -83,18 +96,47 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "API Secret",
+                        labelText: "Unpaid Amount",
                         filled: true,
                         fillColor: theme.cardTheme.color,
                       ),
+                      initialValue: "0",
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["api_secret"] = value;
+                          this._formData["unpaid"] = double.parse(value);
                         });
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
+                        labelText: "Profitability",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                        suffix: const Text("/ day"),
+                      ),
+                      initialValue: "0",
+                      onSaved: (String value) {
+                        setState(() {
+                          this._formData["profitability"] = double.parse(value);
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
                         }
                         return null;
                       },
@@ -126,6 +168,32 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        labelText: "Active",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                      ),
+                      dropdownColor: theme.backgroundColor,
+                      value: "Yes",
+                      items: <String>[
+                        "Yes",
+                        "No",
+                      ].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String value) {
+                        setState(() {
+                          this._formData["active"] = value;
+                        });
+                      },
+                    ),
+                  ),
                   // Submit Button
                   SizedBox(
                     width: double.infinity,
@@ -140,10 +208,8 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
                             _formKey.currentState.save();
                             try {
                               // Create miner and account
-                              final miner = await _saveNiceHashMiner();
-                              if (miner != null) {
-                                Navigator.pop(context, miner.id);
-                              }
+                              final miner = await _saveCustomMiner();
+                              Navigator.pop(context, miner.id);
                             } catch (err) {
                               // final snackBar = SnackBar(
                               //   content: Text(err),
@@ -165,59 +231,31 @@ class _AddNiceHashMinerPageState extends State<AddNiceHashMinerPage> {
     );
   }
 
-  Future<Miner> _saveNiceHashMiner() async {
-    // Securely store NiceHash credentials
-    final credentials = {
-      "organization_id": this._formData["organization_id"],
-      "api_key": this._formData["api_key"],
-      "api_secret": this._formData["api_secret"],
-    };
-    await StorageService.putItem(
-      "nicehash",
-      credentials,
-    );
-
-    final nicehash = NiceHashService();
-    final balance = await nicehash.getAccountBalance();
-    final profitability = await nicehash.getProfitability();
+  Future<Miner> _saveCustomMiner() async {
     final uuid = Uuid();
-
-    Asset asset = await Asset.findOneBySymbol("BTC");
-
-    // Add asset if it doesn't exist
-    if (asset == null) {
-      asset = await AssetService.addAsset("BTC");
-    }
+    final name = this._formData["name"];
 
     final account = Account(
       id: uuid.v1(),
-      name: "NiceHash",
-      asset: asset,
-      amount: balance.available,
+      name: this.asset.name,
+      asset: this.asset,
+      amount: this.balance,
     );
     await account.save();
 
     final miner = Miner(
       id: uuid.v1(),
-      name: "NiceHash",
-      platform: "NiceHash",
-      asset: asset,
+      name: name,
+      platform: "Custom",
+      asset: this.asset,
       account: account,
-      profitability: profitability,
+      profitability: this._formData["profitability"],
       energy: this._formData["energy"],
-      active: true,
-      unpaidAmount: balance.pending,
+      active: this._formData["active"] == "Yes",
+      unpaidAmount: this._formData["unpaid"],
     );
     await miner.save();
 
-    try {
-      await nicehash.getPayoutHistory(miner);
-      return miner;
-    } catch (err) {
-      await Payout.deleteMany({"minerId": miner.id});
-      await miner.delete();
-      await account.delete();
-      return null;
-    }
+    return miner;
   }
 }

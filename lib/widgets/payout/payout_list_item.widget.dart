@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart" show Payout;
-import 'package:intl/intl.dart';
+import "package:intl/intl.dart";
 
 class PayoutListItem extends StatelessWidget {
   final Payout payout;

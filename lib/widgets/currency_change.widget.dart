@@ -18,7 +18,7 @@ class CurrencyChange extends StatelessWidget {
     final theme = Theme.of(context);
 
     final change = NumberFormat.simpleCurrency().format(value);
-    final prefix = this.value > 0 ? '+' : '';
+    final prefix = this.value > 0 ? "+" : "";
 
     Color color = theme.textTheme.subtitle2.color;
     if (this.value > 0) {

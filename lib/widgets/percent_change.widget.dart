@@ -15,7 +15,7 @@ class PercentChange extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final prefix = this.value > 0 ? '+' : '';
+    final prefix = this.value > 0 ? "+" : "";
     final percentChange = this.value.toStringAsFixed(2);
 
     Color color = theme.textTheme.subtitle2.color;

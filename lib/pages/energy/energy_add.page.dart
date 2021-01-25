@@ -8,20 +8,20 @@ import "package:cryptarch/models/models.dart" show Energy, Miner;
 import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddEnergyPage extends StatefulWidget {
+class EnergyAddPage extends StatefulWidget {
   final Miner miner;
 
-  AddEnergyPage({
+  EnergyAddPage({
     Key key,
     @required this.miner,
   })  : assert(miner != null),
         super(key: key);
 
   @override
-  _AddEnergyPageState createState() => _AddEnergyPageState();
+  _EnergyAddPageState createState() => _EnergyAddPageState();
 }
 
-class _AddEnergyPageState extends State<AddEnergyPage> {
+class _EnergyAddPageState extends State<EnergyAddPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateInputController = TextEditingController();
   final DateFormat dateFormat = DateFormat("MM/dd/yyyy");

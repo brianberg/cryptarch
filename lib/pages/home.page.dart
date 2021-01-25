@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AssetPage(
+                            builder: (context) => AssetDetailPage(
                               asset: asset,
                             ),
                           ),

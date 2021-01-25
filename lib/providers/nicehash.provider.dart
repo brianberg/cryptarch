@@ -47,7 +47,7 @@ class NiceHashProvider {
 
   Future<http.Response> getRigPayouts({
     int pageSize = 84,
-    // int page, this doesn't seem to work, use `afterMillis`
+    // int page, this doesn"t seem to work, use `afterMillis`
     int afterMillis,
   }) {
     String path = "/main/api/v2/mining/rigs/payouts";

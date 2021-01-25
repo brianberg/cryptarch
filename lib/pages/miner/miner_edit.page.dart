@@ -1,23 +1,31 @@
 import "package:flutter/material.dart";
 
-import "package:uuid/uuid.dart";
-
-import "package:cryptarch/models/models.dart"
-    show Asset, Account, Miner, Payout;
-import "package:cryptarch/services/services.dart"
-    show AssetService, EthermineService, EtherscanService;
+import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddEthermineMinerPage extends StatefulWidget {
+class MinerEditPage extends StatefulWidget {
+  final Miner miner;
+
+  MinerEditPage({
+    Key key,
+    @required this.miner,
+  })  : assert(miner != null),
+        super(key: key);
+
   @override
-  _AddEthermineMinerPageState createState() => _AddEthermineMinerPageState();
+  _MinerEditPageState createState() => _MinerEditPageState();
 }
 
-class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
+class _MinerEditPageState extends State<MinerEditPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String coin;
-  Map<String, dynamic> _formData = {};
+  Miner miner;
+
+  @override
+  void initState() {
+    super.initState();
+    this.miner = this.widget.miner;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,7 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: const Text("Ethermine"),
+        title: const Text("Edit Miner"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -34,45 +42,22 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        labelText: "Coin",
-                        filled: true,
-                        fillColor: theme.cardTheme.color,
-                      ),
-                      dropdownColor: theme.backgroundColor,
-                      value: this.coin,
-                      items: <String>[
-                        "ETH",
-                        "ETC",
-                      ].map((String value) {
-                        return new DropdownMenuItem<String>(
-                          value: value,
-                          child: new Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          this.coin = value;
-                        });
-                      },
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Wallet Address",
+                        labelText: "Name",
                         filled: true,
                         fillColor: theme.cardTheme.color,
+                        enabled: this.miner.platform == "Custom",
                       ),
+                      initialValue: this.miner.name,
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["address"] = value;
+                          this.miner.name = value;
                         });
                       },
                       validator: (value) {
@@ -88,15 +73,15 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
                     child: TextFormField(
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
-                        labelText: "Daily Energy Usage",
+                        labelText: "Profitability",
                         filled: true,
                         fillColor: theme.cardTheme.color,
-                        suffix: const Text("kWh"),
+                        suffix: const Text("/ day"),
                       ),
-                      initialValue: "0",
+                      initialValue: this.miner.profitability.toString(),
                       onSaved: (String value) {
                         setState(() {
-                          this._formData["energy"] = double.parse(value);
+                          this.miner.profitability = double.parse(value);
                         });
                       },
                       validator: (value) {
@@ -109,25 +94,76 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      cursorColor: theme.cursorColor,
+                      decoration: InputDecoration(
+                        labelText: "Energy Consumption",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                        suffix: const Text("kWh"),
+                      ),
+                      initialValue: this.miner.energy.toString(),
+                      onSaved: (String value) {
+                        setState(() {
+                          this.miner.energy = double.parse(value);
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Required";
+                        } else if (double.tryParse(value) == null) {
+                          return "Invalid";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        labelText: "Active",
+                        filled: true,
+                        fillColor: theme.cardTheme.color,
+                      ),
+                      dropdownColor: theme.backgroundColor,
+                      value: this.miner.active ? "Yes" : "No",
+                      items: <String>[
+                        "Yes",
+                        "No",
+                      ].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          value: value,
+                          child: new Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String value) {
+                        setState(() {
+                          this.miner.active = value == "Yes";
+                        });
+                      },
+                    ),
+                  ),
                   // Submit Button
                   SizedBox(
                     width: double.infinity,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
-                        child: Text("Add", style: theme.textTheme.button),
+                        child: Text("Update", style: theme.textTheme.button),
                         color: theme.buttonColor,
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             // Process data.
                             _formKey.currentState.save();
                             try {
-                              // Create miner and account
-                              final miner = await _saveEthermineMiner();
-                              Navigator.pop(context, miner.id);
+                              await this.miner.save();
+                              Navigator.pop(context);
                             } catch (err) {
                               // final snackBar = SnackBar(
-                              //   content: Text(err),
+                              //   content: Text(err.message),
                               // );
                               // Scaffold.of(context).showSnackBar(snackBar);
                               print(err);
@@ -137,62 +173,12 @@ class _AddEthermineMinerPageState extends State<AddEthermineMinerPage> {
                       ),
                     ),
                   ),
-                ],
+                ].where((w) => w != null).toList(),
               ),
             ),
           ),
         ),
       ),
     );
-  }
-
-  Future<Miner> _saveEthermineMiner() async {
-    final uuid = Uuid();
-    final address = this._formData["address"];
-
-    Asset asset = await Asset.findOneBySymbol(this.coin);
-
-    // Add asset if it doesn't exist
-    if (asset == null) {
-      asset = await AssetService.addAsset(this.coin);
-    }
-
-    final etherscan = EtherscanService();
-    final ethermine = EthermineService();
-    final balance = await etherscan.getBalance(address);
-    final profitability = await ethermine.getProfitability(address);
-    final unpaid = await ethermine.getUnpaid(address);
-
-    final account = Account(
-      id: uuid.v1(),
-      name: "Ethermine",
-      asset: asset,
-      amount: balance,
-      address: address,
-    );
-    await account.save();
-
-    final miner = Miner(
-      id: uuid.v1(),
-      name: "Ethermine",
-      platform: "Ethermine",
-      asset: asset,
-      account: account,
-      profitability: profitability,
-      energy: this._formData["energy"],
-      active: true,
-      unpaidAmount: unpaid,
-    );
-    await miner.save();
-
-    try {
-      await ethermine.getPayoutHistory(miner);
-      return miner;
-    } catch (err) {
-      await Payout.deleteMany({"minerId": miner.id});
-      await miner.delete();
-      await account.delete();
-      return null;
-    }
   }
 }

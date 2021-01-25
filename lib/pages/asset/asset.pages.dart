@@ -1,2 +1,2 @@
-export "add_asset.page.dart";
-export "asset.page.dart";
+export "asset_add.page.dart";
+export "asset_detail.page.dart";

@@ -6,20 +6,20 @@ import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AssetPage extends StatefulWidget {
+class AssetDetailPage extends StatefulWidget {
   final Asset asset;
 
-  AssetPage({
+  AssetDetailPage({
     Key key,
     @required this.asset,
   })  : assert(asset != null),
         super(key: key);
 
   @override
-  _AssetPageState createState() => _AssetPageState();
+  _AssetDetailPageState createState() => _AssetDetailPageState();
 }
 
-class _AssetPageState extends State<AssetPage> {
+class _AssetDetailPageState extends State<AssetDetailPage> {
   Asset asset;
   List<Account> accounts;
 
@@ -70,7 +70,8 @@ class _AssetPageState extends State<AssetPage> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AccountPage(account: account),
+                        builder: (context) =>
+                            AccountDetailPage(account: account),
                       ),
                     );
                     await this._refreshAccounts();

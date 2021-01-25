@@ -76,7 +76,7 @@ class _AddMinerPageState extends State<AddMinerPage> {
                               minerId = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddNiceHashMinerPage(),
+                                  builder: (context) => MinerAddNiceHashPage(),
                                 ),
                               );
                               break;
@@ -84,7 +84,7 @@ class _AddMinerPageState extends State<AddMinerPage> {
                               minerId = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddEthermineMinerPage(),
+                                  builder: (context) => MinerAddEtherminePage(),
                                 ),
                               );
                               break;
@@ -92,7 +92,7 @@ class _AddMinerPageState extends State<AddMinerPage> {
                               minerId = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddCustomMinerPage(),
+                                  builder: (context) => MinerAddCustomPage(),
                                 ),
                               );
                               break;

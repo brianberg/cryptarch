@@ -127,7 +127,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TradePage(
+                            builder: (context) => TransactionDetailPage(
                               trade: transaction,
                             ),
                           ),
