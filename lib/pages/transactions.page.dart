@@ -128,10 +128,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => TransactionDetailPage(
-                              trade: transaction,
+                              transaction: transaction,
                             ),
                           ),
                         );
+                        this._initialize();
                       },
                     ),
                     onRefresh: this._refresh,

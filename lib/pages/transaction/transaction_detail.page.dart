@@ -6,12 +6,12 @@ import "package:cryptarch/models/models.dart" show Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
 class TransactionDetailPage extends StatelessWidget {
-  final Transaction trade;
+  final Transaction transaction;
 
   TransactionDetailPage({
     Key key,
-    @required this.trade,
-  })  : assert(trade != null),
+    @required this.transaction,
+  })  : assert(transaction != null),
         super(key: key);
 
   @override
@@ -20,10 +20,10 @@ class TransactionDetailPage extends StatelessWidget {
     final dateFormat = DateFormat("MM/dd/yyyy");
     final fiatFormat = NumberFormat.simpleCurrency();
 
-    final sentAsset = this.trade.sentAsset;
-    final receivedAsset = this.trade.receivedAsset;
-    final feeAsset = this.trade.feeAsset;
-    final type = this.trade.type;
+    final sentAsset = this.transaction.sentAsset;
+    final receivedAsset = this.transaction.receivedAsset;
+    final feeAsset = this.transaction.feeAsset;
+    final type = this.transaction.type;
 
     String sent;
     String received;
@@ -33,37 +33,56 @@ class TransactionDetailPage extends StatelessWidget {
 
     switch (type) {
       case Transaction.TYPE_BUY:
-        final receivedQuantity = this.trade.receivedQuantity.toStringAsFixed(6);
-        sent = fiatFormat.format(this.trade.sentQuantity);
+        final receivedQuantity =
+            this.transaction.receivedQuantity.toStringAsFixed(6);
+        sent = fiatFormat.format(this.transaction.sentQuantity);
         received = "$receivedQuantity ${receivedAsset.symbol}";
-        price = fiatFormat.format(this.trade.rate);
-        fee = fiatFormat.format(this.trade.feeQuantity);
-        total = fiatFormat.format(this.trade.total);
+        price = fiatFormat.format(this.transaction.rate);
+        fee = fiatFormat.format(this.transaction.feeQuantity);
+        total = fiatFormat.format(this.transaction.total);
         break;
       case Transaction.TYPE_SELL:
-        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
+        final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
         sent = "$sentQuantity ${sentAsset.symbol}";
-        received = fiatFormat.format(this.trade.receivedQuantity);
-        price = "${this.trade.rate} ${sentAsset.symbol}";
-        fee = fiatFormat.format(this.trade.feeQuantity);
-        total = fiatFormat.format(this.trade.total);
+        received = fiatFormat.format(this.transaction.receivedQuantity);
+        price = "${this.transaction.rate} ${sentAsset.symbol}";
+        fee = fiatFormat.format(this.transaction.feeQuantity);
+        total = fiatFormat.format(this.transaction.total);
         break;
       case Transaction.TYPE_CONVERT:
-        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
-        final receivedQuantity = this.trade.receivedQuantity.toStringAsFixed(6);
-        final feeQuantity = this.trade.feeQuantity.toStringAsFixed(6);
+        final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
+        final receivedQuantity =
+            this.transaction.receivedQuantity.toStringAsFixed(6);
+        final feeQuantity = this.transaction.feeQuantity.toStringAsFixed(6);
         sent = "$sentQuantity ${sentAsset.symbol}";
         received = "$receivedQuantity ${receivedAsset.symbol}";
-        price = "${this.trade.rate} ${receivedAsset.symbol}";
+        price = "${this.transaction.rate} ${receivedAsset.symbol}";
         fee =
             feeAsset != null ? "$feeQuantity ${feeAsset.symbol}" : feeQuantity;
-        total = "${this.trade.total} ${receivedAsset.symbol}";
+        total = "${this.transaction.total} ${receivedAsset.symbol}";
         break;
     }
 
     return Scaffold(
       appBar: FlatAppBar(
         title: Text("${receivedAsset.symbol} - ${sentAsset.symbol}"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () async {
+              try {
+                await this.transaction.delete();
+                Navigator.pop(context);
+              } catch (err) {
+                // final snackBar = SnackBar(
+                //   content: Text(err.message),
+                // );
+                // Scaffold.of(context).showSnackBar(snackBar);
+                print(err);
+              }
+            },
+          )
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,7 +94,7 @@ class TransactionDetailPage extends StatelessWidget {
               ),
               ListTile(
                 title: const Text("Date"),
-                trailing: Text(dateFormat.format(this.trade.date)),
+                trailing: Text(dateFormat.format(this.transaction.date)),
               ),
               ListTile(
                 title: const Text("Sent"),
@@ -100,12 +119,13 @@ class TransactionDetailPage extends StatelessWidget {
               ),
               ListTile(
                 title: const Text("Value"),
-                trailing: Text(fiatFormat.format(this.trade.currentValue)),
+                trailing:
+                    Text(fiatFormat.format(this.transaction.currentValue)),
               ),
               ListTile(
                 title: const Text("Return"),
                 trailing: CurrencyChange(
-                  value: this.trade.returnValue,
+                  value: this.transaction.returnValue,
                   style: theme.textTheme.subtitle2,
                 ),
               ),
