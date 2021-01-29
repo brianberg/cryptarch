@@ -17,9 +17,9 @@ class CsvService {
     }
     if (appendTimestamp) {
       String ts = DateFormat(CsvService.TS_FORMAT).format(DateTime.now());
-      filepath += "${filepath}_$ts.csv";
+      filepath = "${filepath}_$ts.csv";
     } else {
-      filepath += "$filepath.csv";
+      filepath = "$filepath.csv";
     }
     final contents = const ListToCsvConverter().convert(rows);
     final file = File(filepath);
