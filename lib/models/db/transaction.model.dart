@@ -1,6 +1,7 @@
 import "package:flutter/foundation.dart";
 
 import "package:sqflite/sqflite.dart";
+import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show DatabaseService;
@@ -124,6 +125,54 @@ class Transaction {
     }
   }
 
+  factory Transaction.fromCsv(
+    List<dynamic> rawRow, {
+    Asset receivedAsset,
+    Asset sentAsset,
+    Asset feeAsset,
+  }) {
+    if (rawRow.isEmpty || rawRow.length < 10) {
+      throw Exception("Malformed transaction row");
+    }
+
+    var receivedQuantity = rawRow[2];
+    if (receivedQuantity is String) {
+      receivedQuantity = double.parse(receivedQuantity);
+    } else if (receivedQuantity is int) {
+      receivedQuantity = receivedQuantity.toDouble();
+    }
+
+    var sentQuantity = rawRow[5];
+    if (sentQuantity is String) {
+      sentQuantity = double.parse(sentQuantity);
+    } else if (sentQuantity is int) {
+      sentQuantity = sentQuantity.toDouble();
+    }
+
+    var feeQuantity = rawRow[8];
+    if (feeQuantity is String) {
+      feeQuantity = double.parse(feeQuantity);
+    } else if (feeQuantity is int) {
+      feeQuantity = feeQuantity.toDouble();
+    }
+
+    return Transaction(
+      id: Uuid().v1(),
+      type: rawRow[1].toString().toLowerCase(),
+      receivedQuantity: receivedQuantity,
+      receivedAsset: receivedAsset,
+      receivedAddress: rawRow[4],
+      sentQuantity: sentQuantity,
+      sentAsset: sentAsset,
+      sentAddress: rawRow[7],
+      feeQuantity: feeQuantity,
+      feeAsset: feeAsset,
+      date: DateTime.parse(rawRow[0]).toUtc(),
+      transactionId: rawRow.length > 10 ? rawRow[10] : null,
+      comment: rawRow.length > 11 ? rawRow[11] : null,
+    );
+  }
+
   static Future<Transaction> deserialize(
     Map<String, dynamic> rawTransaction,
   ) async {
@@ -233,6 +282,26 @@ class Transaction {
     Map<String, dynamic> filters = {};
     filters["id"] = this.id;
     await DatabaseService().delete(Transaction.tableName, filters);
+  }
+
+  List<dynamic> toCsv() {
+    return [
+      this.date.toString().split(" ")[0],
+      this.type,
+      this.receivedQuantity,
+      this.receivedAsset.symbol,
+      this.receivedAddress,
+      this.sentQuantity,
+      this.sentAsset.symbol,
+      this.sentAddress,
+      this.feeQuantity,
+      this.feeAsset.symbol,
+      this.transactionId,
+      this.comment,
+      this.total,
+      this.rate,
+      this.returnValue,
+    ];
   }
 
   @override

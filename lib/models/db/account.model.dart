@@ -1,6 +1,7 @@
 import "package:meta/meta.dart";
 
 import "package:sqflite/sqflite.dart";
+import "package:uuid/uuid.dart";
 
 import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show DatabaseService;
@@ -35,6 +36,27 @@ class Account {
 
   double get value {
     return this.amount * this.asset.value;
+  }
+
+  factory Account.fromCsv(List<dynamic> rawRow, Asset asset) {
+    if (rawRow.isEmpty || rawRow.length < 3) {
+      throw Exception("Malformed account row");
+    }
+
+    var amount = rawRow[2];
+    if (amount is String) {
+      amount = double.parse(amount);
+    } else if (amount is int) {
+      amount = amount.toDouble();
+    }
+
+    return Account(
+      id: Uuid().v1(),
+      name: rawRow[0],
+      asset: asset,
+      amount: amount,
+      address: rawRow.length > 3 ? rawRow[3] : null,
+    );
   }
 
   static Future<Account> deserialize(Map<String, dynamic> rawAccount) async {
@@ -115,6 +137,15 @@ class Account {
     Map<String, dynamic> filters = {};
     filters["id"] = this.id;
     await DatabaseService().delete(Account.tableName, filters);
+  }
+
+  List<dynamic> toCsv() {
+    return [
+      this.name,
+      this.asset.symbol,
+      this.amount,
+      this.address,
+    ];
   }
 
   @override
