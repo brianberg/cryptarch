@@ -67,7 +67,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddTransactionPage(
+                      builder: (context) => TransactionAddPage(
                         type: Transaction.TYPE_BUY,
                       ),
                     ),
@@ -78,7 +78,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddTransactionPage(
+                      builder: (context) => TransactionAddPage(
                         type: Transaction.TYPE_SELL,
                       ),
                     ),
@@ -89,7 +89,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddTransactionPage(
+                      builder: (context) => TransactionAddPage(
                         type: Transaction.TYPE_CONVERT,
                       ),
                     ),

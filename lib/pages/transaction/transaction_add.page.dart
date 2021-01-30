@@ -6,20 +6,20 @@ import "package:uuid/uuid.dart";
 import "package:cryptarch/models/models.dart" show Asset, Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddTransactionPage extends StatefulWidget {
+class TransactionAddPage extends StatefulWidget {
   final String type;
 
-  AddTransactionPage({
+  TransactionAddPage({
     Key key,
     @required this.type,
   })  : assert(type != null),
         super(key: key);
 
   @override
-  _AddTransactionPageState createState() => _AddTransactionPageState();
+  _TransactionAddPageState createState() => _TransactionAddPageState();
 }
 
-class _AddTransactionPageState extends State<AddTransactionPage> {
+class _TransactionAddPageState extends State<TransactionAddPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateInputController = TextEditingController();
   final DateFormat dateFormat = DateFormat("MM/dd/yyyy");

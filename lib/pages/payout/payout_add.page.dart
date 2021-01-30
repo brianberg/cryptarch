@@ -9,20 +9,20 @@ import "package:cryptarch/models/models.dart" show Miner, Payout;
 import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddPayoutPage extends StatefulWidget {
+class PayoutAddPage extends StatefulWidget {
   final Miner miner;
 
-  AddPayoutPage({
+  PayoutAddPage({
     Key key,
     @required this.miner,
   })  : assert(miner != null),
         super(key: key);
 
   @override
-  _AddPayoutPageState createState() => _AddPayoutPageState();
+  _PayoutAddPageState createState() => _PayoutAddPageState();
 }
 
-class _AddPayoutPageState extends State<AddPayoutPage> {
+class _PayoutAddPageState extends State<PayoutAddPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateInputController = TextEditingController();
   final DateFormat dateFormat = DateFormat("MM/dd/yyyy");

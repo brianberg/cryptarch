@@ -81,8 +81,9 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          AddPayoutPage(miner: this.widget.miner),
+                      builder: (context) => PayoutAddPage(
+                        miner: this.widget.miner,
+                      ),
                     ),
                   );
                   await this._refreshMiner();
