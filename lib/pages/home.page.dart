@@ -11,14 +11,6 @@ import "package:cryptarch/widgets/widgets.dart";
 class HomePage extends StatefulWidget {
   static const routeName = "/";
 
-  final Settings settings;
-
-  HomePage({
-    Key key,
-    @required this.settings,
-  })  : assert(settings != null),
-        super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }

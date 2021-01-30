@@ -26,20 +26,20 @@ class SettingsPage extends StatelessWidget {
       body: SafeArea(
         child: SettingsList(
           sections: [
-            SettingsSection(
-              title: "Features",
-              tiles: [
-                SettingsTile.switchTile(
-                  title: "Mining",
-                  leading: Icon(Icons.engineering),
-                  switchValue: settings.showMining,
-                  onToggle: (bool value) async {
-                    settings.showMining = value;
-                    await settingsService.saveSettings(settings);
-                  },
-                ),
-              ],
-            ),
+            // SettingsSection(
+            //   title: "Features",
+            //   tiles: [
+            //     SettingsTile.switchTile(
+            //       title: "Mining",
+            //       leading: Icon(Icons.engineering),
+            //       switchValue: settings.showMining,
+            //       onToggle: (bool value) async {
+            //         settings.showMining = value;
+            //         await settingsService.saveSettings(settings);
+            //       },
+            //     ),
+            //   ],
+            // ),
             SettingsSection(
               title: "Export",
               tiles: [

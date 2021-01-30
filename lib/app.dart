@@ -9,45 +9,28 @@ import "package:cryptarch/theme.dart";
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SettingsService>(
-      future: this._loadSettings(),
-      builder: (BuildContext context, AsyncSnapshot<SettingsService> snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Container();
-        }
-        return ChangeNotifierProvider(
-          create: (context) => snapshot.data,
-          child: MaterialApp(
-            title: "Cryptarch",
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            debugShowCheckedModeBanner: false,
-            home: TabContainer(),
-            routes: <String, WidgetBuilder>{
-              PortfolioPage.routeName: (context) => PortfolioPage(),
-              PricesPage.routeName: (context) => PricesPage(),
-              MiningPage.routeName: (context) => MiningPage(),
-              SettingsPage.routeName: (context) => SettingsPage(),
-            },
-          ),
-        );
+    return MaterialApp(
+      title: "Cryptarch",
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      debugShowCheckedModeBanner: false,
+      home: AppView(),
+      routes: <String, WidgetBuilder>{
+        PortfolioPage.routeName: (context) => PortfolioPage(),
+        PricesPage.routeName: (context) => PricesPage(),
+        MiningPage.routeName: (context) => MiningPage(),
+        SettingsPage.routeName: (context) => SettingsPage(),
       },
     );
   }
-
-  Future<SettingsService> _loadSettings() async {
-    final settingsService = SettingsService();
-    await settingsService.getSettings();
-    return settingsService;
-  }
 }
 
-class TabContainer extends StatefulWidget {
+class AppView extends StatefulWidget {
   @override
-  _TabContainerState createState() => _TabContainerState();
+  _AppViewState createState() => _AppViewState();
 }
 
-class _TabContainerState extends State<TabContainer> {
+class _AppViewState extends State<AppView> {
   final _homeTab = GlobalKey<NavigatorState>();
   final _portfolioTab = GlobalKey<NavigatorState>();
   final _tradesTab = GlobalKey<NavigatorState>();
@@ -57,93 +40,80 @@ class _TabContainerState extends State<TabContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsService>(
-      builder: (context, settingsService, child) {
-        final theme = Theme.of(context);
-        final settings = settingsService.settings;
+    final theme = Theme.of(context);
 
-        return Scaffold(
-          body: SafeArea(
-            child: IndexedStack(
-              index: this._tabIndex,
-              children: <Widget>[
-                Navigator(
-                  key: this._homeTab,
-                  onGenerateRoute: (route) {
-                    return MaterialPageRoute(
-                      settings: route,
-                      builder: (context) {
-                        return Consumer<SettingsService>(
-                          builder: (context, settingsService, child) {
-                            return HomePage(settings: settingsService.settings);
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-                Navigator(
-                  key: this._portfolioTab,
-                  onGenerateRoute: (route) {
-                    return MaterialPageRoute(
-                      settings: route,
-                      builder: (context) => PortfolioPage(),
-                    );
-                  },
-                ),
-                Navigator(
-                  key: this._tradesTab,
-                  onGenerateRoute: (route) {
-                    return MaterialPageRoute(
-                      settings: route,
-                      builder: (context) => TransactionsPage(),
-                    );
-                  },
-                ),
-                Navigator(
-                  key: this._miningTab,
-                  onGenerateRoute: (route) {
-                    return MaterialPageRoute(
-                      settings: route,
-                      builder: (context) => MiningPage(),
-                    );
-                  },
-                ),
-              ],
+    return Scaffold(
+      body: SafeArea(
+        child: IndexedStack(
+          index: this._tabIndex,
+          children: <Widget>[
+            Navigator(
+              key: this._homeTab,
+              onGenerateRoute: (route) {
+                return MaterialPageRoute(
+                  settings: route,
+                  builder: (context) => HomePage(),
+                );
+              },
             ),
+            Navigator(
+              key: this._portfolioTab,
+              onGenerateRoute: (route) {
+                return MaterialPageRoute(
+                  settings: route,
+                  builder: (context) => PortfolioPage(),
+                );
+              },
+            ),
+            Navigator(
+              key: this._tradesTab,
+              onGenerateRoute: (route) {
+                return MaterialPageRoute(
+                  settings: route,
+                  builder: (context) => TransactionsPage(),
+                );
+              },
+            ),
+            Navigator(
+              key: this._miningTab,
+              onGenerateRoute: (route) {
+                return MaterialPageRoute(
+                  settings: route,
+                  builder: (context) => MiningPage(),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: this._tabIndex,
+        backgroundColor: theme.colorScheme.primary,
+        selectedItemColor: theme.colorScheme.onPrimary,
+        unselectedItemColor: theme.colorScheme.onPrimary.withOpacity(.60),
+        selectedLabelStyle: theme.textTheme.caption,
+        unselectedLabelStyle: theme.textTheme.caption,
+        items: [
+          BottomNavigationBarItem(
+            label: "Home",
+            icon: Icon(Icons.home_filled),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: this._tabIndex,
-            backgroundColor: theme.colorScheme.primary,
-            selectedItemColor: theme.colorScheme.onPrimary,
-            unselectedItemColor: theme.colorScheme.onPrimary.withOpacity(.60),
-            selectedLabelStyle: theme.textTheme.caption,
-            unselectedLabelStyle: theme.textTheme.caption,
-            items: [
-              BottomNavigationBarItem(
-                label: "Home",
-                icon: Icon(Icons.home_filled),
-              ),
-              BottomNavigationBarItem(
-                label: "Portfolio",
-                icon: Icon(Icons.pie_chart),
-              ),
-              BottomNavigationBarItem(
-                label: "Trades",
-                icon: Icon(Icons.swap_horiz),
-              ),
-              settings.showMining
-                  ? BottomNavigationBarItem(
-                      label: "Mining",
-                      icon: Icon(Icons.engineering),
-                    )
-                  : null,
-            ].where((w) => w != null).toList(),
-            onTap: this._onSelectTab,
+          BottomNavigationBarItem(
+            label: "Portfolio",
+            icon: Icon(Icons.pie_chart),
           ),
-        );
-      },
+          BottomNavigationBarItem(
+            label: "Trades",
+            icon: Icon(Icons.swap_horiz),
+          ),
+          BottomNavigationBarItem(
+            label: "Mining",
+            icon: Icon(Icons.engineering),
+          )
+        ].where((w) => w != null).toList(),
+        onTap: this._onSelectTab,
+      ),
     );
   }
 
