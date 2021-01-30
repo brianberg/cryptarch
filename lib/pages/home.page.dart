@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Asset> assets;
   double portfolioValue;
-  double portfolioValueChange;
+  double portfolioPercentChange;
 
   @override
   void initState() {
@@ -69,8 +69,8 @@ class _HomePageState extends State<HomePage> {
                           Text(portfolioValue),
                           Padding(
                             padding: const EdgeInsets.only(left: 2.0),
-                            child: CurrencyChange(
-                              value: this.portfolioValueChange,
+                            child: PercentChange(
+                              value: this.portfolioPercentChange,
                               style: theme.textTheme.subtitle1,
                             ),
                           ),
@@ -132,12 +132,12 @@ class _HomePageState extends State<HomePage> {
       orderBy: "value DESC",
     );
     final value = await this.portfolio.getValue();
-    final valueChange = await this.portfolio.getValueChange();
+    final percentChange = await this.portfolio.getPercentChange();
 
     setState(() {
       this.assets = assets;
       this.portfolioValue = value;
-      this.portfolioValueChange = valueChange;
+      this.portfolioPercentChange = percentChange;
     });
   }
 

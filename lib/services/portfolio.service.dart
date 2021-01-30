@@ -33,6 +33,12 @@ class PortfolioService {
     });
   }
 
+  double calculatePercentChange(List<PortfolioItem> items) {
+    return items.fold(0, (value, item) {
+      return value + item.asset.percentChange;
+    });
+  }
+
   Future<double> getValue() async {
     final items = await this.getItems();
     return this.calculateValue(items);
@@ -41,6 +47,11 @@ class PortfolioService {
   Future<double> getValueChange() async {
     final items = await this.getItems();
     return this.calculateValueChange(items);
+  }
+
+  Future<double> getPercentChange() async {
+    final items = await this.getItems();
+    return this.calculatePercentChange(items);
   }
 
   Future<double> getTotalReturn() async {
