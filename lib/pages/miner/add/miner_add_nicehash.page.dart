@@ -103,6 +103,7 @@ class _MinerAddNiceHashPageState extends State<MinerAddNiceHashPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Daily Energy Usage",

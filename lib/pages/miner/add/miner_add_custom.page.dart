@@ -70,6 +70,7 @@ class _MinerAddCustomPageState extends State<MinerAddCustomPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Wallet Balance",
@@ -94,6 +95,7 @@ class _MinerAddCustomPageState extends State<MinerAddCustomPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Unpaid Amount",
@@ -119,6 +121,7 @@ class _MinerAddCustomPageState extends State<MinerAddCustomPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Profitability",
@@ -145,6 +148,7 @@ class _MinerAddCustomPageState extends State<MinerAddCustomPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Daily Energy Usage",

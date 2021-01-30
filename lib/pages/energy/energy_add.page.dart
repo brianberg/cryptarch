@@ -69,6 +69,7 @@ class _EnergyAddPageState extends State<EnergyAddPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Energy Usage",
