@@ -23,6 +23,11 @@ class Payout {
     "date": "INTEGER",
   };
 
+  static final List<String> csvHeaders = [
+    "Date",
+    "Amount",
+  ];
+
   Payout({
     @required this.id,
     @required this.miner,

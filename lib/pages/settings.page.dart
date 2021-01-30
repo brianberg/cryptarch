@@ -94,6 +94,7 @@ class SettingsPage extends StatelessWidget {
       return CsvService.export(
         filepath,
         rows,
+        headers: Account.csvHeaders,
         appendTimestamp: true,
       );
     }
@@ -114,6 +115,7 @@ class SettingsPage extends StatelessWidget {
       return CsvService.export(
         filepath,
         rows,
+        headers: Transaction.csvHeaders,
         appendTimestamp: true,
       );
     }

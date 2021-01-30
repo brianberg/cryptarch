@@ -10,6 +10,7 @@ class CsvService {
   static Future<File> export(
     String filepath,
     List<List<dynamic>> rows, {
+    List<String> headers,
     bool appendTimestamp = false,
   }) async {
     if (filepath.endsWith(".csv")) {
@@ -20,6 +21,9 @@ class CsvService {
       filepath = "${filepath}_$ts.csv";
     } else {
       filepath = "$filepath.csv";
+    }
+    if (headers != null) {
+      rows.insert(0, headers);
     }
     final contents = const ListToCsvConverter().convert(rows);
     final file = File(filepath);

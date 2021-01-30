@@ -128,6 +128,7 @@ class _MinerPayoutsPageState extends State<MinerPayoutsPage> {
       return CsvService.export(
         filepath,
         rows,
+        headers: Payout.csvHeaders,
         appendTimestamp: true,
       );
     }

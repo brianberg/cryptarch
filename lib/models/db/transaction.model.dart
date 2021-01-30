@@ -46,6 +46,23 @@ class Transaction {
     "feeQuantity": "REAL",
   };
 
+  static final List<String> csvHeaders = [
+    "Date",
+    "Type",
+    "Received Amount",
+    "Received Asset",
+    "Received Address",
+    "Sent Amount",
+    "Sent Asset",
+    "Sent Address",
+    "Fee Amount",
+    "Fee Asset",
+    "Comment",
+    "Total",
+    "Price",
+    "Return",
+  ];
+
   static const TYPE_BUY = "buy";
   static const TYPE_CONVERT = "convert";
   static const TYPE_RECEIVE = "received";

@@ -23,6 +23,13 @@ class Account {
     "address": "TEXT",
   };
 
+  static final List<String> csvHeaders = [
+    "Name",
+    "Asset",
+    "Amount",
+    "Address",
+  ];
+
   Account({
     @required this.id,
     @required this.name,

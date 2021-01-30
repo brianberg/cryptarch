@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/foundation.dart";
 
 import "package:intl/intl.dart";
 import "package:file_picker/file_picker.dart";
@@ -48,7 +49,7 @@ class _AddPayoutPageState extends State<AddPayoutPage> {
         title: const Text("Add Payout"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.file_upload),
+            icon: Icon(Icons.upload_file),
             onPressed: () async {
               final result = await FilePicker.platform.pickFiles();
               if (result != null) {
@@ -209,19 +210,24 @@ class _AddPayoutPageState extends State<AddPayoutPage> {
   Future<void> _importPayouts(String path) async {
     if (path != null) {
       final rows = await CsvService.import(path);
-      List<Payout> payouts = List<Payout>.from(rows.map((csvRow) {
-        return Payout.fromCsv(csvRow, this.widget.miner);
-      })).toList();
-      for (Payout payout in payouts) {
-        final existing = await Payout.find(filters: {
-          "minerId": this.widget.miner.id,
-          "date": payout.date.millisecondsSinceEpoch,
-        });
-        // Delete existing
-        if (existing.isNotEmpty) {
-          await existing.first.delete();
+      if (rows.isNotEmpty) {
+        if (listEquals(rows.first, Payout.csvHeaders)) {
+          rows.removeAt(0);
         }
-        await payout.save();
+        List<Payout> payouts = List<Payout>.from(rows.map((csvRow) {
+          return Payout.fromCsv(csvRow, this.widget.miner);
+        })).toList();
+        for (Payout payout in payouts) {
+          final existing = await Payout.find(filters: {
+            "minerId": this.widget.miner.id,
+            "date": payout.date.millisecondsSinceEpoch,
+          });
+          // Delete existing
+          if (existing.isNotEmpty) {
+            await existing.first.delete();
+          }
+          await payout.save();
+        }
       }
     }
   }
