@@ -20,7 +20,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   List<PortfolioItem> items;
   double totalValue;
-  double totalReturn;
+  double totalValueChange;
 
   @override
   void initState() {
@@ -55,23 +55,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(totalValue),
-                this.totalReturn != null
+                this.totalValueChange != null
                     ? Padding(
                         padding: const EdgeInsets.only(left: 2.0),
-                        child: Row(
-                          children: [
-                            CurrencyChange(
-                              value: this.totalReturn,
-                              style: theme.textTheme.subtitle1,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 2.0),
-                              child: Text(
-                                "Total Return",
-                                style: theme.textTheme.subtitle2,
-                              ),
-                            ),
-                          ],
+                        child: CurrencyChange(
+                          value: this.totalValueChange,
+                          style: theme.textTheme.subtitle1,
                         ),
                       )
                     : Container(),
@@ -128,12 +117,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
   Future<void> _refreshItems() async {
     final items = await this.portfolio.getItems();
     final totalValue = this.portfolio.calculateValue(items);
-    final totalReturn = await this.portfolio.getTotalReturn();
+    final totalValueChange = this.portfolio.calculateValueChange(items);
 
     setState(() {
       this.items = items;
       this.totalValue = totalValue;
-      this.totalReturn = totalReturn;
+      this.totalValueChange = totalValueChange;
     });
   }
 
