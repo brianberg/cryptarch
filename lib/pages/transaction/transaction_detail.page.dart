@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
@@ -43,9 +45,10 @@ class TransactionDetailPage extends StatelessWidget {
         break;
       case Transaction.TYPE_SELL:
         final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
+        final rate = this.transaction.rate.toStringAsFixed(6);
         sent = "$sentQuantity ${sentAsset.symbol}";
         received = fiatFormat.format(this.transaction.receivedQuantity);
-        price = "${this.transaction.rate} ${sentAsset.symbol}";
+        price = "$rate ${sentAsset.symbol}";
         fee = fiatFormat.format(this.transaction.feeQuantity);
         total = fiatFormat.format(this.transaction.total);
         break;
@@ -53,13 +56,15 @@ class TransactionDetailPage extends StatelessWidget {
         final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
         final receivedQuantity =
             this.transaction.receivedQuantity.toStringAsFixed(6);
+        final rate = this.transaction.rate.toStringAsFixed(6);
         final feeQuantity = this.transaction.feeQuantity.toStringAsFixed(6);
+        final totalQuantity = this.transaction.total.toStringAsFixed(6);
         sent = "$sentQuantity ${sentAsset.symbol}";
         received = "$receivedQuantity ${receivedAsset.symbol}";
-        price = "${this.transaction.rate} ${receivedAsset.symbol}";
+        price = "$rate ${receivedAsset.symbol}";
         fee =
             feeAsset != null ? "$feeQuantity ${feeAsset.symbol}" : feeQuantity;
-        total = "${this.transaction.total} ${receivedAsset.symbol}";
+        total = "$totalQuantity ${receivedAsset.symbol}";
         break;
     }
 
@@ -98,35 +103,66 @@ class TransactionDetailPage extends StatelessWidget {
               ),
               ListTile(
                 title: const Text("Sent"),
-                trailing: Text(sent),
+                trailing: Text(
+                  sent,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text("Received"),
-                trailing: Text(received),
+                trailing: Text(
+                  received,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text("Price"),
-                trailing: Text(price),
+                trailing: Text(
+                  price,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text("Fee"),
-                trailing: Text(fee),
+                trailing: Text(
+                  fee,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               Divider(),
               ListTile(
                 title: const Text("Total"),
-                trailing: Text(total),
+                trailing: Text(
+                  total,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text("Value"),
-                trailing:
-                    Text(fiatFormat.format(this.transaction.currentValue)),
+                trailing: Text(
+                  fiatFormat.format(this.transaction.currentValue),
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text("Return"),
                 trailing: CurrencyChange(
                   value: this.transaction.returnValue,
-                  style: theme.textTheme.subtitle2,
+                  style: theme.textTheme.bodyText2.copyWith(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
                 ),
               ),
             ],
