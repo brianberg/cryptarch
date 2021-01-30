@@ -87,7 +87,10 @@ class Transaction {
     this.feeQuantity = 0.0,
   })  : assert(id != null),
         assert(type != null),
-        assert(date != null);
+        assert(date != null),
+        assert(sentQuantity != null),
+        assert(receivedQuantity != null),
+        assert(feeQuantity != null);
 
   double get rate {
     switch (this.type) {

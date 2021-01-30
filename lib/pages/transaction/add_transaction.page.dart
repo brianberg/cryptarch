@@ -134,9 +134,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
-                                  labelText: "Amount",
+                                  labelText: "Sent",
                                   filled: true,
                                   fillColor: theme.cardTheme.color,
                                   suffix: this.sentAsset != null
@@ -145,7 +146,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 ),
                                 onSaved: (String value) {
                                   setState(() {
-                                    this._formData["amount"] =
+                                    this._formData["sent"] =
                                         double.parse(value);
                                   });
                                 },
@@ -163,19 +164,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
-                                  labelText: "Price",
+                                  labelText: "Received",
                                   filled: true,
                                   fillColor: theme.cardTheme.color,
                                   suffix: this.receivedAsset != null
                                       ? Text(this.receivedAsset.symbol)
                                       : null,
                                 ),
-                                // initialValue: this._formData["rate"],
                                 onSaved: (String value) {
                                   setState(() {
-                                    this._formData["rate"] =
+                                    this._formData["received"] =
                                         double.parse(value);
                                   });
                                 },
@@ -193,6 +194,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
                                   labelText: "Fee",
@@ -202,17 +204,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       ? Text(this.receivedAsset.symbol)
                                       : null,
                                 ),
-                                // initialValue: this._formData["fee"],
                                 onSaved: (String value) {
                                   setState(() {
-                                    this._formData["fee"] = double.parse(value);
+                                    this._formData["fee"] = value.isNotEmpty
+                                        ? double.parse(value)
+                                        : 0.0;
                                   });
                                 },
                                 validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "Required";
-                                  } else if (double.tryParse(value) == null) {
-                                    return "Invalid";
+                                  if (value.isNotEmpty) {
+                                    if (double.tryParse(value) == null) {
+                                      return "Invalid";
+                                    }
                                   }
                                   return null;
                                 },
@@ -226,6 +229,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
                                   labelText: "Amount",
@@ -255,6 +259,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
                                   labelText: "Price",
@@ -283,6 +288,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: TextFormField(
+                                keyboardType: TextInputType.number,
                                 cursorColor: theme.cursorColor,
                                 decoration: InputDecoration(
                                   labelText: "Fee",
@@ -290,7 +296,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   fillColor: theme.cardTheme.color,
                                   suffix: const Text("USD"),
                                 ),
-                                // initialValue: this._formData["fee"],
+                                initialValue: "0",
                                 onSaved: (String value) {
                                   setState(() {
                                     this._formData["fee"] = double.parse(value);
@@ -397,16 +403,16 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   Future<void> _saveTransaction() async {
     final selectedDate = this._formData["date"] as DateTime;
-    final rate = this._formData["rate"] as double;
-    final amount = this._formData["amount"] as double;
-    final feeQuantity = this._formData["fee"] as double;
 
     double sentQuantity;
     double receivedQuantity;
+    double feeQuantity = this._formData["fee"] as double;
 
     switch (this.widget.type) {
       case Transaction.TYPE_BUY:
         final fiat = await Asset.findOneBySymbol("USD");
+        final rate = this._formData["rate"] as double;
+        final amount = this._formData["amount"] as double;
         this.sentAsset = fiat;
         this.feeAsset = fiat;
         receivedQuantity = amount;
@@ -414,15 +420,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         break;
       case Transaction.TYPE_SELL:
         final fiat = await Asset.findOneBySymbol("USD");
+        final rate = this._formData["rate"] as double;
+        final amount = this._formData["amount"] as double;
         this.receivedAsset = fiat;
         this.feeAsset = fiat;
         sentQuantity = amount;
         receivedQuantity = amount * rate;
         break;
       case Transaction.TYPE_CONVERT:
+        final sent = this._formData["sent"] as double;
+        final received = this._formData["received"] as double;
         this.feeAsset = this.receivedAsset;
-        sentQuantity = amount;
-        receivedQuantity = amount * rate;
+        sentQuantity = sent;
+        receivedQuantity = received;
         break;
     }
 
