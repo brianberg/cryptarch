@@ -1,10 +1,9 @@
 import "package:flutter/material.dart";
 
-import "package:provider/provider.dart";
-
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/services/services.dart" show SettingsService;
 import "package:cryptarch/theme.dart";
+
+enum AppTab { home, portfolio, trades, mining }
 
 class App extends StatelessWidget {
   @override
@@ -31,113 +30,111 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  final _homeTab = GlobalKey<NavigatorState>();
-  final _portfolioTab = GlobalKey<NavigatorState>();
-  final _tradesTab = GlobalKey<NavigatorState>();
-  final _miningTab = GlobalKey<NavigatorState>();
+  final _navigatorKeys = {
+    AppTab.home: GlobalKey<NavigatorState>(),
+    AppTab.portfolio: GlobalKey<NavigatorState>(),
+    AppTab.trades: GlobalKey<NavigatorState>(),
+    AppTab.mining: GlobalKey<NavigatorState>(),
+  };
 
-  int _tabIndex = 0;
+  AppTab _tab = AppTab.home;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: IndexedStack(
-          index: this._tabIndex,
-          children: <Widget>[
-            Navigator(
-              key: this._homeTab,
-              onGenerateRoute: (route) {
-                return MaterialPageRoute(
-                  settings: route,
-                  builder: (context) => HomePage(),
-                );
-              },
-            ),
-            Navigator(
-              key: this._portfolioTab,
-              onGenerateRoute: (route) {
-                return MaterialPageRoute(
-                  settings: route,
-                  builder: (context) => PortfolioPage(),
-                );
-              },
-            ),
-            Navigator(
-              key: this._tradesTab,
-              onGenerateRoute: (route) {
-                return MaterialPageRoute(
-                  settings: route,
-                  builder: (context) => TransactionsPage(),
-                );
-              },
-            ),
-            Navigator(
-              key: this._miningTab,
-              onGenerateRoute: (route) {
-                return MaterialPageRoute(
-                  settings: route,
-                  builder: (context) => MiningPage(),
-                );
-              },
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        final navigatorKey = this._navigatorKeys[this._tab];
+        final popHandled = await navigatorKey.currentState.maybePop();
+        return !popHandled;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: IndexedStack(
+            index: this._tab.index,
+            children: <Widget>[
+              Navigator(
+                key: this._navigatorKeys[AppTab.home],
+                onGenerateRoute: (route) {
+                  return MaterialPageRoute(
+                    settings: route,
+                    builder: (context) => HomePage(),
+                  );
+                },
+              ),
+              Navigator(
+                key: this._navigatorKeys[AppTab.portfolio],
+                onGenerateRoute: (route) {
+                  return MaterialPageRoute(
+                    settings: route,
+                    builder: (context) => PortfolioPage(),
+                  );
+                },
+              ),
+              Navigator(
+                key: this._navigatorKeys[AppTab.trades],
+                onGenerateRoute: (route) {
+                  return MaterialPageRoute(
+                    settings: route,
+                    builder: (context) => TransactionsPage(),
+                  );
+                },
+              ),
+              Navigator(
+                key: this._navigatorKeys[AppTab.mining],
+                onGenerateRoute: (route) {
+                  return MaterialPageRoute(
+                    settings: route,
+                    builder: (context) => MiningPage(),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: this._tabIndex,
-        backgroundColor: theme.colorScheme.primary,
-        selectedItemColor: theme.colorScheme.onPrimary,
-        unselectedItemColor: theme.colorScheme.onPrimary.withOpacity(.60),
-        selectedLabelStyle: theme.textTheme.caption,
-        unselectedLabelStyle: theme.textTheme.caption,
-        items: [
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home_filled),
-          ),
-          BottomNavigationBarItem(
-            label: "Portfolio",
-            icon: Icon(Icons.pie_chart),
-          ),
-          BottomNavigationBarItem(
-            label: "Trades",
-            icon: Icon(Icons.swap_horiz),
-          ),
-          BottomNavigationBarItem(
-            label: "Mining",
-            icon: Icon(Icons.engineering),
-          )
-        ].where((w) => w != null).toList(),
-        onTap: this._onSelectTab,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: this._tab.index,
+          backgroundColor: theme.colorScheme.primary,
+          selectedItemColor: theme.colorScheme.onPrimary,
+          unselectedItemColor: theme.colorScheme.onPrimary.withOpacity(.60),
+          selectedLabelStyle: theme.textTheme.caption,
+          unselectedLabelStyle: theme.textTheme.caption,
+          items: [
+            BottomNavigationBarItem(
+              label: "Home",
+              icon: Icon(Icons.home_filled),
+            ),
+            BottomNavigationBarItem(
+              label: "Portfolio",
+              icon: Icon(Icons.pie_chart),
+            ),
+            BottomNavigationBarItem(
+              label: "Trades",
+              icon: Icon(Icons.swap_horiz),
+            ),
+            BottomNavigationBarItem(
+              label: "Mining",
+              icon: Icon(Icons.engineering),
+            )
+          ].where((w) => w != null).toList(),
+          onTap: this._onSelectTab,
+        ),
       ),
     );
   }
 
   void _onSelectTab(int index) {
-    if (this._tabIndex == index) {
-      switch (index) {
-        case 0:
-          this._homeTab.currentState.popUntil((route) => route.isFirst);
-          break;
-        case 1:
-          this._portfolioTab.currentState.popUntil((route) => route.isFirst);
-          break;
-        // case 2:
-        //   this._tradesTab.currentState.popUntil((route) => route.isFirst);
-        //   break;
-        case 2:
-          this._miningTab.currentState.popUntil((route) => route.isFirst);
-          break;
-        default:
-      }
+    if (this._tab.index == index) {
+      this
+          ._navigatorKeys[this._tab]
+          .currentState
+          .popUntil((route) => route.isFirst);
     } else {
       if (mounted) {
         setState(() {
-          this._tabIndex = index;
+          this._tab = AppTab.values[index];
         });
       }
     }
