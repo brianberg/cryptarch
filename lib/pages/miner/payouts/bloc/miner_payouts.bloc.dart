@@ -17,15 +17,20 @@ class MinerPayoutsBloc extends Bloc<MinerPayoutsEvent, MinerPayoutsState> {
     if (event is MinerPayoutsFetch && !this._hasReachedMax(currentState)) {
       try {
         if (currentState is MinerPayoutsLoading) {
-          final payouts = await this._fetchPayouts(event.filters, 0, 20);
+          final payouts = await Payout.find(
+            filters: event.filters,
+            orderBy: event.orderBy,
+            limit: 20,
+          );
           yield MinerPayoutsLoaded(payouts: payouts, hasReachedMax: false);
           return;
         }
         if (currentState is MinerPayoutsLoaded) {
-          final payouts = await this._fetchPayouts(
-            event.filters,
-            currentState.payouts.length,
-            20,
+          final payouts = await Payout.find(
+            filters: event.filters,
+            orderBy: event.orderBy,
+            offset: currentState.payouts.length,
+            limit: 20,
           );
           yield payouts.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
@@ -42,17 +47,4 @@ class MinerPayoutsBloc extends Bloc<MinerPayoutsEvent, MinerPayoutsState> {
 
   bool _hasReachedMax(MinerPayoutsState state) =>
       state is MinerPayoutsLoaded && state.hasReachedMax;
-
-  Future<List<Payout>> _fetchPayouts(
-    Map<String, dynamic> filters,
-    int offset,
-    int limit,
-  ) async {
-    final payouts = await Payout.find(
-      filters: filters,
-      offset: offset,
-      limit: limit,
-    );
-    return payouts;
-  }
 }
