@@ -2,8 +2,9 @@ import "package:flutter/material.dart";
 
 import "package:cryptarch/models/models.dart";
 import "package:cryptarch/pages/pages.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
-import "asset_picker_list.widget.dart";
+import "asset_picker_list_item.widget.dart";
 
 class AssetPicker extends StatelessWidget {
   final String title;
@@ -45,14 +46,45 @@ class AssetPicker extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: AssetPickerList(
-          items: this.assets,
-          selectedItem: this.selected,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: this.assets != null
+              ? this._buildList(this.assets)
+              : FutureBuilder<List<Asset>>(
+                  future: Asset.find(orderBy: "name"),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+                      return _buildList(snapshot.data);
+                    }
+
+                    return LoadingIndicator();
+                  },
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList(List<Asset> assets) {
+    return ListView.builder(
+      itemCount: assets.length,
+      itemBuilder: (BuildContext context, int index) {
+        final asset = assets[index];
+        var selected = false;
+        if (this.selected != null) {
+          selected = this.selected.id == asset.id;
+        }
+        return AssetPickerListItem(
+          asset: asset,
+          selected: selected,
           onTap: (Asset selected) {
             Navigator.pop(context, selected);
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }

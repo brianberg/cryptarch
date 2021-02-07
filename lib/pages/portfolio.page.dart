@@ -92,19 +92,25 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 ? RefreshIndicator(
                     color: theme.colorScheme.onSurface,
                     backgroundColor: theme.colorScheme.surface,
-                    child: PortfolioList(
-                      items: this.items,
-                      onTap: (item) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AssetDetailPage(
-                              asset: item.asset,
-                            ),
-                          ),
-                        );
-                        await this._refreshItems();
-                      },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          PortfolioList(
+                            items: this.items,
+                            onTap: (item) async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AssetDetailPage(
+                                    asset: item.asset,
+                                  ),
+                                ),
+                              );
+                              await this._refreshItems();
+                            },
+                          )
+                        ],
+                      ),
                     ),
                     onRefresh: this._refresh,
                   )

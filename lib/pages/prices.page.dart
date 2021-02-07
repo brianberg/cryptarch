@@ -55,26 +55,24 @@ class _PricesPageState extends State<PricesPage> {
       ),
       body: SafeArea(
         child: this.assets != null
-            ? this.assets.length > 0
-                ? RefreshIndicator(
-                    color: theme.colorScheme.onSurface,
-                    backgroundColor: theme.colorScheme.surface,
-                    child: AssetList(
-                      items: this.assets,
-                      onTap: (Asset asset) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AssetDetailPage(
-                              asset: asset,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    onRefresh: this._refresh,
-                  )
-                : Center(child: const Text("Empty"))
+            ? RefreshIndicator(
+                color: theme.colorScheme.onSurface,
+                backgroundColor: theme.colorScheme.surface,
+                child: AssetList(
+                  items: this.assets,
+                  onTap: (Asset asset) async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AssetDetailPage(
+                          asset: asset,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                onRefresh: this._refresh,
+              )
             : LoadingIndicator(),
       ),
     );

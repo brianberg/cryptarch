@@ -116,29 +116,27 @@ class _TransactionsPageState extends State<TransactionsPage> {
         ],
       ),
       body: SafeArea(
-        child: this.transactions != null
-            ? this.transactions.length > 0
-                ? RefreshIndicator(
-                    color: theme.colorScheme.onSurface,
-                    backgroundColor: theme.colorScheme.surface,
-                    child: TradeList(
-                      trades: this.transactions,
-                      onTap: (Transaction transaction) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TransactionDetailPage(
-                              transaction: transaction,
-                            ),
-                          ),
-                        );
-                        this._initialize();
-                      },
-                    ),
-                    onRefresh: this._refresh,
-                  )
-                : Center(child: const Text("Empty"))
-            : LoadingIndicator(),
+        child: RefreshIndicator(
+          color: theme.colorScheme.onSurface,
+          backgroundColor: theme.colorScheme.surface,
+          child: this.transactions != null
+              ? TransactionList(
+                  items: this.transactions,
+                  onTap: (Transaction transaction) async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TransactionDetailPage(
+                          transaction: transaction,
+                        ),
+                      ),
+                    );
+                    this._initialize();
+                  },
+                )
+              : LoadingIndicator(),
+          onRefresh: this._refresh,
+        ),
       ),
     );
   }

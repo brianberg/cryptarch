@@ -15,18 +15,20 @@ class PortfolioList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.items.length == 0) {
-      return Center(child: Text("Wow, so empty"));
+    if (this.items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(child: Text("No portfolio items")),
+      );
     }
 
-    return ListView.builder(
-      itemCount: this.items.length,
-      itemBuilder: (BuildContext context, int index) {
+    return Column(
+      children: this.items.map((item) {
         return PortfolioListItem(
-          item: this.items[index],
+          item: item,
           onTap: this.onTap,
         );
-      },
+      }).toList(),
     );
   }
 }

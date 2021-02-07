@@ -6,59 +6,31 @@ import "package:cryptarch/widgets/widgets.dart";
 class AssetList extends StatelessWidget {
   final Function onTap;
   final List<Asset> items;
-  final Asset selectedItem;
   final Map<String, dynamic> options;
 
   AssetList({
     Key key,
     this.items,
-    this.selectedItem,
     this.onTap,
     this.options,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (this.items != null) {
-      return _buildList(items);
+    if (this.items == null || this.items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(child: Text("No assets")),
+      );
     }
 
-    return FutureBuilder<List<Asset>>(
-      future: Asset.find(),
-      builder: (
-        BuildContext context,
-        AsyncSnapshot<List<Asset>> snapshot,
-      ) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.active:
-          case ConnectionState.waiting:
-            return LoadingIndicator();
-          case ConnectionState.done:
-            if (snapshot.hasError) return Text("Error: ${snapshot.error}");
-            List<Asset> assets = snapshot.data;
-            return _buildList(assets);
-        }
-        return Container(child: const Text("Unable to get assets"));
-      },
-    );
-  }
-
-  Widget _buildList(List<Asset> assets) {
-    if (assets.length == 0) {
-      return Center(child: Text("Wow, so empty"));
-    }
-
-    return ListView.builder(
-      itemCount: assets.length,
-      itemBuilder: (BuildContext context, int index) {
-        final asset = assets[index];
-
+    return Column(
+      children: this.items.map((asset) {
         return AssetListItem(
           asset: asset,
           onTap: this.onTap,
         );
-      },
+      }).toList(),
     );
   }
 }

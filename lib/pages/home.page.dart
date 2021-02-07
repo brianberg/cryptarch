@@ -94,19 +94,25 @@ class _HomePageState extends State<HomePage> {
                 ? RefreshIndicator(
                     color: theme.colorScheme.onSurface,
                     backgroundColor: theme.colorScheme.surface,
-                    child: AssetList(
-                      items: this.assets,
-                      onTap: (asset) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AssetDetailPage(
-                              asset: asset,
-                            ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          AssetList(
+                            items: this.assets,
+                            onTap: (asset) async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AssetDetailPage(
+                                    asset: asset,
+                                  ),
+                                ),
+                              );
+                              await this._refresh();
+                            },
                           ),
-                        );
-                        await this._refresh();
-                      },
+                        ],
+                      ),
                     ),
                     onRefresh: this._refresh,
                   )

@@ -26,6 +26,10 @@ class _AddAssetPageState extends State<AddAssetPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final currencies = CURRENCIES.values.toList();
+    currencies.sort((a, b) {
+      return a["name"].toString().compareTo(b["name"].toString());
+    });
 
     return Scaffold(
       appBar: FlatAppBar(
@@ -41,7 +45,7 @@ class _AddAssetPageState extends State<AddAssetPage> {
                 children: <Widget>[
                   CurrencyField(
                     label: "Currency",
-                    currencies: CURRENCIES.values.toList(),
+                    currencies: currencies,
                     initialValue: this.currency,
                     onChange: (currency) {
                       if (currency != null) {

@@ -1,2 +1,2 @@
-export "trade_list.widget.dart";
-export "trade_list_item.widget.dart";
+export "transaction_list.widget.dart";
+export "transaction_list_item.widget.dart";

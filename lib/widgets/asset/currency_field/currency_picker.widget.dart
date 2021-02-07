@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "currency_picker_list.widget.dart";
+import "currency_picker_list_item.widget.dart";
 
 class CurrencyPicker extends StatelessWidget {
   final String title;
@@ -20,11 +20,20 @@ class CurrencyPicker extends StatelessWidget {
         title: Text(this.title),
       ),
       body: SafeArea(
-        child: CurrencyPickerList(
-          items: this.items,
-          onTap: (currency) {
-            Navigator.pop(context, currency);
-          },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView.builder(
+            itemCount: this.items.length,
+            itemBuilder: (BuildContext context, int index) {
+              final currency = this.items[index];
+              return CurrencyPickerListItem(
+                currency: currency,
+                onTap: (currency) {
+                  Navigator.pop(context, currency);
+                },
+              );
+            },
+          ),
         ),
       ),
     );

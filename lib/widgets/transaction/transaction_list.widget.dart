@@ -1,13 +1,13 @@
 import "package:flutter/material.dart";
 
-import "package:cryptarch/models/models.dart";
+import "package:cryptarch/models/models.dart" show Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AccountList extends StatelessWidget {
+class TransactionList extends StatelessWidget {
   final Function onTap;
-  final List<Account> items;
+  final List<Transaction> items;
 
-  AccountList({
+  TransactionList({
     Key key,
     this.items,
     this.onTap,
@@ -18,14 +18,14 @@ class AccountList extends StatelessWidget {
     if (this.items == null || this.items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(child: Text("No accounts")),
+        child: Center(child: Text("No transactions")),
       );
     }
 
     return Column(
-      children: this.items.map((account) {
-        return AccountListItem(
-          account: account,
+      children: this.items.map((transaction) {
+        return TransactionListItem(
+          transaction: transaction,
           onTap: this.onTap,
         );
       }).toList(),

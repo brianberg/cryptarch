@@ -22,9 +22,13 @@ class AssetIcon extends StatelessWidget {
     final iconPath = currency["icon"].toString();
 
     if (iconPath.endsWith(".svg")) {
-      return SvgPicture.asset(
-        iconPath,
-        semanticsLabel: this.asset.name,
+      return SizedBox(
+        width: 36.0,
+        height: 36.0,
+        child: SvgPicture.asset(
+          iconPath,
+          semanticsLabel: this.asset.name,
+        ),
       );
     }
     return Container(
@@ -38,7 +42,13 @@ class AssetIcon extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: Image(image: AssetImage(iconPath)),
+        child: SizedBox(
+          width: 32.0,
+          height: 32.0,
+          child: Image(
+            image: AssetImage(iconPath),
+          ),
+        ),
       ),
     );
   }

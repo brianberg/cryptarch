@@ -7,15 +7,15 @@ import "package:intl/intl.dart";
 import "package:cryptarch/models/models.dart" show Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
-class TradeListItem extends StatelessWidget {
-  final Transaction trade;
+class TransactionListItem extends StatelessWidget {
+  final Transaction transaction;
   final Function onTap;
 
-  TradeListItem({
+  TransactionListItem({
     Key key,
-    @required this.trade,
+    @required this.transaction,
     this.onTap,
-  })  : assert(trade != null),
+  })  : assert(transaction != null),
         super(key: key);
 
   @override
@@ -24,23 +24,24 @@ class TradeListItem extends StatelessWidget {
     final dateFormat = DateFormat("MMM dd, yyyy");
     final fiatFormat = NumberFormat.simpleCurrency();
 
-    final date = dateFormat.format(this.trade.date.toLocal());
+    final date = dateFormat.format(this.transaction.date.toLocal());
 
     String title;
     Icon leadingIcon;
     String quantity;
     String price;
 
-    switch (this.trade.type) {
+    switch (this.transaction.type) {
       case Transaction.TYPE_BUY:
         title = "Buy";
         leadingIcon = Icon(
           Icons.add_circle_outline,
           size: 32.0,
         );
-        final receivedQuantity = this.trade.receivedQuantity.toStringAsFixed(6);
-        quantity = "$receivedQuantity ${this.trade.receivedAsset.symbol}";
-        price = fiatFormat.format(this.trade.rate);
+        final receivedQuantity =
+            this.transaction.receivedQuantity.toStringAsFixed(6);
+        quantity = "$receivedQuantity ${this.transaction.receivedAsset.symbol}";
+        price = fiatFormat.format(this.transaction.rate);
         break;
       case Transaction.TYPE_CONVERT:
         title = "Convert";
@@ -48,10 +49,10 @@ class TradeListItem extends StatelessWidget {
           Icons.swap_horizontal_circle_outlined,
           size: 32.0,
         );
-        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
-        final rate = this.trade.rate.toStringAsFixed(6);
-        quantity = "$sentQuantity ${this.trade.sentAsset.symbol}";
-        price = "$rate ${this.trade.receivedAsset.symbol}";
+        final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
+        final rate = this.transaction.rate.toStringAsFixed(6);
+        quantity = "$sentQuantity ${this.transaction.sentAsset.symbol}";
+        price = "$rate ${this.transaction.receivedAsset.symbol}";
         break;
       case Transaction.TYPE_SELL:
         title = "Sell";
@@ -59,9 +60,9 @@ class TradeListItem extends StatelessWidget {
           Icons.remove_circle_outline,
           size: 32.0,
         );
-        final sentQuantity = this.trade.sentQuantity.toStringAsFixed(6);
-        quantity = "$sentQuantity ${this.trade.sentAsset.symbol}";
-        price = fiatFormat.format(this.trade.rate);
+        final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
+        quantity = "$sentQuantity ${this.transaction.sentAsset.symbol}";
+        price = fiatFormat.format(this.transaction.rate);
         break;
       // case Transaction.TYPE_SEND:
       //   title = "Send";
@@ -80,14 +81,14 @@ class TradeListItem extends StatelessWidget {
     }
 
     return ListTile(
-      key: ValueKey(this.trade),
+      key: ValueKey(this.transaction),
       isThreeLine: true,
       title: Text(
         title,
         style: theme.textTheme.bodyText1,
       ),
       subtitle: Text(
-        "${this.trade.receivedAsset.symbol}-${this.trade.sentAsset.symbol}\n$date",
+        "${this.transaction.receivedAsset.symbol}-${this.transaction.sentAsset.symbol}\n$date",
         style: theme.textTheme.subtitle2.copyWith(
           fontFeatures: [FontFeature.tabularFigures()],
         ),
@@ -115,14 +116,14 @@ class TradeListItem extends StatelessWidget {
             ),
           ),
           CurrencyChange(
-            value: this.trade.returnValue,
+            value: this.transaction.returnValue,
             style: theme.textTheme.subtitle2,
           ),
         ],
       ),
       onTap: () {
         if (this.onTap != null) {
-          this.onTap(this.trade);
+          this.onTap(this.transaction);
         }
       },
     );
