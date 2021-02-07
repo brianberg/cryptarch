@@ -16,8 +16,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsService = context.watch<SettingsService>();
-    final settings = settingsService.settings;
+    // final settingsService = context.watch<SettingsService>();
+    // final settings = settingsService.settings;
 
     return Scaffold(
       appBar: FlatAppBar(
