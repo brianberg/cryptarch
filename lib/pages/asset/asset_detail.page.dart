@@ -45,7 +45,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: Text(this.asset.name),
+        title: Text(this.asset.symbol),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -54,17 +54,28 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ListTile(
-                  title: Text(assetValue, style: theme.textTheme.headline6),
-                  subtitle: Row(
-                    children: [
-                      PercentChange(
-                        value: this.asset.percentChange,
-                        style: theme.textTheme.subtitle1,
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            this.asset.name,
+                            style: theme.textTheme.subtitle2,
+                          ),
+                          Text(assetValue, style: theme.textTheme.headline6),
+                          PercentChange(
+                            value: this.asset.percentChange,
+                            style: theme.textTheme.subtitle1,
+                          ),
+                        ],
                       ),
+                      AssetIcon(asset: this.asset),
                     ],
                   ),
-                  trailing: AssetIcon(asset: this.asset),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
