@@ -120,19 +120,21 @@ class _TransactionsPageState extends State<TransactionsPage> {
           color: theme.colorScheme.onSurface,
           backgroundColor: theme.colorScheme.surface,
           child: this.transactions != null
-              ? TransactionList(
-                  items: this.transactions,
-                  onTap: (Transaction transaction) async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TransactionDetailPage(
-                          transaction: transaction,
+              ? SingleChildScrollView(
+                  child: TransactionList(
+                    items: this.transactions,
+                    onTap: (Transaction transaction) async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TransactionDetailPage(
+                            transaction: transaction,
+                          ),
                         ),
-                      ),
-                    );
-                    this._initialize();
-                  },
+                      );
+                      this._initialize();
+                    },
+                  ),
                 )
               : LoadingIndicator(),
           onRefresh: this._refresh,
