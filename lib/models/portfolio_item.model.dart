@@ -26,8 +26,11 @@ class PortfolioItem {
     return this.amount * this.asset.value;
   }
 
+  double get previousValue {
+    return this.value / (1 + this.asset.percentChange / 100);
+  }
+
   double get valueChange {
-    final previousValue = value / (1 + this.asset.percentChange / 100);
-    return value - previousValue;
+    return this.value - this.previousValue;
   }
 }
