@@ -116,96 +116,108 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: this.items != null
-            ? this.items.length > 0
-                ? RefreshIndicator(
-                    color: theme.colorScheme.onSurface,
-                    backgroundColor: theme.colorScheme.surface,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16.0,
-                              horizontal: 16.0,
+            ? RefreshIndicator(
+                color: theme.colorScheme.onSurface,
+                backgroundColor: theme.colorScheme.surface,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 16.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Top Assets",
+                              style: theme.textTheme.headline6,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Top Assets",
-                                  style: theme.textTheme.headline6,
-                                ),
-                              ],
-                            ),
-                          ),
-                          this.topAssets != null
-                              ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0,
-                                    ),
-                                    child: Row(
-                                      children: this.topAssets.map((asset) {
-                                        return AssetCardItem(
-                                          asset: asset,
-                                          onTap: (asset) async {
-                                            await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AssetDetailPage(
-                                                  asset: asset,
-                                                ),
-                                              ),
-                                            );
-                                            await this._refreshItems();
-                                          },
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(
-                                  width: double.infinity,
-                                  height: 96.0,
-                                  child: Container(),
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16.0,
-                              horizontal: 16.0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Portfolio",
-                                  style: theme.textTheme.headline6,
-                                ),
-                              ],
-                            ),
-                          ),
-                          PortfolioList(
-                            items: this.items,
-                            onTap: (item) async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AssetDetailPage(
-                                    asset: item.asset,
-                                  ),
-                                ),
-                              );
-                              await this._refreshItems();
-                            },
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    onRefresh: this._refresh,
-                  )
-                : Center(child: const Text("Empty"))
+                      this.topAssets.isNotEmpty
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                child: Row(
+                                  children: this.topAssets.map((asset) {
+                                    return AssetCardItem(
+                                      asset: asset,
+                                      onTap: (asset) async {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AssetDetailPage(
+                                              asset: asset,
+                                            ),
+                                          ),
+                                        );
+                                        await this._refreshItems();
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: double.infinity,
+                              height: 96.0,
+                              child: Container(
+                                child: Center(
+                                  child: Text("No Assets"),
+                                ),
+                              ),
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 16.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Portfolio",
+                              style: theme.textTheme.headline6,
+                            ),
+                          ],
+                        ),
+                      ),
+                      this.items.isNotEmpty
+                          ? PortfolioList(
+                              items: this.items,
+                              onTap: (item) async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AssetDetailPage(
+                                      asset: item.asset,
+                                    ),
+                                  ),
+                                );
+                                await this._refreshItems();
+                              },
+                            )
+                          : SizedBox(
+                              width: double.infinity,
+                              height: 96.0,
+                              child: Container(
+                                child: Center(
+                                  child: Text("No Items"),
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+                onRefresh: this._refresh,
+              )
             : LoadingIndicator(),
       ),
     );
