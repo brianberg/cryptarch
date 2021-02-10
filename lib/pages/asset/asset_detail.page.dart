@@ -29,6 +29,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
   double portfolioAmount;
   double returnValue;
   double totalSpent;
+  double returnOnInvestment;
 
   @override
   void initState() {
@@ -45,10 +46,6 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     final portfolioValue = this.portfolioValue != null
         ? fiatFormat.format(this.portfolioValue)
         : "...";
-
-    final returnOnInvestment = this.returnValue != null
-        ? this.returnValue / this.totalSpent * 100
-        : null;
 
     return Scaffold(
       appBar: FlatAppBar(
@@ -82,7 +79,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                         children: [
                           Text(
                             portfolioValue,
-                            style: theme.textTheme.bodyText1,
+                            style: theme.textTheme.headline6,
                           ),
                           Text(
                             "$portfolioAmount ${asset.symbol}",
@@ -136,15 +133,18 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                                   value: this.returnValue,
                                   style: theme.textTheme.headline6,
                                 ),
-                                PercentChange(
-                                  value: returnOnInvestment,
-                                  style: theme.textTheme.subtitle2.copyWith(
-                                    fontFeatures: [
-                                      FontFeature.tabularFigures()
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                this.returnOnInvestment != 0
+                                    ? PercentChange(
+                                        value: this.returnOnInvestment,
+                                        style:
+                                            theme.textTheme.subtitle2.copyWith(
+                                          fontFeatures: [
+                                            FontFeature.tabularFigures()
+                                          ],
+                                        ),
+                                      )
+                                    : null,
+                              ].where((w) => w != null).toList(),
                             )
                           : Container(),
                     ],
@@ -195,23 +195,22 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
       return value += account.amount;
     });
 
-    double returnValue;
-    double totalSpent;
+    double returnValue = 0.0;
+    double totalSpent = 0.0;
+    double totalReturn = 0.0;
     if (transactions.isNotEmpty) {
-      returnValue = transactions.fold(0.0, (value, transaction) {
-        return value += transaction.returnValue;
-      });
-      totalSpent = transactions.fold(0.0, (value, transaction) {
+      for (Transaction transaction in transactions) {
+        returnValue += transaction.returnValue;
         switch (transaction.type) {
           case Transaction.TYPE_BUY:
-            value += transaction.total;
+            totalReturn += transaction.returnValue;
+            totalSpent += transaction.total;
             break;
           case Transaction.TYPE_SELL:
-            value -= transaction.total;
+            totalSpent -= transaction.total;
             break;
         }
-        return value;
-      });
+      }
     }
 
     setState(() {
@@ -221,6 +220,8 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
       this.portfolioAmount = portfolioAmount;
       this.returnValue = returnValue;
       this.totalSpent = totalSpent;
+      this.returnOnInvestment =
+          totalReturn != 0 ? totalReturn / totalSpent * 100 : 0.0;
     });
   }
 

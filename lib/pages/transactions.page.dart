@@ -9,6 +9,12 @@ import "package:cryptarch/widgets/widgets.dart";
 class TransactionsPage extends StatefulWidget {
   static const routeName = "/transactions";
 
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => TransactionsPage(),
+    );
+  }
+
   @override
   _TransactionsPageState createState() => _TransactionsPageState();
 }

@@ -9,4 +9,5 @@ export "asset/asset.pages.dart";
 export "energy/energy.pages.dart";
 export "miner/miner.pages.dart";
 export "payout/payout.pages.dart";
+export "portfolio/portfolio.pages.dart";
 export "transaction/transaction.pages.dart";
