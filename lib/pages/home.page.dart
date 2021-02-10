@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show PortfolioItem;
+import "package:cryptarch/models/models.dart" show Asset, PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
     show AssetService, PortfolioService;
@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   final portfolio = PortfolioService();
 
   List<PortfolioItem> items;
+  List<Asset> topAssets;
   double portfolioValue;
   double portfolioValueChange;
 
@@ -49,7 +50,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(
               "Portfolio",
-              style: theme.textTheme.subtitle2,
+              style: theme.textTheme.subtitle2.copyWith(
+                color: theme.textTheme.bodyText1.color,
+              ),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -120,6 +123,55 @@ class _HomePageState extends State<HomePage> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 16.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Top Assets",
+                                  style: theme.textTheme.headline6,
+                                ),
+                              ],
+                            ),
+                          ),
+                          this.topAssets != null
+                              ? SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
+                                    child: Row(
+                                      children: this.topAssets.map((asset) {
+                                        return AssetCardItem(asset: asset);
+                                      }).toList(),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: double.infinity,
+                                  height: 96.0,
+                                  child: Container(),
+                                ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 16.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Portfolio",
+                                  style: theme.textTheme.headline6,
+                                ),
+                              ],
+                            ),
+                          ),
                           PortfolioList(
                             items: this.items,
                             onTap: (item) async {
@@ -150,10 +202,19 @@ class _HomePageState extends State<HomePage> {
     final portfolioValue = this.portfolio.calculateValue(items);
     final portfolioValueChange = this.portfolio.calculateValueChange(items);
 
+    final topAssets = await Asset.find(
+      filters: {
+        "type": "!= ${Asset.TYPE_FIAT}",
+      },
+      orderBy: "percentChange DESC",
+      limit: 5,
+    );
+
     setState(() {
       this.items = items;
       this.portfolioValue = portfolioValue;
       this.portfolioValueChange = portfolioValueChange;
+      this.topAssets = topAssets;
     });
   }
 

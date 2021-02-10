@@ -1,4 +1,5 @@
-export "asset_detail_item.dart";
+export "asset_card_item.widget.dart";
+export "asset_detail_item.widget.dart";
 export "asset_field/asset_field.widget.dart";
 export "asset_icon.widget.dart";
 export "asset_list.widget.dart";
