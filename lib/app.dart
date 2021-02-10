@@ -15,7 +15,6 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: AppView(),
       routes: <String, WidgetBuilder>{
-        PortfolioPage.routeName: (context) => PortfolioPage(),
         PricesPage.routeName: (context) => PricesPage(),
         MiningPage.routeName: (context) => MiningPage(),
         SettingsPage.routeName: (context) => SettingsPage(),
@@ -64,15 +63,6 @@ class _AppViewState extends State<AppView> {
                 },
               ),
               Navigator(
-                key: this._navigatorKeys[AppTab.portfolio],
-                onGenerateRoute: (route) {
-                  return MaterialPageRoute(
-                    settings: route,
-                    builder: (context) => PortfolioPage(),
-                  );
-                },
-              ),
-              Navigator(
                 key: this._navigatorKeys[AppTab.trades],
                 onGenerateRoute: (route) {
                   return MaterialPageRoute(
@@ -105,10 +95,6 @@ class _AppViewState extends State<AppView> {
             BottomNavigationBarItem(
               label: "Home",
               icon: Icon(Icons.home_filled),
-            ),
-            BottomNavigationBarItem(
-              label: "Portfolio",
-              icon: Icon(Icons.pie_chart),
             ),
             BottomNavigationBarItem(
               label: "Trades",

@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
+import "package:cryptarch/models/models.dart" show PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
-import "package:cryptarch/models/models.dart" show Asset, Settings;
 import "package:cryptarch/services/services.dart"
     show AssetService, PortfolioService;
 import "package:cryptarch/widgets/widgets.dart";
@@ -18,20 +18,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final portfolio = PortfolioService();
 
-  List<Asset> assets;
+  List<PortfolioItem> items;
   double portfolioValue;
-  double portfolioPercentChange;
+  double portfolioValueChange;
 
   @override
   void initState() {
     super.initState();
-    this._initialize();
+    this._refreshItems();
   }
 
   @override
   void didUpdateWidget(Widget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    this._initialize();
+    this._refreshItems();
   }
 
   @override
@@ -40,77 +40,100 @@ class _HomePageState extends State<HomePage> {
 
     final portfolioValue = this.portfolioValue != null
         ? NumberFormat.simpleCurrency().format(this.portfolioValue)
-        : null;
+        : "";
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Text(
+              "Portfolio",
+              style: theme.textTheme.subtitle2,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  "Portfolio",
-                  style: theme.textTheme.subtitle2,
-                ),
-                this.portfolioValue != null
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(portfolioValue),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 2.0),
-                            child: PercentChange(
-                              value: this.portfolioPercentChange,
-                              style: theme.textTheme.subtitle1,
-                            ),
-                          ),
-                        ],
+                Text(portfolioValue),
+                this.portfolioValueChange != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: CurrencyChange(
+                          value: this.portfolioValueChange,
+                          style: theme.textTheme.subtitle1,
+                          duration: const Duration(days: 1),
+                        ),
                       )
-                    : Text("..."),
+                    : Container(),
               ],
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: Icon(
+              Icons.add_circle,
+              color: theme.accentColor,
+            ),
             onPressed: () async {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsPage(),
+                  builder: (context) => AccountAddPage(),
                 ),
               );
-              await this._initialize();
+              await this._refreshItems();
             },
-          )
+          ),
+          PopupMenuButton(
+            icon: Icon(Icons.more_vert),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "refresh":
+                  await this._refresh();
+                  break;
+                case "settings":
+                  Navigator.pushNamed(context, SettingsPage.routeName);
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "refresh",
+                child: Text("Refresh"),
+              ),
+              const PopupMenuItem<String>(
+                value: "settings",
+                child: Text("Settings"),
+              ),
+            ],
+          ),
         ],
       ),
       body: SafeArea(
-        child: this.assets != null
-            ? this.assets.length > 0
+        child: this.items != null
+            ? this.items.length > 0
                 ? RefreshIndicator(
                     color: theme.colorScheme.onSurface,
                     backgroundColor: theme.colorScheme.surface,
                     child: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          AssetList(
-                            items: this.assets,
-                            onTap: (asset) async {
+                          PortfolioList(
+                            items: this.items,
+                            onTap: (item) async {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => AssetDetailPage(
-                                    asset: asset,
+                                    asset: item.asset,
                                   ),
                                 ),
                               );
-                              await this._refresh();
+                              await this._refreshItems();
                             },
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -122,25 +145,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _initialize() async {
-    final assets = await Asset.find(
-      filters: {
-        "type": "!= ${Asset.TYPE_FIAT}",
-      },
-      orderBy: "value DESC",
-    );
-    final value = await this.portfolio.getValue();
-    final percentChange = await this.portfolio.getPercentChange();
+  Future<void> _refreshItems() async {
+    final items = await this.portfolio.getItems();
+    final portfolioValue = this.portfolio.calculateValue(items);
+    final portfolioValueChange = this.portfolio.calculateValueChange(items);
 
     setState(() {
-      this.assets = assets;
-      this.portfolioValue = value;
-      this.portfolioPercentChange = percentChange;
+      this.items = items;
+      this.portfolioValue = portfolioValue;
+      this.portfolioValueChange = portfolioValueChange;
     });
   }
 
   Future<void> _refresh() async {
     await AssetService.refreshPrices();
-    await this._initialize();
+    await this._refreshItems();
   }
 }
