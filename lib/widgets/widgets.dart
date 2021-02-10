@@ -6,6 +6,7 @@ export "payout/payout.widgets.dart";
 export "portfolio/portfolio.widgets.dart";
 export "transaction/transaction.widgets.dart";
 
+export "change.widget.dart";
 export "currency_change.widget.dart";
 export "duration_chips.widget.dart";
 export "flat_app_bar.widget.dart";

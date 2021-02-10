@@ -2,41 +2,37 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
+import "package:cryptarch/widgets/widgets.dart";
+
 class CurrencyChange extends StatelessWidget {
   final double value;
+  final Duration duration;
   final TextStyle style;
 
   CurrencyChange({
     Key key,
     @required this.value,
+    this.duration,
     this.style,
   })  : assert(value != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final valueChange = NumberFormat.simpleCurrency().format(value);
 
-    final change = NumberFormat.simpleCurrency().format(value);
-    final prefix = this.value > 0 ? "+" : "";
-
-    Color color = theme.textTheme.subtitle2.color;
+    bool isPositive;
     if (this.value > 0) {
-      color = Colors.green;
+      isPositive = true;
     } else if (this.value < 0) {
-      color = Colors.red;
+      isPositive = false;
     }
 
-    TextStyle style;
-    if (this.style != null) {
-      style = this.style.copyWith(color: color);
-    } else {
-      style = TextStyle(color: color);
-    }
-
-    return Text(
-      "$prefix$change",
-      style: style,
+    return Change(
+      text: valueChange,
+      isPositive: isPositive,
+      duration: this.duration,
+      style: this.style,
     );
   }
 }

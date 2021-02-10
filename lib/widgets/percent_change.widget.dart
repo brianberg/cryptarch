@@ -1,40 +1,36 @@
 import "package:flutter/material.dart";
 
+import "package:cryptarch/widgets/widgets.dart";
+
 class PercentChange extends StatelessWidget {
   final double value;
+  final Duration duration;
   final TextStyle style;
 
   PercentChange({
     Key key,
     @required this.value,
+    this.duration,
     this.style,
   })  : assert(value != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final prefix = this.value > 0 ? "+" : "";
     final percentChange = this.value.toStringAsFixed(2);
 
-    Color color = theme.textTheme.subtitle2.color;
+    bool isPositive;
     if (this.value > 0) {
-      color = Colors.green;
+      isPositive = true;
     } else if (this.value < 0) {
-      color = Colors.red;
+      isPositive = false;
     }
 
-    TextStyle style;
-    if (this.style != null) {
-      style = this.style.copyWith(color: color);
-    } else {
-      style = TextStyle(color: color);
-    }
-
-    return Text(
-      "$prefix$percentChange%",
-      style: style,
+    return Change(
+      text: "$percentChange%",
+      isPositive: isPositive,
+      duration: this.duration,
+      style: this.style,
     );
   }
 }
