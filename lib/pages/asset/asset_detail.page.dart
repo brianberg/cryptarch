@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 
@@ -24,7 +26,9 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
   List<Account> accounts;
   List<Transaction> transactions;
   double portfolioValue;
+  double portfolioAmount;
   double returnValue;
+  double totalSpent;
 
   @override
   void initState() {
@@ -41,6 +45,10 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     final portfolioValue = this.portfolioValue != null
         ? fiatFormat.format(this.portfolioValue)
         : "...";
+
+    final returnOnInvestment = this.returnValue != null
+        ? this.returnValue / this.totalSpent * 100
+        : null;
 
     return Scaffold(
       appBar: FlatAppBar(
@@ -67,9 +75,23 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                     children: [
                       Text(
                         "Accounts",
-                        style: theme.textTheme.bodyText1,
+                        style: theme.textTheme.headline6,
                       ),
-                      Text(portfolioValue)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            portfolioValue,
+                            style: theme.textTheme.bodyText1,
+                          ),
+                          Text(
+                            "$portfolioAmount ${asset.symbol}",
+                            style: theme.textTheme.subtitle2.copyWith(
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -105,10 +127,26 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                     children: [
                       Text(
                         "Transactions",
-                        style: theme.textTheme.bodyText1,
+                        style: theme.textTheme.headline6,
                       ),
                       this.returnValue != null
-                          ? CurrencyChange(value: this.returnValue)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CurrencyChange(
+                                  value: this.returnValue,
+                                  style: theme.textTheme.headline6,
+                                ),
+                                PercentChange(
+                                  value: returnOnInvestment,
+                                  style: theme.textTheme.subtitle2.copyWith(
+                                    fontFeatures: [
+                                      FontFeature.tabularFigures()
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
                           : Container(),
                     ],
                   ),
@@ -154,18 +192,36 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     final portfolioValue = accounts.fold(0.0, (value, account) {
       return value += account.value;
     });
+    final portfolioAmount = accounts.fold(0.0, (value, account) {
+      return value += account.amount;
+    });
 
-    final returnValue = transactions.isNotEmpty
-        ? transactions.fold(0.0, (value, transaction) {
-            return value += transaction.returnValue;
-          })
-        : null;
+    double returnValue;
+    double totalSpent;
+    if (transactions.isNotEmpty) {
+      returnValue = transactions.fold(0.0, (value, transaction) {
+        return value += transaction.returnValue;
+      });
+      totalSpent = transactions.fold(0.0, (value, transaction) {
+        switch (transaction.type) {
+          case Transaction.TYPE_BUY:
+            value += transaction.total;
+            break;
+          case Transaction.TYPE_SELL:
+            value -= transaction.total;
+            break;
+        }
+        return value;
+      });
+    }
 
     setState(() {
       this.accounts = accounts;
       this.transactions = transactions;
       this.portfolioValue = portfolioValue;
+      this.portfolioAmount = portfolioAmount;
       this.returnValue = returnValue;
+      this.totalSpent = totalSpent;
     });
   }
 
