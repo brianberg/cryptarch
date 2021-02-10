@@ -38,7 +38,6 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     final theme = Theme.of(context);
     final fiatFormat = NumberFormat.simpleCurrency();
 
-    final assetValue = fiatFormat.format(this.asset.value);
     final portfolioValue = this.portfolioValue != null
         ? fiatFormat.format(this.portfolioValue)
         : "...";
@@ -56,26 +55,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            this.asset.name,
-                            style: theme.textTheme.subtitle2,
-                          ),
-                          Text(assetValue, style: theme.textTheme.headline6),
-                          PercentChange(
-                            value: this.asset.percentChange,
-                            style: theme.textTheme.subtitle1,
-                          ),
-                        ],
-                      ),
-                      AssetIcon(asset: this.asset),
-                    ],
-                  ),
+                  child: AssetDetailItem(asset: asset),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
