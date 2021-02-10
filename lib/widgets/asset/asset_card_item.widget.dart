@@ -27,15 +27,15 @@ class AssetCardItem extends StatelessWidget {
     return Card(
       child: InkWell(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Row(
                 children: <Widget>[
                   SizedBox(
-                    height: 24.0,
-                    width: 24.0,
+                    height: 32.0,
+                    width: 32.0,
                     child: AssetIcon(asset: asset),
                   ),
                   Padding(
@@ -59,7 +59,7 @@ class AssetCardItem extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(top: 16.0),
                 child: PercentChange(
                   value: this.asset.percentChange,
                   style: theme.textTheme.headline6,
