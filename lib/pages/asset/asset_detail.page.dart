@@ -186,7 +186,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
       "sentAssetId": this.asset.id,
     });
     final transactions = [...receivedTxs, ...sentTxs];
-    transactions.sort((a, b) => a.date.compareTo(b.date));
+    transactions.sort((a, b) => b.date.compareTo(a.date));
 
     final portfolioValue = accounts.fold(0.0, (value, account) {
       return value += account.value;
