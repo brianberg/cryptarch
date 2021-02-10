@@ -147,7 +147,21 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     child: Row(
                                       children: this.topAssets.map((asset) {
-                                        return AssetCardItem(asset: asset);
+                                        return AssetCardItem(
+                                          asset: asset,
+                                          onTap: (asset) async {
+                                            await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AssetDetailPage(
+                                                  asset: asset,
+                                                ),
+                                              ),
+                                            );
+                                            await this._refreshItems();
+                                          },
+                                        );
                                       }).toList(),
                                     ),
                                   ),
