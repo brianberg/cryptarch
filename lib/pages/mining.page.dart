@@ -11,6 +11,12 @@ import "package:cryptarch/widgets/widgets.dart";
 class MiningPage extends StatefulWidget {
   static const routeName = "/mining";
 
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => MiningPage(),
+    );
+  }
+
   @override
   _MiningPageState createState() => _MiningPageState();
 }

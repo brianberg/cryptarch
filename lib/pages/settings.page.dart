@@ -14,6 +14,12 @@ import "package:cryptarch/widgets/widgets.dart";
 class SettingsPage extends StatelessWidget {
   static final routeName = "/settings";
 
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => SettingsPage(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // final settingsService = context.watch<SettingsService>();

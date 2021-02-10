@@ -8,6 +8,12 @@ import "package:cryptarch/widgets/widgets.dart";
 class PricesPage extends StatefulWidget {
   static const routeName = "/prices";
 
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => PricesPage(),
+    );
+  }
+
   @override
   _PricesPageState createState() => _PricesPageState();
 }

@@ -11,6 +11,12 @@ import "package:cryptarch/widgets/widgets.dart";
 class HomePage extends StatefulWidget {
   static const routeName = "/";
 
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => HomePage(),
+    );
+  }
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -45,32 +51,37 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Portfolio",
-              style: theme.textTheme.subtitle2.copyWith(
-                color: theme.textTheme.bodyText1.color,
+        title: InkWell(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Portfolio",
+                style: theme.textTheme.subtitle2.copyWith(
+                  color: theme.textTheme.bodyText1.color,
+                ),
               ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(portfolioValue),
-                this.portfolioValueChange != null
-                    ? Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: CurrencyChange(
-                          value: this.portfolioValueChange,
-                          style: theme.textTheme.subtitle1,
-                          duration: const Duration(days: 1),
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-          ],
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(portfolioValue),
+                  this.portfolioValueChange != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 2.0),
+                          child: CurrencyChange(
+                            value: this.portfolioValueChange,
+                            style: theme.textTheme.subtitle1,
+                            duration: const Duration(days: 1),
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
+            ],
+          ),
+          onTap: () {
+            Navigator.push(context, PortfolioDetailsPage.route());
+          },
         ),
         actions: [
           IconButton(
@@ -233,7 +244,7 @@ class _HomePageState extends State<HomePage> {
         "type": "!= ${Asset.TYPE_FIAT}",
       },
       orderBy: "percentChange DESC",
-      limit: 5,
+      limit: 10,
     );
 
     setState(() {
