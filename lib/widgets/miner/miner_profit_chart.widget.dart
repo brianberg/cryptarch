@@ -38,8 +38,8 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
   List<FlSpot> revenueSpots;
   List<FlSpot> profitSpots;
   bool isBusy = true;
-  bool showRevenueSpots = false;
-  bool showCostSpots = false;
+  bool showRevenueSpots = true;
+  bool showCostSpots = true;
   bool showProfitSpots = true;
 
   @override
@@ -72,10 +72,23 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
       );
     }
 
-    if (this.profitSpots.isEmpty) {
+    if (this.revenueSpots != null) {
+      if (this.revenueSpots.isEmpty) {
+        return SizedBox(
+          width: double.infinity,
+          height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
+          child: Center(
+            child: Text(
+              "No payouts",
+              style: theme.textTheme.subtitle2,
+            ),
+          ),
+        );
+      }
+    } else if (this.profitSpots.isEmpty) {
       return SizedBox(
         width: double.infinity,
-        height: chartSize.height,
+        height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
         child: Center(
           child: Text(
             "No payouts",
@@ -86,7 +99,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
     }
 
     final List<LineChartBarData> lines = [];
-    if (this.revenueSpots != null) {
+    if (this.revenueSpots != null && this.revenueSpots.isNotEmpty) {
       lines.add(LineChartBarData(
         colors: [
           GRAPH_GREEN_DARK,
@@ -99,18 +112,20 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
         dotData: FlDotData(show: this.revenueSpots.length == 1),
       ));
     }
-    lines.add(LineChartBarData(
-      colors: [
-        GRAPH_PURPLE_DARK,
-        GRAPH_PURPLE,
-        GRAPH_PURPLE_LIGHT,
-      ],
-      spots: this.profitSpots,
-      isCurved: true,
-      show: this.showProfitSpots,
-      dotData: FlDotData(show: this.profitSpots.length == 1),
-    ));
-    if (this.costSpots != null) {
+    if (this.profitSpots != null && this.profitSpots.isNotEmpty) {
+      lines.add(LineChartBarData(
+        colors: [
+          GRAPH_PURPLE_DARK,
+          GRAPH_PURPLE,
+          GRAPH_PURPLE_LIGHT,
+        ],
+        spots: this.profitSpots,
+        isCurved: true,
+        show: this.showProfitSpots,
+        dotData: FlDotData(show: this.profitSpots.length == 1),
+      ));
+    }
+    if (this.costSpots != null && this.costSpots.isNotEmpty) {
       lines.add(LineChartBarData(
         colors: [
           GRAPH_BLUE_DARK,
