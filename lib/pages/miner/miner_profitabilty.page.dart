@@ -44,7 +44,7 @@ class _MinerProfitabilityPageState extends State<MinerProfitabilityPage> {
     final symbol = miner.asset.symbol;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Profitability"),
       ),
       body: SafeArea(

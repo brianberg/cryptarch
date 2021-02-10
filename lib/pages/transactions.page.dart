@@ -45,7 +45,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
               children: [
                 Text(
                   "Total Return",
-                  style: theme.textTheme.subtitle2,
+                  style: theme.textTheme.subtitle2.copyWith(
+                    color: theme.textTheme.bodyText1.color,
+                  ),
                 ),
                 this.totalReturn != null
                     ? CurrencyChange(value: this.totalReturn)

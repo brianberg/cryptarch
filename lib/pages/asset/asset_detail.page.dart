@@ -99,7 +99,6 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
-                          elevation: 0.0,
                           child: AccountList(
                             items: this.accounts,
                             onTap: (account) async {
