@@ -52,6 +52,9 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     final portfolioValue = this.portfolioValue != null
         ? fiatFormat.format(this.portfolioValue)
         : "...";
+    final portfolioAmount = this.portfolioAmount != null
+        ? this.portfolioAmount.toStringAsFixed(6)
+        : "...";
 
     return Scaffold(
       appBar: FlatAppBar(
