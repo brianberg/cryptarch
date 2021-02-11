@@ -68,6 +68,7 @@ class _AccountEditPageState extends State<AccountEditPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       cursorColor: theme.cursorColor,
                       decoration: InputDecoration(
                         labelText: "Amount",
