@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 
-class CurrencyPickerListItem extends StatelessWidget {
+class CurrencyListItem extends StatelessWidget {
   final Map<String, dynamic> currency;
   final Function onTap;
 
-  CurrencyPickerListItem({
+  CurrencyListItem({
     Key key,
     @required this.currency,
     this.onTap,

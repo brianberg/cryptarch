@@ -138,12 +138,15 @@ class _AccountAddPageState extends State<AccountAddPage> {
   }
 
   Future<void> _saveAccount() async {
+    await this.asset.save();
+
     final account = Account(
       id: Uuid().v1(),
       name: this._formData["name"],
       asset: this.asset,
       amount: this._formData["amount"],
     );
+
     await account.save();
   }
 }

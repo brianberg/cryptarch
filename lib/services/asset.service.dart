@@ -11,6 +11,24 @@ class AssetService {
     String blockchain,
     String contractAddress,
   }) async {
+    final asset = await AssetService.createAsset(
+      symbol,
+      exchange: exchange,
+      blockchain: blockchain,
+      contractAddress: contractAddress,
+    );
+
+    await asset.save();
+
+    return asset;
+  }
+
+  static Future<Asset> createAsset(
+    String symbol, {
+    String exchange,
+    String blockchain,
+    String contractAddress,
+  }) async {
     double value = 0.0;
     double lastPrice = 0.0;
     double highPrice = 0.0;
@@ -68,7 +86,6 @@ class AssetService {
       lowPrice: lowPrice,
       percentChange: percentChange,
     );
-    await asset.save();
 
     return asset;
   }

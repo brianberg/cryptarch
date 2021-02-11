@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:cryptarch/widgets/widgets.dart";
 
-import "currency_picker_list_item.widget.dart";
+import "package:cryptarch/widgets/widgets.dart" show CurrencyListItem;
 
 class CurrencyPicker extends StatelessWidget {
   static Route route(String title, List<Map<String, dynamic>> items) {
@@ -37,7 +37,7 @@ class CurrencyPicker extends StatelessWidget {
             itemCount: this.items.length,
             itemBuilder: (BuildContext context, int index) {
               final currency = this.items[index];
-              return CurrencyPickerListItem(
+              return CurrencyListItem(
                 currency: currency,
                 onTap: (currency) {
                   Navigator.pop(context, currency);
