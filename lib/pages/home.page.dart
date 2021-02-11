@@ -26,8 +26,10 @@ class _HomePageState extends State<HomePage> {
 
   List<PortfolioItem> items;
   List<Asset> topAssets;
+
   double portfolioValue;
   double portfolioValueChange;
+  double portfolioPercentChange;
 
   @override
   void initState() {
@@ -51,38 +53,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: FlatAppBar(
-        title: InkWell(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Portfolio",
-                style: theme.textTheme.subtitle2.copyWith(
-                  color: theme.textTheme.bodyText1.color,
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(portfolioValue),
-                  this.portfolioValueChange != null
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 2.0),
-                          child: CurrencyChange(
-                            value: this.portfolioValueChange,
-                            style: theme.textTheme.subtitle1,
-                            duration: const Duration(days: 1),
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-            ],
-          ),
-          onTap: () {
-            Navigator.push(context, PortfolioDetailPage.route());
-          },
-        ),
+        title: Text("Portfolio"),
         actions: [
           IconButton(
             icon: Icon(
@@ -103,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   await this._refresh();
                   break;
                 case "settings":
-                  Navigator.pushNamed(context, SettingsPage.routeName);
+                  Navigator.push(context, SettingsPage.route());
                   break;
               }
             },
@@ -128,6 +99,57 @@ class _HomePageState extends State<HomePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 16.0,
+                        ),
+                        child: InkWell(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      "Balance",
+                                      style: theme.textTheme.subtitle2,
+                                    ),
+                                    Text(
+                                      portfolioValue,
+                                      style: theme.textTheme.headline6,
+                                    ),
+                                    this.portfolioValueChange != null
+                                        ? CurrencyChange(
+                                            value: this.portfolioValueChange,
+                                            duration: const Duration(days: 1),
+                                            style: theme.textTheme.subtitle1,
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                                this.portfolioPercentChange != null
+                                    ? Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: PercentChange(
+                                            value: this.portfolioPercentChange,
+                                            style: theme.textTheme.bodyText1,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context, PortfolioDetailPage.route());
+                          },
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 16.0,
@@ -184,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "Portfolio",
+                              "Your Assets",
                               style: theme.textTheme.headline6,
                             ),
                           ],
@@ -224,6 +246,7 @@ class _HomePageState extends State<HomePage> {
     final items = await this.portfolio.getItems();
     final portfolioValue = this.portfolio.calculateValue(items);
     final portfolioValueChange = this.portfolio.calculateValueChange(items);
+    final portfolioPercentChange = this.portfolio.calculatePercentChange(items);
 
     final topAssets = await Asset.find(
       filters: {
@@ -237,6 +260,7 @@ class _HomePageState extends State<HomePage> {
       this.items = items;
       this.portfolioValue = portfolioValue;
       this.portfolioValueChange = portfolioValueChange;
+      this.portfolioPercentChange = portfolioPercentChange;
       this.topAssets = topAssets;
     });
   }

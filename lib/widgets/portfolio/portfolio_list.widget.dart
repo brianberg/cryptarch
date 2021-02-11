@@ -22,13 +22,19 @@ class PortfolioList extends StatelessWidget {
       );
     }
 
+    final List<Widget> children = [];
+    for (PortfolioItem item in this.items) {
+      children.add(PortfolioListItem(
+        item: item,
+        onTap: this.onTap,
+      ));
+      if (item.asset.id != this.items.last.asset.id) {
+        children.add(Divider());
+      }
+    }
+
     return Column(
-      children: this.items.map((item) {
-        return PortfolioListItem(
-          item: item,
-          onTap: this.onTap,
-        );
-      }).toList(),
+      children: children,
     );
   }
 }

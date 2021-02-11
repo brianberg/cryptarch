@@ -22,7 +22,7 @@ class PortfolioListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final amount = this.item.amount.toStringAsFixed(6);
+    final amount = this.item.amount.toStringAsFixed(3);
     final value = NumberFormat.simpleCurrency().format(this.item.value);
     final valueChange = this.item.valueChange;
 
@@ -51,7 +51,7 @@ class PortfolioListItem extends StatelessWidget {
                   children: [
                     Text(
                       asset.name,
-                      style: theme.textTheme.bodyText1,
+                      style: theme.textTheme.bodyText2,
                     ),
                     Text(
                       "$amount ${asset.symbol}",
@@ -73,7 +73,7 @@ class PortfolioListItem extends StatelessWidget {
                     children: [
                       Text(
                         assetValue,
-                        style: theme.textTheme.subtitle2.copyWith(
+                        style: theme.textTheme.bodyText2.copyWith(
                           fontFeatures: [FontFeature.tabularFigures()],
                         ),
                       ),
@@ -84,14 +84,14 @@ class PortfolioListItem extends StatelessWidget {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
+                    padding: const EdgeInsets.only(left: 24.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           value,
-                          style: theme.textTheme.bodyText1.copyWith(
+                          style: theme.textTheme.bodyText2.copyWith(
                             fontFeatures: [FontFeature.tabularFigures()],
                           ),
                         ),
@@ -114,72 +114,5 @@ class PortfolioListItem extends StatelessWidget {
         }
       },
     );
-
-    // return ListTile(
-    //   key: ValueKey(this.item),
-    //   title: Text(
-    //     asset.name,
-    //     style: TextStyle(
-    //       color: theme.textTheme.bodyText1.color,
-    //     ),
-    //   ),
-    //   subtitle: Text(
-    //     "$amount ${asset.symbol}",
-    //     style: theme.textTheme.subtitle2.copyWith(
-    //       fontFeatures: [FontFeature.tabularFigures()],
-    //     ),
-    //   ),
-    //   leading: Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       SizedBox(
-    //         height: 32.0,
-    //         width: 32.0,
-    //         child: AssetIcon(asset: asset),
-    //       ),
-    //     ],
-    //   ),
-    //   trailing: Row(
-    //     children: [
-    //       Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         crossAxisAlignment: CrossAxisAlignment.end,
-    //         children: [
-    //           Text(
-    //             value,
-    //             style: theme.textTheme.bodyText1.copyWith(
-    //               fontFeatures: [FontFeature.tabularFigures()],
-    //             ),
-    //           ),
-    //           CurrencyChange(
-    //             value: valueChange,
-    //             style: theme.textTheme.subtitle2,
-    //           ),
-    //         ],
-    //       ),
-    //       Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         crossAxisAlignment: CrossAxisAlignment.end,
-    //         children: [
-    //           Text(
-    //             value,
-    //             style: theme.textTheme.bodyText1.copyWith(
-    //               fontFeatures: [FontFeature.tabularFigures()],
-    //             ),
-    //           ),
-    //           CurrencyChange(
-    //             value: valueChange,
-    //             style: theme.textTheme.subtitle2,
-    //           ),
-    //         ],
-    //       ),
-    //     ],
-    //   ),
-    //   onTap: () {
-    //     if (this.onTap != null) {
-    //       this.onTap(this.item);
-    //     }
-    //   },
-    // );
   }
 }
