@@ -68,12 +68,7 @@ class CurrencyField extends StatelessWidget {
         onTap: () async {
           var selected = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => CurrencyPicker(
-                title: this.label,
-                items: this.currencies,
-              ),
-            ),
+            CurrencyPicker.route(this.label, this.currencies),
           );
           this._onChange(selected);
         },

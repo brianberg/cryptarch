@@ -57,9 +57,7 @@ class _MiningPageState extends State<MiningPage> {
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AddMinerPage(),
-                ),
+                MinerAddPage.route(),
               );
               await this._getMiners();
             },
@@ -77,11 +75,7 @@ class _MiningPageState extends State<MiningPage> {
                       onTap: (Miner miner) async {
                         await Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => MinerDetailPage(
-                              miner: miner,
-                            ),
-                          ),
+                          MinerDetailPage.route(miner),
                         );
                         await this._getMiners();
                       },

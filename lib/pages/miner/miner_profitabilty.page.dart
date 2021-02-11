@@ -7,6 +7,12 @@ import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerProfitabilityPage extends StatefulWidget {
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerProfitabilityPage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   MinerProfitabilityPage({
@@ -129,11 +135,7 @@ class _MinerProfitabilityPageState extends State<MinerProfitabilityPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => MinerPayoutsPage(
-                                miner: this.widget.miner,
-                              ),
-                            ),
+                            MinerPayoutsPage.route(this.widget.miner),
                           );
                         }),
                     ListTile(
@@ -156,11 +158,7 @@ class _MinerProfitabilityPageState extends State<MinerProfitabilityPage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => MinerEnergyUsagePage(
-                              miner: this.widget.miner,
-                            ),
-                          ),
+                          MinerEnergyUsagePage.route(this.widget.miner),
                         );
                       },
                     ),

@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           onTap: () {
-            Navigator.push(context, PortfolioDetailsPage.route());
+            Navigator.push(context, PortfolioDetailPage.route());
           },
         ),
         actions: [
@@ -90,12 +90,7 @@ class _HomePageState extends State<HomePage> {
               color: theme.accentColor,
             ),
             onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AccountAddPage(),
-                ),
-              );
+              await Navigator.push(context, AccountAddPage.route());
               await this._refreshItems();
             },
           ),
@@ -162,12 +157,7 @@ class _HomePageState extends State<HomePage> {
                                       onTap: (asset) async {
                                         await Navigator.push(
                                           context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                AssetDetailPage(
-                                              asset: asset,
-                                            ),
-                                          ),
+                                          AssetDetailPage.route(asset),
                                         );
                                         await this._refreshItems();
                                       },
@@ -206,11 +196,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: (item) async {
                                 await Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AssetDetailPage(
-                                      asset: item.asset,
-                                    ),
-                                  ),
+                                  AssetDetailPage.route(item.asset),
                                 );
                                 await this._refreshItems();
                               },

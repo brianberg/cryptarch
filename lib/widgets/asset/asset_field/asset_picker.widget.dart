@@ -7,6 +7,16 @@ import "package:cryptarch/widgets/widgets.dart";
 import "asset_picker_list_item.widget.dart";
 
 class AssetPicker extends StatelessWidget {
+  static Route route({String title, List<Asset> assets, Asset selected}) {
+    return MaterialPageRoute<void>(
+      builder: (_) => AssetPicker(
+        title: title,
+        assets: assets,
+        selected: selected,
+      ),
+    );
+  }
+
   final String title;
   final List<Asset> assets;
   final Asset selected;
@@ -35,9 +45,7 @@ class AssetPicker extends StatelessWidget {
             onPressed: () async {
               final symbol = await Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AddAssetPage(),
-                ),
+                AssetAddPage.route(),
               );
               final asset = await Asset.findOneBySymbol(symbol);
               Navigator.pop(context, asset);

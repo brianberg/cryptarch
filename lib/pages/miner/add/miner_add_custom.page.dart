@@ -6,6 +6,14 @@ import "package:cryptarch/models/models.dart" show Asset, Account, Miner;
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerAddCustomPage extends StatefulWidget {
+  static String routeName = "/miner_add_custome";
+
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerAddCustomPage(),
+    );
+  }
+
   @override
   _MinerAddCustomPageState createState() => _MinerAddCustomPageState();
 }

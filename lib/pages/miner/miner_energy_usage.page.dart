@@ -9,6 +9,12 @@ import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerEnergyUsagePage extends StatelessWidget {
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerEnergyUsagePage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   MinerEnergyUsagePage({

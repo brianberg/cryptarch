@@ -1,8 +1,19 @@
 import "package:flutter/material.dart";
 
+import "package:cryptarch/widgets/widgets.dart";
+
 import "currency_picker_list_item.widget.dart";
 
 class CurrencyPicker extends StatelessWidget {
+  static Route route(String title, List<Map<String, dynamic>> items) {
+    return MaterialPageRoute<void>(
+      builder: (_) => CurrencyPicker(
+        title: title,
+        items: items,
+      ),
+    );
+  }
+
   final String title;
   final List<Map<String, dynamic>> items;
 

@@ -7,6 +7,14 @@ import "package:cryptarch/models/models.dart" show Asset, Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
 class TransactionAddPage extends StatefulWidget {
+  static String routeName = "/transaction_add";
+
+  static Route route(String type) {
+    return MaterialPageRoute<void>(
+      builder: (_) => TransactionAddPage(type: type),
+    );
+  }
+
   final String type;
 
   TransactionAddPage({

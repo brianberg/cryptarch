@@ -7,20 +7,20 @@ import "package:cryptarch/services/services.dart" show PortfolioService;
 
 import "package:cryptarch/widgets/widgets.dart";
 
-class PortfolioDetailsPage extends StatefulWidget {
+class PortfolioDetailPage extends StatefulWidget {
   static String routeName = "/portfolio_details";
 
   static Route route() {
     return MaterialPageRoute<void>(
-      builder: (_) => PortfolioDetailsPage(),
+      builder: (_) => PortfolioDetailPage(),
     );
   }
 
   @override
-  _PortfolioDetailsPageState createState() => _PortfolioDetailsPageState();
+  _PortfolioDetailPageState createState() => _PortfolioDetailPageState();
 }
 
-class _PortfolioDetailsPageState extends State<PortfolioDetailsPage> {
+class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
   final portfolio = PortfolioService();
 
   // Total
@@ -170,7 +170,7 @@ class _PortfolioDetailsPageState extends State<PortfolioDetailsPage> {
     final payouts = await Payout.find();
 
     // TODO: mining inventory
-    double inventoryCost = 0;
+    double inventoryCost = 2248.25;
     double energyCost = energyUsage.fold(0.0, (value, energy) {
       return value += energy.cost;
     });

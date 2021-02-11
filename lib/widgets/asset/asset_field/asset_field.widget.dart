@@ -70,12 +70,10 @@ class AssetField extends StatelessWidget {
         onTap: () async {
           var selected = await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => AssetPicker(
-                title: this.label,
-                assets: this.assets,
-                selected: this.initialValue,
-              ),
+            AssetPicker.route(
+              title: this.label,
+              assets: this.assets,
+              selected: this.initialValue,
             ),
           );
           this._onChange(selected);

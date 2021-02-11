@@ -8,6 +8,12 @@ import "package:cryptarch/models/models.dart" show Transaction;
 import "package:cryptarch/widgets/widgets.dart";
 
 class TransactionDetailPage extends StatelessWidget {
+  static Route route(Transaction transaction) {
+    return MaterialPageRoute<void>(
+      builder: (_) => TransactionDetailPage(transaction: transaction),
+    );
+  }
+
   final Transaction transaction;
 
   TransactionDetailPage({

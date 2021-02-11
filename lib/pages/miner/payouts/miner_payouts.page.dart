@@ -12,6 +12,12 @@ import "package:cryptarch/widgets/widgets.dart";
 import "bloc/miner_payouts.bloc.dart";
 
 class MinerPayoutsPage extends StatefulWidget {
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerPayoutsPage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   MinerPayoutsPage({

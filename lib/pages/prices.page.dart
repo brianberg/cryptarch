@@ -50,9 +50,7 @@ class _PricesPageState extends State<PricesPage> {
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AddAssetPage(),
-                ),
+                AssetAddPage.route(),
               );
               await this._initialize();
             },
@@ -69,11 +67,7 @@ class _PricesPageState extends State<PricesPage> {
                   onTap: (Asset asset) async {
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => AssetDetailPage(
-                          asset: asset,
-                        ),
-                      ),
+                      AssetDetailPage.route(asset),
                     );
                   },
                 ),

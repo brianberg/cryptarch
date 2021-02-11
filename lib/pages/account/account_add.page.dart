@@ -6,6 +6,14 @@ import "package:cryptarch/models/models.dart" show Asset, Account;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AccountAddPage extends StatefulWidget {
+  static String routeName = "/account_add";
+
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => AccountAddPage(),
+    );
+  }
+
   @override
   _AccountAddPageState createState() => _AccountAddPageState();
 }

@@ -10,6 +10,14 @@ import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class PayoutAddPage extends StatefulWidget {
+  static String routeName = "/payout_add";
+
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => PayoutAddPage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   PayoutAddPage({

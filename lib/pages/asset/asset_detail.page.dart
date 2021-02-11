@@ -9,6 +9,12 @@ import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AssetDetailPage extends StatefulWidget {
+  static Route route(Asset asset) {
+    return MaterialPageRoute<void>(
+      builder: (_) => AssetDetailPage(asset: asset),
+    );
+  }
+
   final Asset asset;
 
   AssetDetailPage({
@@ -101,11 +107,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                             onTap: (account) async {
                               await Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => AccountDetailPage(
-                                    account: account,
-                                  ),
-                                ),
+                                AccountDetailPage.route(account),
                               );
                               await this._refreshAccounts();
                             },
@@ -156,11 +158,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                         onTap: (transaction) async {
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => TransactionDetailPage(
-                                transaction: transaction,
-                              ),
-                            ),
+                            TransactionDetailPage.route(transaction),
                           );
                           await this._refreshAccounts();
                         },

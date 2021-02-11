@@ -8,6 +8,12 @@ import "package:cryptarch/services/services.dart" show MiningService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerDetailPage extends StatefulWidget {
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerDetailPage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   MinerDetailPage({
@@ -51,9 +57,7 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => MinerEditPage(miner: this.widget.miner),
-                ),
+                MinerEditPage.route(this.widget.miner),
               );
               await this._refreshMiner();
             },
@@ -69,22 +73,14 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
                 case "energy":
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => EnergyAddPage(
-                        miner: this.widget.miner,
-                      ),
-                    ),
+                    EnergyAddPage.route(this.widget.miner),
                   );
                   await this._refreshMiner();
                   break;
                 case "payout":
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => PayoutAddPage(
-                        miner: this.widget.miner,
-                      ),
-                    ),
+                    PayoutAddPage.route(this.widget.miner),
                   );
                   await this._refreshMiner();
                   break;
@@ -145,11 +141,7 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => MinerProfitabilityPage(
-                          miner: this.miner,
-                        ),
-                      ),
+                      MinerProfitabilityPage.route(this.miner),
                     );
                   },
                 ),
@@ -185,11 +177,7 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => MinerPayoutsPage(
-                              miner: this.miner,
-                            ),
-                          ),
+                          MinerPayoutsPage.route(this.miner),
                         );
                       },
                     ),
@@ -220,11 +208,7 @@ class _MinerDetailPageState extends State<MinerDetailPage> {
                       onTap: (account) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => AccountDetailPage(
-                              account: this.miner.account,
-                            ),
-                          ),
+                          AccountDetailPage.route(this.miner.account),
                         );
                       },
                     ),

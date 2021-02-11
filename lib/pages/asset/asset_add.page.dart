@@ -5,12 +5,20 @@ import "package:cryptarch/models/models.dart" show Asset;
 import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
-class AddAssetPage extends StatefulWidget {
+class AssetAddPage extends StatefulWidget {
+  static String routeName = "/asset_add";
+
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => AssetAddPage(),
+    );
+  }
+
   @override
-  _AddAssetPageState createState() => _AddAssetPageState();
+  _AssetAddPageState createState() => _AssetAddPageState();
 }
 
-class _AddAssetPageState extends State<AddAssetPage> {
+class _AssetAddPageState extends State<AssetAddPage> {
   final _formKey = GlobalKey<FormState>();
 
   Map<String, dynamic> currency;

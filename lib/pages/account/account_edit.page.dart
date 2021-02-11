@@ -4,6 +4,12 @@ import "package:cryptarch/models/models.dart" show Account;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AccountEditPage extends StatefulWidget {
+  static Route route(Account account) {
+    return MaterialPageRoute<void>(
+      builder: (_) => AccountEditPage(account: account),
+    );
+  }
+
   final Account account;
 
   AccountEditPage({

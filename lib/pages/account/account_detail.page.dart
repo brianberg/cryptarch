@@ -8,6 +8,12 @@ import "package:cryptarch/services/services.dart" show AssetService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class AccountDetailPage extends StatefulWidget {
+  static Route route(Account account) {
+    return MaterialPageRoute<void>(
+      builder: (_) => AccountDetailPage(account: account),
+    );
+  }
+
   final Account account;
 
   AccountDetailPage({
@@ -46,11 +52,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AccountEditPage(
-                    account: this.widget.account,
-                  ),
-                ),
+                AccountEditPage.route(this.widget.account),
               );
               await this._refreshAccount();
             },

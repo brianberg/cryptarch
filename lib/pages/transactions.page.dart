@@ -74,33 +74,21 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 case "buy":
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => TransactionAddPage(
-                        type: Transaction.TYPE_BUY,
-                      ),
-                    ),
+                    TransactionAddPage.route(Transaction.TYPE_BUY),
                   );
                   await this._initialize();
                   break;
                 case "sell":
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => TransactionAddPage(
-                        type: Transaction.TYPE_SELL,
-                      ),
-                    ),
+                    TransactionAddPage.route(Transaction.TYPE_SELL),
                   );
                   await this._initialize();
                   break;
                 case "convert":
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => TransactionAddPage(
-                        type: Transaction.TYPE_CONVERT,
-                      ),
-                    ),
+                    TransactionAddPage.route(Transaction.TYPE_CONVERT),
                   );
                   await this._initialize();
                   break;
@@ -134,11 +122,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     onTap: (Transaction transaction) async {
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => TransactionDetailPage(
-                            transaction: transaction,
-                          ),
-                        ),
+                        TransactionDetailPage.route(transaction),
                       );
                       this._initialize();
                     },

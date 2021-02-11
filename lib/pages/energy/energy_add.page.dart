@@ -9,6 +9,14 @@ import "package:cryptarch/services/services.dart" show CsvService;
 import "package:cryptarch/widgets/widgets.dart";
 
 class EnergyAddPage extends StatefulWidget {
+  static String routeName = "/energy_add";
+
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => EnergyAddPage(miner: miner),
+    );
+  }
+  
   final Miner miner;
 
   EnergyAddPage({

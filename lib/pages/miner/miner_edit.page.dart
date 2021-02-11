@@ -4,6 +4,12 @@ import "package:cryptarch/models/models.dart" show Miner;
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerEditPage extends StatefulWidget {
+  static Route route(Miner miner) {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerEditPage(miner: miner),
+    );
+  }
+
   final Miner miner;
 
   MinerEditPage({

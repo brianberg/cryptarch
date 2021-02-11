@@ -2,12 +2,20 @@ import "package:flutter/material.dart";
 
 import "package:cryptarch/pages/pages.dart";
 
-class AddMinerPage extends StatefulWidget {
+class MinerAddPage extends StatefulWidget {
+  static String routeName = "/miner_add";
+
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerAddPage(),
+    );
+  }
+
   @override
-  _AddMinerPageState createState() => _AddMinerPageState();
+  _MinerAddPageState createState() => _MinerAddPageState();
 }
 
-class _AddMinerPageState extends State<AddMinerPage> {
+class _MinerAddPageState extends State<MinerAddPage> {
   final _formKey = GlobalKey<FormState>();
 
   String platform = "Custom";
@@ -75,25 +83,19 @@ class _AddMinerPageState extends State<AddMinerPage> {
                             case "NiceHash":
                               minerId = await Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => MinerAddNiceHashPage(),
-                                ),
+                                MinerAddNiceHashPage.route(),
                               );
                               break;
                             case "Ethermine":
                               minerId = await Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => MinerAddEtherminePage(),
-                                ),
+                                MinerAddEtherminePage.route(),
                               );
                               break;
                             default:
                               minerId = await Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => MinerAddCustomPage(),
-                                ),
+                                MinerAddCustomPage.route(),
                               );
                               break;
                           }

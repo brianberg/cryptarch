@@ -9,6 +9,14 @@ import "package:cryptarch/services/services.dart"
 import "package:cryptarch/widgets/widgets.dart";
 
 class MinerAddEtherminePage extends StatefulWidget {
+  static String routeName = "/miner_add_ethermine";
+
+  static Route route() {
+    return MaterialPageRoute<void>(
+      builder: (_) => MinerAddEtherminePage(),
+    );
+  }
+
   @override
   _MinerAddEtherminePageState createState() => _MinerAddEtherminePageState();
 }
