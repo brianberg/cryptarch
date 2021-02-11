@@ -4,12 +4,14 @@ import "package:cryptarch/theme.dart";
 
 class FlatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
+  final Widget leading;
   final List<Widget> actions;
   final bool centerTitle;
 
   FlatAppBar({
     Key key,
     this.title,
+    this.leading,
     this.actions,
     this.centerTitle,
   }) : super(key: key);
@@ -32,6 +34,7 @@ class FlatAppBar extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: Size.fromHeight(1.0),
       ),
       title: this.title,
+      leading: this.leading,
       actions: this.actions,
       centerTitle: this.centerTitle,
     );

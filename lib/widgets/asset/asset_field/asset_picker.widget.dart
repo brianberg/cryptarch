@@ -32,7 +32,7 @@ class AssetPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: Text(title),
         leading: BackButton(
           onPressed: () {
