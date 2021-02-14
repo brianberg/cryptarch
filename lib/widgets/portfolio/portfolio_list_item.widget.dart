@@ -55,7 +55,7 @@ class PortfolioListItem extends StatelessWidget {
                     ),
                     Text(
                       "$amount ${asset.symbol}",
-                      style: theme.textTheme.subtitle2.copyWith(
+                      style: theme.textTheme.caption.copyWith(
                         fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     ),
@@ -67,24 +67,27 @@ class PortfolioListItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        assetValue,
-                        style: theme.textTheme.bodyText2.copyWith(
-                          fontFeatures: [FontFeature.tabularFigures()],
+                  SizedBox(
+                    width: 80.0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          assetValue,
+                          style: theme.textTheme.bodyText2.copyWith(
+                            fontFeatures: [FontFeature.tabularFigures()],
+                          ),
                         ),
-                      ),
-                      PercentChange(
-                        value: asset.percentChange,
-                        style: theme.textTheme.subtitle2,
-                      ),
-                    ],
+                        PercentChange(
+                          value: asset.percentChange,
+                          style: theme.textTheme.subtitle2,
+                        ),
+                      ],
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 24.0),
+                  SizedBox(
+                    width: 80.0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,

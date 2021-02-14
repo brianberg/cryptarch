@@ -208,11 +208,31 @@ class _HomePageState extends State<HomePage> {
                           horizontal: 16.0,
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "Your Assets",
                               style: theme.textTheme.headline6,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: 80.0,
+                                  child: Text(
+                                    "Price",
+                                    textAlign: TextAlign.right,
+                                    style: theme.textTheme.subtitle2,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 80.0,
+                                  child: Text(
+                                    "Holding",
+                                    textAlign: TextAlign.right,
+                                    style: theme.textTheme.subtitle2,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
