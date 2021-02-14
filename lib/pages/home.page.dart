@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
+import "package:cryptarch/constants/colors.dart";
 import "package:cryptarch/models/models.dart" show Asset, PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
@@ -125,18 +126,22 @@ class _HomePageState extends State<HomePage> {
                                         ? CurrencyChange(
                                             value: this.portfolioValueChange,
                                             duration: const Duration(days: 1),
-                                            style: theme.textTheme.subtitle1,
+                                            style: theme.textTheme.subtitle2,
                                           )
                                         : Container(),
                                   ],
                                 ),
                                 this.portfolioPercentChange != null
                                     ? Card(
+                                        color: this.portfolioPercentChange >= 0
+                                            ? GRAPH_GREEN_LIGHT
+                                            : GRAPH_RED_LIGHT,
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: PercentChange(
                                             value: this.portfolioPercentChange,
-                                            style: theme.textTheme.bodyText1,
+                                            color: Colors.white,
+                                            style: theme.textTheme.subtitle2,
                                           ),
                                         ),
                                       )

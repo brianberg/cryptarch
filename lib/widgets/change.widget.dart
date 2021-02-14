@@ -1,10 +1,9 @@
 import "package:flutter/material.dart";
 
-import "package:intl/intl.dart";
-
 class Change extends StatelessWidget {
   final String text;
   final bool isPositive;
+  final Color color;
   final TextStyle style;
   final Duration duration;
 
@@ -12,6 +11,7 @@ class Change extends StatelessWidget {
     Key key,
     @required this.text,
     this.isPositive,
+    this.color,
     this.style,
     this.duration,
   })  : assert(text != null),
@@ -21,18 +21,31 @@ class Change extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final String prefix = this.isPositive == true ? "+" : "";
+    final String value = text.startsWith("-") ? text.substring(1) : text;
 
-    Color color = theme.textTheme.subtitle2.color;
+    String prefix = "";
     if (this.isPositive != null) {
+      prefix = this.isPositive ? "\u25b2" : "\u25bc";
+    }
+
+    Color color = theme.textTheme.bodyText1.color;
+    if (this.color != null) {
+      color = color;
+    } else if (this.isPositive != null) {
       color = this.isPositive ? Colors.green : Colors.red;
     }
 
     TextStyle style;
     if (this.style != null) {
-      style = this.style.copyWith(color: color);
+      style = this.style.copyWith(
+            color: color,
+            fontWeight: FontWeight.normal,
+          );
     } else {
-      style = TextStyle(color: color);
+      style = TextStyle(
+        color: color,
+        fontWeight: FontWeight.normal,
+      );
     }
 
     if (this.duration != null) {
@@ -51,13 +64,13 @@ class Change extends StatelessWidget {
         }
       }
       return Text(
-        "$prefix$text ($duration)",
+        "$prefix $value ($duration)",
         style: style,
       );
     }
 
     return Text(
-      "$prefix$text",
+      "$prefix $value",
       style: style,
     );
   }

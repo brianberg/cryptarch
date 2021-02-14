@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
 
+const GRAPH_RED = Color(0xFFF44336);
+const GRAPH_RED_DARK = Color(0xFFD2190B);
+const GRAPH_RED_LIGHT = Color(0xFFF8877F);
+
 const GRAPH_GREEN = Color(0xFF2BBD7E);
 const GRAPH_GREEN_DARK = Color(0xFF1D7F54);
 const GRAPH_GREEN_LIGHT = Color(0xFF5BDAA3);

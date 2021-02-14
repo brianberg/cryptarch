@@ -6,6 +6,7 @@ import "package:cryptarch/widgets/widgets.dart";
 
 class CurrencyChange extends StatelessWidget {
   final double value;
+  final Color color;
   final Duration duration;
   final TextStyle style;
 
@@ -13,6 +14,7 @@ class CurrencyChange extends StatelessWidget {
     Key key,
     @required this.value,
     this.duration,
+    this.color,
     this.style,
   })  : assert(value != null),
         super(key: key);
@@ -32,6 +34,7 @@ class CurrencyChange extends StatelessWidget {
       text: valueChange,
       isPositive: isPositive,
       duration: this.duration,
+      color: this.color,
       style: this.style,
     );
   }
