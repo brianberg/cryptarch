@@ -116,8 +116,8 @@ class _AssetPickerState extends State<AssetPicker> {
     final symbol = currency["symbol"];
     final exchanges = currency["exchanges"] as List;
 
-    String exchange = exchanges.first;
-    String platform = currency["blockchain"];
+    String exchange = exchanges != null ? exchanges.first : null;
+    String blockchain = currency["blockchain"];
     String contractAddress = currency["contractAddress"];
 
     final existingAsset = await Asset.findOneBySymbol(symbol);
@@ -130,7 +130,7 @@ class _AssetPickerState extends State<AssetPicker> {
     } else {
       return AssetService.createAsset(
         symbol,
-        blockchain: platform,
+        blockchain: blockchain,
         contractAddress: contractAddress,
       );
     }
