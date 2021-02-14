@@ -109,6 +109,30 @@ class _TransactionsPageState extends State<TransactionsPage> {
               ),
             ],
           ),
+          PopupMenuButton(
+            icon: Icon(Icons.more_vert),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "refresh":
+                  await this._refresh();
+                  break;
+                case "settings":
+                  Navigator.push(context, SettingsPage.route());
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "refresh",
+                child: Text("Refresh"),
+              ),
+              const PopupMenuItem<String>(
+                value: "settings",
+                child: Text("Settings"),
+              ),
+            ],
+          ),
         ],
       ),
       body: SafeArea(
@@ -116,17 +140,20 @@ class _TransactionsPageState extends State<TransactionsPage> {
           color: theme.colorScheme.onSurface,
           backgroundColor: theme.colorScheme.surface,
           child: this.transactions != null
-              ? SingleChildScrollView(
-                  child: TransactionList(
-                    items: this.transactions,
-                    onTap: (Transaction transaction) async {
-                      await Navigator.push(
-                        context,
-                        TransactionDetailPage.route(transaction),
-                      );
-                      this._initialize();
-                    },
-                  ),
+              ? ListView.builder(
+                  itemCount: this.transactions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return TransactionListItem(
+                      transaction: this.transactions[index],
+                      onTap: (Transaction transaction) async {
+                        await Navigator.push(
+                          context,
+                          TransactionDetailPage.route(transaction),
+                        );
+                        this._initialize();
+                      },
+                    );
+                  },
                 )
               : LoadingIndicator(),
           onRefresh: this._refresh,

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:cryptarch/pages/pages.dart";
+import "package:cryptarch/widgets/widgets.dart";
 
 class MinerAddPage extends StatefulWidget {
   static String routeName = "/miner_add";
@@ -31,7 +32,7 @@ class _MinerAddPageState extends State<MinerAddPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: FlatAppBar(
         title: const Text("Add Miner"),
       ),
       body: SafeArea(

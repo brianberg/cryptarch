@@ -62,6 +62,37 @@ class _MiningPageState extends State<MiningPage> {
               await this._getMiners();
             },
           ),
+          PopupMenuButton(
+            icon: Icon(Icons.more_vert),
+            color: theme.cardTheme.color,
+            onSelected: (String selected) async {
+              switch (selected) {
+                case "refresh":
+                  await this._refresh();
+                  break;
+                case "inventory":
+                  Navigator.push(context, InventoryPage.route());
+                  break;
+                case "settings":
+                  Navigator.push(context, SettingsPage.route());
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+              const PopupMenuItem<String>(
+                value: "refresh",
+                child: Text("Refresh"),
+              ),
+              const PopupMenuItem<String>(
+                value: "inventory",
+                child: Text("Inventory"),
+              ),
+              const PopupMenuItem<String>(
+                value: "settings",
+                child: Text("Settings"),
+              ),
+            ],
+          ),
         ],
       ),
       body: SafeArea(

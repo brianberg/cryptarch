@@ -38,7 +38,7 @@ class AssetDetailItem extends StatelessWidget {
               Text(assetValue, style: theme.textTheme.headline6),
               PercentChange(
                 value: this.asset.percentChange,
-                style: theme.textTheme.subtitle1,
+                style: theme.textTheme.subtitle2,
               ),
             ],
           ),
