@@ -223,10 +223,10 @@ const CURRENCIES = {
     "symbol": "MEME",
     "name": "Meme",
     "type": "token",
-    "blockchain": "Ethereum",
-    "contractAddress": "0xd5525d397898e5502075ea5e830d8914f6f0affe",
     "icon": "assets/images/currencies/meme.png",
     "default": false,
+    "blockchain": "Ethereum",
+    "contractAddress": "0xd5525d397898e5502075ea5e830d8914f6f0affe",
   },
   "MKR": {
     "symbol": "MKR",
@@ -272,11 +272,10 @@ const CURRENCIES = {
     "symbol": "STMX",
     "name": "StormX",
     "type": "token",
-    "icon": "assets/images/currencies/stmx.svg",
+    "icon": "assets/images/currencies/stmx.png",
     "default": false,
-    "exchanges": [
-      "Kraken",
-    ],
+    "blockchain": "Ethereum",
+    "contractAddress": "0xbE9375C6a420D2eEB258962efB95551A5b722803",
   },
   "UNI": {
     "symbol": "UNI",

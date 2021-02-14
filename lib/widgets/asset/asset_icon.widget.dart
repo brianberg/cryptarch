@@ -25,10 +25,14 @@ class AssetIcon extends StatelessWidget {
       return SizedBox(
         width: 36.0,
         height: 36.0,
-        child: SvgPicture.asset(
-          iconPath,
-          semanticsLabel: this.asset.name,
-        ),
+        child: iconPath.endsWith(".svg")
+            ? SvgPicture.asset(
+                iconPath,
+                semanticsLabel: this.asset.name,
+              )
+            : Image(
+                image: AssetImage(iconPath),
+              ),
       );
     }
     return Container(
@@ -36,18 +40,15 @@ class AssetIcon extends StatelessWidget {
         color: Colors.white,
         shape: BoxShape.circle,
         border: Border.all(
-          width: 1,
+          width: 0,
           color: theme.dividerColor,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: SizedBox(
-          width: 32.0,
-          height: 32.0,
-          child: Image(
-            image: AssetImage(iconPath),
-          ),
+      child: SizedBox(
+        width: 36.0,
+        height: 36.0,
+        child: Image(
+          image: AssetImage(iconPath),
         ),
       ),
     );
