@@ -104,13 +104,11 @@ class PayoutChart extends StatelessWidget {
                       }
                       return "";
                     },
-                    getTextStyles: (double value) {
-                      return TextStyle(
-                        color: theme.textTheme.subtitle2.color,
-                        fontSize: theme.textTheme.caption.fontSize,
-                        fontFeatures: [FontFeature.tabularFigures()],
-                      );
-                    },
+                    textStyle: TextStyle(
+                      color: theme.textTheme.subtitle2.color,
+                      fontSize: theme.textTheme.caption.fontSize,
+                      fontFeatures: [FontFeature.tabularFigures()],
+                    ),
                   ),
                   bottomTitles: SideTitles(showTitles: false),
                 ),
