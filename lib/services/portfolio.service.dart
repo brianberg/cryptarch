@@ -34,9 +34,11 @@ class PortfolioService {
   }
 
   double calculatePercentChange(List<PortfolioItem> items) {
-    return items.fold(0, (value, item) {
-      return value + item.asset.percentChange;
-    });
+    final value = this.calculateValue(items);
+    final valueChange = this.calculateValueChange(items);
+    final previousValue = value - valueChange;
+
+    return valueChange / previousValue * 100;
   }
 
   Future<double> getValue() async {
