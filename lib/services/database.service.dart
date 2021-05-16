@@ -171,6 +171,7 @@ class DatabaseService {
       models.Asset.tableName: models.Asset.tableColumns,
       models.Account.tableName: models.Account.tableColumns,
       models.Energy.tableName: models.Energy.tableColumns,
+      models.InventoryItem.tableName: models.InventoryItem.tableColumns,
       models.Miner.tableName: models.Miner.tableColumns,
       models.Payout.tableName: models.Payout.tableColumns,
       models.Transaction.tableName: models.Transaction.tableColumns,

@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/models/models.dart" show Energy, Payout, Transaction;
+import "package:cryptarch/models/models.dart"
+    show Energy, InventoryItem, Payout, Transaction;
 import "package:cryptarch/services/services.dart" show PortfolioService;
 
 import "package:cryptarch/widgets/widgets.dart";
@@ -168,9 +169,11 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
 
     final energyUsage = await Energy.find();
     final payouts = await Payout.find();
+    final inventoryItems = await InventoryItem.find();
 
-    // TODO: mining inventory
-    double inventoryCost = 2248.25;
+    double inventoryCost = inventoryItems.fold(0.0, (value, item) {
+      return value += item.totalCost;
+    });
     double energyCost = energyUsage.fold(0.0, (value, energy) {
       return value += energy.cost;
     });
