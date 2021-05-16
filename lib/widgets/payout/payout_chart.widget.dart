@@ -140,7 +140,7 @@ class PayoutChart extends StatelessWidget {
             );
         }
         return Container(
-          child: const Text("Unable to payouts data"),
+          child: const Text("Unable to load payouts data"),
         );
       },
     );

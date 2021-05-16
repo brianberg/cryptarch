@@ -79,7 +79,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
           height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
           child: Center(
             child: Text(
-              "No payouts",
+              "Not enough data",
               style: theme.textTheme.subtitle2,
             ),
           ),
@@ -91,7 +91,7 @@ class _MinerProfitChartState extends State<MinerProfitChart> {
         height: chartSize.height + (this.widget.showCheckboxes ? 48.0 : 0.0),
         child: Center(
           child: Text(
-            "No payouts",
+            "Not enough data",
             style: theme.textTheme.subtitle2,
           ),
         ),
