@@ -275,7 +275,7 @@ const CURRENCIES = {
     "icon": "assets/images/currencies/stmx.png",
     "default": false,
     "blockchain": "Ethereum",
-    "contractAddress": "0xbE9375C6a420D2eEB258962efB95551A5b722803",
+    "contractAddress": "0xbe9375c6a420d2eeb258962efb95551a5b722803",
   },
   "UNI": {
     "symbol": "UNI",
