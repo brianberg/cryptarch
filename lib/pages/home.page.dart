@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import "package:intl/intl.dart";
 
-import "package:cryptarch/constants/colors.dart";
 import "package:cryptarch/models/models.dart" show Asset, PortfolioItem;
 import "package:cryptarch/pages/pages.dart";
 import "package:cryptarch/services/services.dart"
@@ -133,14 +132,10 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 this.portfolioPercentChange != null
                                     ? Card(
-                                        color: this.portfolioPercentChange >= 0
-                                            ? GRAPH_GREEN_LIGHT
-                                            : GRAPH_RED_LIGHT,
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: PercentChange(
                                             value: this.portfolioPercentChange,
-                                            color: Colors.white,
                                             style: theme.textTheme.subtitle2,
                                           ),
                                         ),
@@ -209,6 +204,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
                               "Your Assets",
@@ -217,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               children: <Widget>[
                                 SizedBox(
-                                  width: 80.0,
+                                  width: 96.0,
                                   child: Text(
                                     "Price",
                                     textAlign: TextAlign.right,
@@ -225,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 80.0,
+                                  width: 96.0,
                                   child: Text(
                                     "Holding",
                                     textAlign: TextAlign.right,
@@ -237,16 +233,20 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
+                      Divider(),
                       this.items.isNotEmpty
-                          ? PortfolioList(
-                              items: this.items,
-                              onTap: (item) async {
-                                await Navigator.push(
-                                  context,
-                                  AssetDetailPage.route(item.asset),
-                                );
-                                await this._refreshItems();
-                              },
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: PortfolioList(
+                                items: this.items,
+                                onTap: (item) async {
+                                  await Navigator.push(
+                                    context,
+                                    AssetDetailPage.route(item.asset),
+                                  );
+                                  await this._refreshItems();
+                                },
+                              ),
                             )
                           : SizedBox(
                               width: double.infinity,

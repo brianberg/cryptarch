@@ -64,13 +64,13 @@ class Change extends StatelessWidget {
         }
       }
       return Text(
-        "$prefix $value ($duration)",
+        "$prefix$value ($duration)",
         style: style,
       );
     }
 
     return Text(
-      "$prefix $value",
+      "$prefix$value",
       style: style,
     );
   }

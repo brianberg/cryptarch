@@ -32,9 +32,8 @@ class PortfolioListItem extends StatelessWidget {
     return InkWell(
       key: ValueKey(this.item),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Row(
               children: <Widget>[
@@ -63,12 +62,12 @@ class PortfolioListItem extends StatelessWidget {
                 )
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            Expanded(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: 80.0,
+                    width: 96.0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -87,7 +86,7 @@ class PortfolioListItem extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 80.0,
+                    width: 96.0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
