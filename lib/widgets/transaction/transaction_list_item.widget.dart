@@ -41,7 +41,7 @@ class TransactionListItem extends StatelessWidget {
         final receivedQuantity =
             this.transaction.receivedQuantity.toStringAsFixed(6);
         quantity = "$receivedQuantity ${this.transaction.receivedAsset.symbol}";
-        price = fiatFormat.format(this.transaction.rate);
+        price = fiatFormat.format(this.transaction.sentQuantity);
         break;
       case Transaction.TYPE_CONVERT:
         title = "Convert";
@@ -62,7 +62,7 @@ class TransactionListItem extends StatelessWidget {
         );
         final sentQuantity = this.transaction.sentQuantity.toStringAsFixed(6);
         quantity = "$sentQuantity ${this.transaction.sentAsset.symbol}";
-        price = fiatFormat.format(this.transaction.rate);
+        price = fiatFormat.format(this.transaction.receivedQuantity);
         break;
       // case Transaction.TYPE_SEND:
       //   title = "Send";
