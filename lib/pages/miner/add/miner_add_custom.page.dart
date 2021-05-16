@@ -8,8 +8,8 @@ import "package:cryptarch/widgets/widgets.dart";
 class MinerAddCustomPage extends StatefulWidget {
   static String routeName = "/miner_add_custome";
 
-  static Route route() {
-    return MaterialPageRoute<void>(
+  static Route<String> route() {
+    return MaterialPageRoute<String>(
       builder: (_) => MinerAddCustomPage(),
     );
   }

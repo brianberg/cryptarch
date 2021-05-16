@@ -11,8 +11,8 @@ import "package:cryptarch/widgets/widgets.dart";
 class MinerAddNiceHashPage extends StatefulWidget {
   static String routeName = "/miner_add_nicehash";
 
-  static Route route() {
-    return MaterialPageRoute<void>(
+  static Route<String> route() {
+    return MaterialPageRoute<String>(
       builder: (_) => MinerAddNiceHashPage(),
     );
   }
