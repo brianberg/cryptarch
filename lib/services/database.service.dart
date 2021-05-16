@@ -33,6 +33,9 @@ class DatabaseService {
     }
     final String dir = await getDatabasesPath();
     final String dbPath = path.join(dir, "cryptarch.db");
+
+    print("[Cryptarch] $dbPath");
+
     this._db = await openDatabase(
       dbPath,
       version: DATABASE_VERSION,
